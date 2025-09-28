@@ -1,0 +1,117 @@
+# Enum definitions
+enum Role {
+  Admin
+  Member
+  Viewer
+}
+
+# Scalars
+scalar DateTime
+
+# Types definitions
+type User {
+  user_id: ID!
+  username: String!
+  email: String!
+  hashed_password: String!
+}
+
+type Workspace {
+  workspace_id: ID!
+  name: String!
+  description: String
+  owner_id: ID!
+}
+
+type WorkspaceMembers {
+  workspace_id: ID!
+  user_id: ID!
+  role: Role!
+}
+
+type Board {
+  board_id: ID!
+  title: String!
+  description: String
+  workspace_id: ID!
+}
+
+type List {
+  list_id: ID!
+  title: String!
+  position: Int!
+  board_id: ID!
+}
+
+type Card {
+  card_id: ID!
+  title: String!
+  description: String
+  position: Int!
+  list_id: ID!
+  label_id: ID
+  due_date: DateTime
+}
+
+type Comment {
+  comment_id: ID!
+  content: String!
+  created_at: DateTime!
+  card_id: ID!
+  user_id: ID!
+}
+
+type Label {
+  label_id: ID!
+  name: String!
+  color: String!
+  board_id: ID!
+}
+
+type Attachment {
+  attachment_id: ID!
+  card_id: ID!
+  url: String!
+  filename: String!
+}
+
+type CardLabel {
+  card_id: ID!
+  label_id: ID!
+}
+
+type CardMember {
+  card_id: ID!
+  user_id: ID!
+}
+
+# Root query type
+type Query {
+  users: [User!]!
+  user(user_id: ID!): User
+
+  # Tu peux ajouter d'autres queries ici si besoin
+}
+
+# Root mutation type
+type Mutation {
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  deleteUser(user_id: ID!): User
+
+  # Tu peux ajouter d'autres mutations ici si besoin
+}
+
+# Input types for mutations
+input CreateUserInput {
+  username: String!
+  email: String!
+  hashed_password: String!
+}
+
+input UpdateUserInput {
+  user_id: ID!
+  username: String
+  email: String
+  hashed_password: String
+}

@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  Admin
+  Member
+  Viewer
+}
+
+model User {
+  user_id         String   @id @default(uuid())
+  username        String   @unique
+  email           String   @unique
+  hashed_password String
+  workspaces      WorkspaceMembers[]
+  comments        Comment[]
+  card_members    CardMember[]
+}
+
+model Workspace {
+  workspace_id  String   @id @default(uuid())
+  name          String
+  description   String?
+  owner_id      String
+  members       WorkspaceMembers[]
+  boards        Board[]
+}
+
+model WorkspaceMembers {
+  workspace_id String
+  user_id      String
+  role         Role
+
+  workspace Workspace @relation(fields: [workspace_id], references: [workspace_id])
+  user      User      @relation(fields: [user_id], references: [user_id])
+
+  @@id([workspace_id, user_id])
+}
+
+model Board {
+  board_id     String   @id @default(uuid())
+  title        String
+  description  String?
+  workspace_id String
+  workspace    Workspace @relation(fields: [workspace_id], references: [workspace_id])
+  lists        List[]
+  labels       Label[]
+}
+
+model List {
+  list_id  String  @id @default(uuid())
+  title    String
+  position Int
+  board_id String
+  board    Board   @relation(fields: [board_id], references: [board_id])
+  cards    Card[]
+}
+
+model Card {
+  card_id      String   @id @default(uuid())
+  title        String
+  description  String?
+  position     Int
+  list_id      String
+  list         List     @relation(fields: [list_id], references: [list_id])
+  label_id     String?
+  due_date     DateTime?
+  comments     Comment[]
+  card_labels  CardLabel[]
+  card_members CardMember[]
+  attachments  Attachment[]
+}
+
+model Comment {
+  comment_id String   @id @default(uuid())
+  content    String
+  created_at DateTime @default(now())
+  card_id    String
+  user_id    String
+
+  card Card @relation(fields: [card_id], references: [card_id])
+  user User @relation(fields: [user_id], references: [user_id])
+}
+
+model Label {
+  label_id  String   @id @default(uuid())
+  name      String
+  color     String
+  board_id  String
+  board     Board    @relation(fields: [board_id], references: [board_id])
+  card_labels CardLabel[]
+}
+
+model Attachment {
+  attachment_id String @id @default(uuid())
+  card_id       String
+  url           String
+  filename      String
+  card          Card   @relation(fields: [card_id], references: [card_id])
+}
+
+model CardLabel {
+  card_id  String
+  label_id String
+
+  card  Card  @relation(fields: [card_id], references: [card_id])
+  label Label @relation(fields: [label_id], references: [label_id])
+
+  @@id([card_id, label_id])
+}
+
+model CardMember {
+  card_id String
+  user_id String
+
+  card Card @relation(fields: [card_id], references: [card_id])
+  user User @relation(fields: [user_id], references: [user_id])
+
+  @@id([card_id, user_id])
+}

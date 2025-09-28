@@ -1,0 +1,32 @@
+{
+  "name": "taskflow-backend",
+  "version": "1.0.0",
+  "description": "A trello like self-hosted webapp",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EliasJHL/TaskFlow.git"
+  },
+  "keywords": [
+    "corp"
+  ],
+  "author": "Elias Josué Hajjar Llauquen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EliasJHL/TaskFlow/issues"
+  },
+  "homepage": "https://github.com/EliasJHL/TaskFlow#readme",
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "dotenv": "^17.2.2",
+    "fastify": "^5.6.1",
+    "graphql": "^16.11.0",
+    "graphql-scalars": "^1.24.2",
+    "mercurius": "^16.3.0"
+  }
+}
