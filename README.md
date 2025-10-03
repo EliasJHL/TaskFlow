@@ -1,4 +1,4 @@
-# TaskFlow
+# 📊 TaskFlow
 
 TaskFlow est une application web de gestion de projets collaborative focalisée sur l'efficacité, la clarté et la modernité. Elle permet de gérer des équipes, des espaces de travail, des tableaux, des listes et des tâches, tout en offrant une expérience utilisateur soignée aussi bien en mode sombre qu'en mode clair.
 
