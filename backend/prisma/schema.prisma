@@ -23,8 +23,11 @@ model User {
   user_id         String   @id @default(uuid())
   username        String   @unique
   email           String   @unique
+
   hashed_password String
+
   workspaces      WorkspaceMembers[]
+  workspacesOwned Workspace[]
   comments        Comment[]
   card_members    CardMember[]
 }
@@ -34,6 +37,9 @@ model Workspace {
   name          String
   description   String?
   owner_id      String
+
+  owner         User     @relation(fields: [owner_id], references: [user_id])
+
   members       WorkspaceMembers[]
   boards        Board[]
 }

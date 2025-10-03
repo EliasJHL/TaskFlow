@@ -13,7 +13,6 @@ type User {
   user_id: ID!
   username: String!
   email: String!
-  hashed_password: String!
 }
 
 type Workspace {
@@ -21,11 +20,14 @@ type Workspace {
   name: String!
   description: String
   owner_id: ID!
+  owner: User
+  members: [WorkspaceMembers!]!
+  boards: [Board!]!
 }
 
 type WorkspaceMembers {
   workspace_id: ID!
-  user_id: ID!
+  user: User!
   role: Role!
 }
 
@@ -87,10 +89,60 @@ type CardMember {
 
 # Root query type
 type Query {
-  users: [User!]!
+  users: [User]
   user(user_id: ID!): User
 
-  # Tu peux ajouter d'autres queries ici si besoin
+  workspaces: [Workspace]
+  workspace(workspace_id: ID!): Workspace
+}
+
+# Input types for mutations
+input CreateUserInput {
+  username: String!
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  user_id: ID!
+  username: String
+  email: String
+  password: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input RegisterInput {
+  username: String!
+  email: String!
+  password: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+input CreateWorkspaceInput {
+  name: String!
+  description: String
+}
+
+type CreateWorkspacePayload {
+  workspace: Workspace
+}
+
+input UpdateWorkspaceInput {
+  name: String
+  description: String
+}
+
+type Status {
+  success: Boolean!
+  message: String
 }
 
 # Root mutation type
@@ -99,19 +151,10 @@ type Mutation {
   updateUser(input: UpdateUserInput!): User
   deleteUser(user_id: ID!): User
 
-  # Tu peux ajouter d'autres mutations ici si besoin
-}
+  login(input: LoginInput!): AuthPayload
+  register(input: RegisterInput!): AuthPayload
 
-# Input types for mutations
-input CreateUserInput {
-  username: String!
-  email: String!
-  hashed_password: String!
-}
-
-input UpdateUserInput {
-  user_id: ID!
-  username: String
-  email: String
-  hashed_password: String
+  createWorkspace(input: CreateWorkspaceInput!): CreateWorkspacePayload!
+  updateWorkspace(workspace_id: ID!, input: UpdateWorkspaceInput!): Workspace!
+  deleteWorkspace(workspace_id: ID!): Status!
 }
