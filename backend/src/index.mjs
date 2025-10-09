@@ -12,10 +12,19 @@ import jwt from '@fastify/jwt';
 import mercurius from 'mercurius';
 import dotenv from 'dotenv';
 import resolvers from './graphql/resolvers.js';
+import cors from '@fastify/cors';
 dotenv.config();
 
 const schema = readFileSync(join(process.cwd(), 'src/graphql/schema.graphql'), 'utf8');
 const app = Fastify({ logger: true });
+
+await app.register(cors, {
+  origin: 'http://localhost:3001',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Set-Cookie']
+})
 
 await app.register(cookie, { secret: process.env.COOKIE_SECRET});
 await app.register(jwt, { secret: process.env.JWT_SECRET, cookie: { cookieName: 'session', signed: false } });

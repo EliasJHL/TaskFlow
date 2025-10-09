@@ -17,6 +17,14 @@ const userResolvers = {
             return await prisma.user.findUnique({
                 where: { user_id: args.user_id }
             });
+        },
+        me: async (_, __, context) => {
+            if (!context.user) {
+                throw new Error("Not authenticated");
+            }
+            return await prisma.user.findUnique({
+                where: { user_id: context.user.user_id }
+            });
         }
     },
 

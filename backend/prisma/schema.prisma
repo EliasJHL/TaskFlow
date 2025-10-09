@@ -23,6 +23,8 @@ model User {
   user_id         String   @id @default(uuid())
   username        String   @unique
   email           String   @unique
+  picture         String?
+  created_at      DateTime @default(now())
 
   hashed_password String
 

@@ -2,7 +2,7 @@
   "name": "taskflow-backend",
   "version": "1.0.0",
   "description": "A trello like self-hosted webapp",
-  "main": "src/index.js",
+  "main": "src/index.mjs",
   "type": "module",
   "scripts": {
     "dev": "node --watch src/index.mjs",
@@ -24,6 +24,7 @@
   "dependencies": {
     "@fastify/auth": "^5.0.3",
     "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^11.1.0",
     "@fastify/jwt": "^10.0.0",
     "@prisma/client": "^6.16.2",
     "bcrypt": "^6.0.0",
