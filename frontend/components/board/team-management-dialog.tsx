@@ -111,7 +111,6 @@ export function TeamManagementDialog({ open, onOpenChange, board }: TeamManageme
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Current Members */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">Current Members ({boardMembers.length})</Label>
             <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -154,7 +153,6 @@ export function TeamManagementDialog({ open, onOpenChange, board }: TeamManageme
             </div>
           </div>
 
-          {/* Add Existing Users */}
           {availableUsers.length > 0 && (
             <div className="space-y-3">
               <Label className="text-base font-semibold">Add Existing Users</Label>
@@ -186,7 +184,6 @@ export function TeamManagementDialog({ open, onOpenChange, board }: TeamManageme
             </div>
           )}
 
-          {/* Create New Member */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">Invite New Member</Label>
             <div className="space-y-3">

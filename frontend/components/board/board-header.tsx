@@ -30,7 +30,6 @@ export function BoardHeader({ board }: BoardHeaderProps) {
         onBack={() => router.push("/dashboard")}
       />
 
-      {/* Team management bar - shown below the floating nav */}
       <div className="border-b bg-card/30 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">

@@ -7,6 +7,7 @@ import { redirect } from "next/navigation"
 import { useEffect } from "react"
 import { ArrowLeft, LayoutGrid, Sparkles } from "lucide-react"
 import Link from "next/link"
+import { ParticlesBackground } from "@/components/ui/particles-background"
 
 export default function RegisterPage() {
   const { user } = useAuth()
@@ -18,8 +19,9 @@ export default function RegisterPage() {
   }, [user])
   
   return (
-    <div className="min-h-screen bg-background relative">
-      <nav className="fixed top-0 left-0 right-0 z-50 py-6">
+    <div className="min-h-screen bg-background relative pb-16">
+      <ParticlesBackground />
+      <nav className="fixed top-0 left-0 right-0 z-50 py-6 backdrop-blur-[1px] bg-background/80 h-16 ">
         <div className="max-w-7xl mx-auto px-8 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <ArrowLeft className="w-5 h-5 text-muted-foreground" />
@@ -39,10 +41,8 @@ export default function RegisterPage() {
         </div>
       </nav>
 
-      {/* Contenu principal */}
       <div className="flex items-center justify-center min-h-screen px-4 pt-20">
         <div className="w-full max-w-md space-y-8">
-          {/* En-tête */}
           <div className="text-center space-y-3">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
               <Sparkles className="w-4 h-4" />
@@ -57,10 +57,8 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {/* Formulaire d'inscription */}
           <RegisterForm />
 
-          {/* Lien de connexion */}
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
               Vous avez déjà un compte ?{" "}
@@ -70,7 +68,6 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {/* Mention légale */}
           <p className="text-xs text-muted-foreground text-center max-w-sm mx-auto">
             En créant un compte, vous acceptez nos{" "}
             <Link href="/terms" className="underline hover:text-foreground">

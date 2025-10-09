@@ -47,45 +47,45 @@ export function LoginForm() {
   }
 
   return (
-<Card className="w-full max-w-md backdrop-blur-[2px] bg-white/10 dark:bg-black/10 border border-white/20 shadow-2xl shadow-green-500/10">
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-2">
-          <div className="space-y-2">
-            <Label htmlFor="email">
-              Email <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="john@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-3 pt-2">
-            <Label htmlFor="password">
-              Password <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div className="text-sm text-muted-foreground text-right mb-2 pt-1">
-            <a href="#" className="hover:underline">
-              Forgot password?
-            </a>
-          </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign In"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+<Card className="w-full max-w-md bg-transparent border border-white/20 shadow-2xl shadow-green-500/10">
+  <CardContent>
+    <form onSubmit={handleSubmit} className="space-y-2">
+      <div className="space-y-2">
+        <Label htmlFor="email">
+          Email <span className="text-red-500">*</span>
+        </Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="john@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+      <div className="space-y-3 pt-2">
+        <Label htmlFor="password">
+          Password <span className="text-red-500">*</span>
+        </Label>
+        <Input
+          id="password"
+          type="password"
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      <div className="text-sm text-muted-foreground text-right mb-2 pt-1">
+        <a href="#" className="hover:underline">
+          Forgot password?
+        </a>
+      </div>
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? "Signing in..." : "Sign In"}
+      </Button>
+    </form>
+  </CardContent>
+</Card>
   )
 }

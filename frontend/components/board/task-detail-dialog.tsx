@@ -142,7 +142,6 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Description */}
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
               <Tag className="h-4 w-4" />
@@ -164,9 +163,7 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
 
           <Separator />
 
-          {/* Task Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Priority & Due Date */}
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Priorité</Label>
@@ -206,7 +203,6 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
               </div>
             </div>
 
-            {/* Assigned Users */}
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <User className="h-4 w-4" />
@@ -265,7 +261,6 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
 
           <Separator />
 
-          {/* Labels */}
           <div className="space-y-2">
             <Label>Étiquettes</Label>
             {isEditing ? (
@@ -318,7 +313,6 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
             )}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex justify-end gap-2 pt-4">
             {isEditing ? (
               <>

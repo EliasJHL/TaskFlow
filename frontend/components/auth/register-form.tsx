@@ -129,7 +129,7 @@ export function RegisterForm() {
             )}
           </div>
           <div className="pt-4 flex justify-center">
-            <Button type="submit" className="w-90" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
           </div>

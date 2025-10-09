@@ -19,23 +19,23 @@ export default function LoginPage() {
   }, [user])
   
   return (
-    <div className="min-h-screen bg-background">  {/* Retiré 'relative' */}
+    <div className="min-h-screen w-screen bg-background overflow-hidden">
       <ParticlesBackground />
       
-      <nav className="fixed top-0 left-0 right-0 z-50 py-6">
+      <nav className="fixed top-0 left-0 right-0 z-50 py-6 backdrop-blur-[1px] bg-background/80">
         <div className="max-w-7xl mx-auto px-8 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">Back</span>
+        <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+        <span className="text-sm font-medium text-muted-foreground">Back</span>
           </Link>
           
           <div className="flex items-center gap-2">
-            <img
-              src="https://i.ibb.co/svnNFVFW/download-1.png"
-              alt="Logo"
-              className="w-10 h-10 rounded-lg object-cover"
-            />
-            <span className="text-xl font-bold">{process.env.NEXT_PUBLIC_APP_NAME}</span>
+        <img
+          src="https://i.ibb.co/svnNFVFW/download-1.png"
+          alt="Logo"
+          className="w-10 h-10 rounded-lg object-cover"
+        />
+        <span className="text-xl font-bold">{process.env.NEXT_PUBLIC_APP_NAME}</span>
           </div>
 
           <ThemeToggle />
@@ -43,7 +43,7 @@ export default function LoginPage() {
       </nav>
 
       <div className="flex items-center justify-center min-h-screen px-4 pt-20 relative z-10">
-        <div className="w-full max-w-md space-y-8">
+        <div className="w-full max-w-md space-y-8 backdrop-blur-[1px] bg-background/80 pb-8">
           <div className="text-center space-y-3">
             <h1 className="text-4xl md:text-5xl font-bold">
               Welcome back

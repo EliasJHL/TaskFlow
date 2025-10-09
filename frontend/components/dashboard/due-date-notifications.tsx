@@ -42,7 +42,6 @@ export function DueDateNotifications() {
 
   return (
     <div className="space-y-4">
-      {/* Overdue Tasks */}
       {overdueTasks.length > 0 && (
         <Card className="border-red-200 dark:border-red-800">
           <CardHeader className="pb-3">
@@ -81,7 +80,6 @@ export function DueDateNotifications() {
         </Card>
       )}
 
-      {/* Due Soon Tasks */}
       {dueSoonTasks.length > 0 && (
         <Card className="border-orange-200 dark:border-orange-800">
           <CardHeader className="pb-3">
@@ -114,7 +112,6 @@ export function DueDateNotifications() {
         </Card>
       )}
 
-      {/* Upcoming Tasks */}
       {upcomingTasks.length > 0 && (
         <Card>
           <CardHeader className="pb-3">

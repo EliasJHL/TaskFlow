@@ -175,7 +175,6 @@ export function RoadmapView({ boardId }: RoadmapViewProps) {
 
   return (
     <div className="space-y-6">
-      {/* Roadmap Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold">{getViewTitle()}</h2>
@@ -208,10 +207,8 @@ export function RoadmapView({ boardId }: RoadmapViewProps) {
         </div>
       </div>
 
-      {/* Roadmap Chart */}
       <Card>
         <CardContent className="p-0">
-          {/* Timeline Header */}
           <div className="border-b bg-muted/30 p-4">
             <div className="grid grid-cols-12 gap-2">
               <div className="col-span-3 font-medium text-sm">Colonnes & Tâches</div>
@@ -227,7 +224,6 @@ export function RoadmapView({ boardId }: RoadmapViewProps) {
             </div>
           </div>
 
-          {/* Roadmap Content */}
           <div className="divide-y">
             {columnGroups.length === 0 ? (
               <div className="p-12 text-center">
@@ -241,7 +237,6 @@ export function RoadmapView({ boardId }: RoadmapViewProps) {
               columnGroups.map(({ column, tasks }) => (
                 <div key={column.id} className="p-4">
                   <div className="grid grid-cols-12 gap-2 items-start">
-                    {/* Column Info */}
                     <div className="col-span-3 space-y-2">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: column.color }} />
@@ -252,10 +247,8 @@ export function RoadmapView({ boardId }: RoadmapViewProps) {
                       </div>
                     </div>
 
-                    {/* Timeline */}
                     <div className="col-span-9 relative">
                       <div className="h-16 relative bg-muted/20 rounded-lg overflow-hidden">
-                        {/* Timeline Grid */}
                         <div
                           className="absolute inset-0 grid border-r"
                           style={{ gridTemplateColumns: `repeat(${periods.length}, 1fr)` }}
@@ -265,7 +258,6 @@ export function RoadmapView({ boardId }: RoadmapViewProps) {
                           ))}
                         </div>
 
-                        {/* Tasks */}
                         {tasks.map((task, taskIndex) => {
                           const position = getTaskPosition(task)
                           const assignedUsers = users.filter((user) => task.assignedTo?.includes(user.id))
@@ -313,7 +305,6 @@ export function RoadmapView({ boardId }: RoadmapViewProps) {
                         })}
                       </div>
 
-                      {/* Task List Below Timeline */}
                       <div className="mt-2 space-y-1">
                         {tasks.map((task) => {
                           const assignedUsers = users.filter((user) => task.assignedTo?.includes(user.id))
@@ -373,7 +364,6 @@ export function RoadmapView({ boardId }: RoadmapViewProps) {
         </CardContent>
       </Card>
 
-      {/* Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-2">
@@ -419,7 +409,6 @@ export function RoadmapView({ boardId }: RoadmapViewProps) {
         </Card>
       </div>
 
-      {/* Task Detail Dialog */}
       {selectedTask && (
         <TaskDetailDialog
           open={!!selectedTask}

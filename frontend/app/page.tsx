@@ -53,7 +53,7 @@ export default function HomePage() {
                 alt="Logo"
                 className="w-10 h-10 rounded-lg object-cover"
                 />
-              <span className="text-xl font-bold">{process.env.NEXT_PUBLIC_APP_NAME}</span>
+                <span className="hidden sm:inline text-xl font-bold">{process.env.NEXT_PUBLIC_APP_NAME}</span>
             </div>
 
             <div className="hidden md:flex items-center gap-8">
@@ -103,14 +103,19 @@ export default function HomePage() {
             temps réel.
           </p>
 
-          <div className="flex items-center justify-center gap-4 pt-4">
-            <Link href="/dashboard">
-              <Button size="lg" className="gap-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+            <Link href="/dashboard" className="w-full sm:w-auto">
+              <Button size="lg" className="gap-2 w-full sm:w-auto">
                 Commencer gratuitement
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" onClick={() => scrollToSection("discover")}>
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full sm:w-auto"
+              onClick={() => scrollToSection("discover")}
+            >
               En savoir plus
             </Button>
           </div>

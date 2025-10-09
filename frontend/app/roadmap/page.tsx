@@ -47,7 +47,6 @@ export default function GlobalRoadmapPage() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-8">
-          {/* Header */}
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-balance flex items-center gap-3">
@@ -176,7 +175,6 @@ export default function GlobalRoadmapPage() {
             })}
           </div>
 
-          {/* Roadmap View */}
           {selectedBoardId !== "all" ? (
             <RoadmapView boardId={selectedBoardId} />
           ) : (

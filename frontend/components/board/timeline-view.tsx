@@ -133,7 +133,6 @@ export function TimelineView({ boardId }: TimelineViewProps) {
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
       <div className="flex flex-wrap gap-4 items-center">
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
@@ -171,7 +170,6 @@ export function TimelineView({ boardId }: TimelineViewProps) {
         </Badge>
       </div>
 
-      {/* Timeline */}
       <div className="space-y-4">
         {filteredTasks.length === 0 ? (
           <Card>
@@ -196,7 +194,6 @@ export function TimelineView({ boardId }: TimelineViewProps) {
               >
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
-                    {/* Date & Status Icon */}
                     <div className="flex flex-col items-center min-w-[80px]">
                       <div className={`p-2 rounded-full ${taskStatus?.bgColor || "bg-muted"}`}>
                         <StatusIcon className={`h-4 w-4 ${taskStatus?.color || "text-muted-foreground"}`} />
@@ -211,7 +208,6 @@ export function TimelineView({ boardId }: TimelineViewProps) {
                       </div>
                     </div>
 
-                    {/* Task Details */}
                     <div className="flex-1 space-y-2">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1">
@@ -272,7 +268,6 @@ export function TimelineView({ boardId }: TimelineViewProps) {
         )}
       </div>
 
-      {/* Task Detail Dialog */}
       {selectedTask && (
         <TaskDetailDialog
           open={!!selectedTask}

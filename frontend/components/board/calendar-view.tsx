@@ -69,7 +69,6 @@ export function CalendarView({ boardId }: CalendarViewProps) {
 
   return (
     <div className="space-y-6">
-      {/* Calendar Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold">{format(currentDate, "MMMM yyyy", { locale: fr })}</h2>
@@ -89,10 +88,8 @@ export function CalendarView({ boardId }: CalendarViewProps) {
         </Button>
       </div>
 
-      {/* Calendar Grid */}
       <Card>
         <CardContent className="p-0">
-          {/* Week Days Header */}
           <div className="grid grid-cols-7 border-b">
             {weekDays.map((day) => (
               <div
@@ -104,7 +101,6 @@ export function CalendarView({ boardId }: CalendarViewProps) {
             ))}
           </div>
 
-          {/* Calendar Days */}
           <div className="grid grid-cols-7">
             {calendarDays.map((day, index) => {
               const dayTasks = getTasksForDay(day)
@@ -186,7 +182,6 @@ export function CalendarView({ boardId }: CalendarViewProps) {
         </CardContent>
       </Card>
 
-      {/* Task Detail Dialog */}
       {selectedTask && (
         <TaskDetailDialog
           open={!!selectedTask}

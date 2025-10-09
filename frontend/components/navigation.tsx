@@ -157,9 +157,7 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
             </div>
           )}
 
-          {/* Right section */}
           <div className="flex items-center gap-3">
-            {/* Mobile Menu - Sheet */}
             {isMobile ? (
               <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
@@ -173,7 +171,6 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
                   </SheetHeader>
                   
                     <div className="flex flex-col gap-4 mt-4 px-4">
-                    {/* Profile Section */}
                     <div 
                       className="flex items-center gap-4 p-4 rounded-lg bg-accent cursor-pointer hover:bg-accent/80 transition-colors px-1"
                       onClick={() => handleNavigation("/profile")}
@@ -194,7 +191,6 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
                       </div>
                     </div>
 
-                    {/* Navigation Links */}
                     {variant === "dashboard" && (
                       <div className="flex flex-col gap-2 px-1">
                       <Button
@@ -237,7 +233,6 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
                       </div>
                     </div>
 
-                    {/* Theme Toggle */}
                     <div className="border-t pt-4 px-1">
                       <div className="flex items-center justify-between px-1">
                       <span className="text-sm font-medium">Thème</span>
@@ -251,7 +246,6 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
               <>
                 <ThemeToggle />
 
-                {/* Desktop User Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
