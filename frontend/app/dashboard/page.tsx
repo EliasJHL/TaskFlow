@@ -10,18 +10,14 @@ import { CreateBoardDialog } from "@/components/dashboard/create-board-dialog"
 import { DueDateNotifications } from "@/components/dashboard/due-date-notifications"
 
 export default function DashboardPage() {
-  const { user } = useAuth()
   const { boards } = useStore()
+  const user = useAuth((state) => state.user)
 
   useEffect(() => {
     if (!user) {
       redirect("/")
     }
-  }, [user])
-
-  if (!user) {
-    return null
-  }
+  }, [])
 
   return (
     <div className="min-h-screen bg-background">

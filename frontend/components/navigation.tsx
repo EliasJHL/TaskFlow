@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { GithubButton } from "./github"
 import {
   Sheet,
   SheetContent,
@@ -35,7 +36,10 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
   const [compressed, setCompressed] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const { user, logout } = useAuth()
+  
+  const user = useAuth((state) => state.user)
+  const logout = useAuth((state) => state.logout)
+  
   const router = useRouter()
   const pathname = usePathname()
 
@@ -65,9 +69,10 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
     setIsSheetOpen(false)
   }
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     setIsSheetOpen(false)
+    router.push("/login")
   }
 
   if (!user) return null
@@ -116,7 +121,10 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
                 </h1>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => router.push("/")}
+              >
                 <img
                   src="https://i.ibb.co/svnNFVFW/download-1.png"
                   alt="Logo"
@@ -124,12 +132,12 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
                 />
                 <h1
                   className={cn(
-                    "font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent transition-all",
+                    "font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent transition-all leading-none",
                     compressed ? "text-base" : "text-2xl",
                   )}
                 >
                   {process.env.NEXT_PUBLIC_APP_NAME}
-              </h1>
+                </h1>
               </div>
             )}
           </div>
@@ -165,85 +173,93 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-full sm:w-[400px]">
+                <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col">
                   <SheetHeader>
                     <SheetTitle className="text-left mt-5">Menu</SheetTitle>
                   </SheetHeader>
                   
-                    <div className="flex flex-col gap-4 mt-4 px-4">
+                  <div className="flex-1 flex flex-col gap-4 mt-4 px-4 overflow-y-auto">
                     <div 
-                      className="flex items-center gap-4 p-4 rounded-lg bg-accent cursor-pointer hover:bg-accent/80 transition-colors px-1"
+                      className="flex items-center gap-4 p-4 rounded-lg bg-accent cursor-pointer hover:bg-accent/80 transition-colors"
                       onClick={() => handleNavigation("/profile")}
                     >
-                        <Avatar className="h-10 w-10 ml-3 ">
-                        <AvatarImage src={user.picture || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"} alt={user.username} />
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={user.picture || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"} alt={user.username} />
                         <AvatarFallback>
                           {user.username
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()}
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .toUpperCase()}
                         </AvatarFallback>
-                        </Avatar>
+                      </Avatar>
                       <div className="flex flex-col">
-                      <p className="text-sm font-medium">{user.username}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                        <p className="text-sm font-medium">{user.username}</p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
                       </div>
                     </div>
 
                     {variant === "dashboard" && (
-                      <div className="flex flex-col gap-2 px-1">
-                      <Button
-                        variant={pathname === "/dashboard" ? "default" : "ghost"}
-                        className="w-full justify-start gap-3 h-12 px-1"
-                        onClick={() => handleNavigation("/dashboard")}
-                      >
-                        <LayoutDashboard className="h-5 w-5" />
-                        <span className="text-base">Dashboard</span>
-                      </Button>
-                      <Button
-                        variant={pathname === "/roadmap" ? "default" : "ghost"}
-                        className="w-full justify-start gap-3 h-12 px-1"
-                        onClick={() => handleNavigation("/roadmap")}
-                      >
-                        <Map className="h-5 w-5" />
-                        <span className="text-base">Roadmap</span>
-                      </Button>
+                      <div className="flex flex-col gap-2">
+                        <Button
+                          variant={pathname === "/dashboard" ? "default" : "ghost"}
+                          className="w-full justify-start gap-3 h-12"
+                          onClick={() => handleNavigation("/dashboard")}
+                        >
+                          <LayoutDashboard className="h-5 w-5" />
+                          <span className="text-base">Dashboard</span>
+                        </Button>
+                        <Button
+                          variant={pathname === "/roadmap" ? "default" : "ghost"}
+                          className="w-full justify-start gap-3 h-12"
+                          onClick={() => handleNavigation("/roadmap")}
+                        >
+                          <Map className="h-5 w-5" />
+                          <span className="text-base">Roadmap</span>
+                        </Button>
                       </div>
                     )}
 
-                    <div className="border-t pt-4 px-1">
+                    <div className="border-t pt-4">
                       <div className="flex flex-col gap-2">
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start gap-3 h-12 px-1"
-                        onClick={() => handleNavigation("/settings")}
-                      >
-                        <Settings className="h-5 w-5" />
-                        <span className="text-base">Paramètres</span>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start gap-3 h-12 text-destructive hover:text-destructive hover:bg-destructive/10 px-1"
-                        onClick={handleLogout}
-                      >
-                        <LogOut className="h-5 w-5" />
-                        <span className="text-base">Se déconnecter</span>
-                      </Button>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3 h-12"
+                          onClick={() => handleNavigation("/settings")}
+                        >
+                          <Settings className="h-5 w-5" />
+                          <span className="text-base">Paramètres</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3 h-12 text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={handleLogout}
+                        >
+                          <LogOut className="h-5 w-5" />
+                          <span className="text-base">Se déconnecter</span>
+                        </Button>
                       </div>
                     </div>
 
-                    <div className="border-t pt-4 px-1">
-                      <div className="flex items-center justify-between px-1">
-                      <span className="text-sm font-medium">Thème</span>
-                      <ThemeToggle />
+                    <div className="border-t pt-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Thème</span>
+                        <ThemeToggle />
                       </div>
                     </div>
+                  </div>
+
+                  <div className="border-t pt-4 pb-2 mt-auto">
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="text-sm font-medium text-muted-foreground">Source code</span>
+                      <GithubButton />
                     </div>
+                  </div>
                 </SheetContent>
               </Sheet>
             ) : (
               <>
+                <GithubButton />
                 <ThemeToggle />
 
                 <DropdownMenu>
@@ -287,7 +303,7 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
                       <span>Paramètres</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={logout} className="cursor-pointer">
+                    <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Se déconnecter</span>
                     </DropdownMenuItem>

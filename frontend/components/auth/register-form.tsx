@@ -29,6 +29,7 @@ export function RegisterForm() {
           title: "Inscription réussie",
           description: "Bienvenue dans votre espace de travail !",
         })
+        window.location.href = "/dashboard"
       } else {
         toast({
           title: "Erreur",
@@ -130,7 +131,7 @@ export function RegisterForm() {
           </div>
           <div className="pt-4 flex justify-center">
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
+              {isLoading ? "Creating..." : "Create Account"}
             </Button>
           </div>
         </form>

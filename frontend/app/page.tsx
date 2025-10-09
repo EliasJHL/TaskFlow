@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/lib/auth"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { GithubButton } from "@/components/github"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -14,9 +15,6 @@ export default function HomePage() {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    if (user) {
-      router.push("/dashboard")
-    }
   }, [user, router])
 
   useEffect(() => {
@@ -26,10 +24,6 @@ export default function HomePage() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
-
-  if (user) {
-    return null // Will redirect
-  }
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id)
@@ -61,21 +55,22 @@ export default function HomePage() {
                 onClick={() => scrollToSection("discover")}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Découvrir
+                Discover
               </button>
               <button
                 onClick={() => scrollToSection("how-it-works")}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Fonctionnement
+                How it works
               </button>
             </div>
 
             <div className="flex items-center gap-4">
+              <GithubButton />
               <ThemeToggle />
-              <Link href="/login">
-                <Button size={scrolled ? "sm" : "default"}>
-                  Se connecter
+              <Link href={user ? "/dashboard" : "/login"}>
+                <Button size={scrolled ? "sm" : "default"} id="login-button" >
+                  {user ? "Dashboard" : "Login"}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
@@ -88,27 +83,26 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto text-center space-y-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
             <Sparkles className="w-4 h-4" />
-            Gestion de projets moderne
+            Open source and free forever
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold text-balance">
-            Organisez vos projets avec{" "}
+            <h1 className="text-5xl md:text-7xl font-bold text-balance">
+            Organize your projects with{" "}
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              simplicité
+              simplicity
             </span>
-          </h1>
+            </h1>
 
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
-            Une alternative épurée à Trello. Gérez vos tâches, collaborez avec votre équipe et suivez vos projets en
-            temps réel.
-          </p>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
+            A clean alternative to Trello. Manage your tasks, collaborate with your team, and track your projects in real time.
+            </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link href="/dashboard" className="w-full sm:w-auto">
-              <Button size="lg" className="gap-2 w-full sm:w-auto">
-                Commencer gratuitement
+                <Button size="lg" className="gap-2 w-full sm:w-auto">
+                Start for free
                 <ArrowRight className="w-5 h-5" />
-              </Button>
+                </Button>
             </Link>
             <Button
               size="lg"
@@ -116,7 +110,7 @@ export default function HomePage() {
               className="w-full sm:w-auto"
               onClick={() => scrollToSection("discover")}
             >
-              En savoir plus
+              Learn more
             </Button>
           </div>
 
@@ -137,9 +131,9 @@ export default function HomePage() {
       <section id="discover" className="py-20 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold">Tout ce dont vous avez besoin</h2>
+            <h2 className="text-4xl md:text-5xl font-bold">Everything you need</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Des fonctionnalités puissantes dans une interface épurée
+              Powerful features in a clean interface
             </p>
           </div>
 
@@ -148,9 +142,9 @@ export default function HomePage() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <LayoutGrid className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Tableaux Kanban</h3>
+                <h3 className="text-xl font-semibold mb-2">Kanban Boards</h3>
               <p className="text-muted-foreground">
-                Organisez vos tâches en colonnes personnalisables avec drag & drop fluide
+                Organize your tasks in customizable columns with smooth drag & drop
               </p>
             </div>
 
@@ -158,50 +152,50 @@ export default function HomePage() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <Users className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Collaboration</h3>
-              <p className="text-muted-foreground">
-                Assignez des tâches à votre équipe et suivez la progression en temps réel
-              </p>
+                <h3 className="text-xl font-semibold mb-2">Collaboration</h3>
+                <p className="text-muted-foreground">
+                  Assign tasks to your team and track progress in real time
+                </p>
             </div>
 
             <div className="p-6 rounded-2xl bg-background border border-border hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <Calendar className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Dates limites</h3>
-              <p className="text-muted-foreground">
-                Définissez des échéances et recevez des notifications pour ne rien manquer
-              </p>
+                <h3 className="text-xl font-semibold mb-2">Due Dates</h3>
+                <p className="text-muted-foreground">
+                Set deadlines and receive notifications so you never miss anything
+                </p>
             </div>
 
             <div className="p-6 rounded-2xl bg-background border border-border hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <TrendingUp className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Vue Roadmap</h3>
-              <p className="text-muted-foreground">
-                Visualisez vos projets dans le temps avec une timeline interactive
-              </p>
+                <h3 className="text-xl font-semibold mb-2">Roadmap View</h3>
+                <p className="text-muted-foreground">
+                Visualize your projects over time with an interactive timeline
+                </p>
             </div>
 
             <div className="p-6 rounded-2xl bg-background border border-border hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <Zap className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Mode sombre</h3>
-              <p className="text-muted-foreground">
-                Interface adaptative avec thème clair et sombre pour votre confort
-              </p>
+                <h3 className="text-xl font-semibold mb-2">Dark mode</h3>
+                <p className="text-muted-foreground">
+                Adaptive interface with light and dark themes for your comfort
+                </p>
             </div>
 
             <div className="p-6 rounded-2xl bg-background border border-border hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <Target className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Design épuré</h3>
-              <p className="text-muted-foreground">
-                Interface minimaliste et intuitive pour se concentrer sur l'essentiel
-              </p>
+                <h3 className="text-xl font-semibold mb-2">Clean Design</h3>
+                <p className="text-muted-foreground">
+                Minimalist and intuitive interface to help you focus on what matters
+                </p>
             </div>
           </div>
         </div>
@@ -210,9 +204,9 @@ export default function HomePage() {
       <section id="how-it-works" className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold">Comment ça fonctionne</h2>
+            <h2 className="text-4xl md:text-5xl font-bold">How it works</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Commencez à organiser vos projets en quelques étapes simples
+              Start organizing your projects in a few simple steps
             </p>
           </div>
 
@@ -221,44 +215,44 @@ export default function HomePage() {
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto text-2xl font-bold text-primary">
                 1
               </div>
-              <h3 className="text-xl font-semibold">Créez un projet</h3>
-              <p className="text-muted-foreground">
-                Commencez par créer un nouveau board pour votre projet avec un nom et une couleur
-              </p>
+                <h3 className="text-xl font-semibold">Create a project</h3>
+                <p className="text-muted-foreground">
+                Start by creating a new board for your project with a name and a color
+                </p>
             </div>
 
             <div className="text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto text-2xl font-bold text-primary">
                 2
               </div>
-              <h3 className="text-xl font-semibold">Ajoutez des tâches</h3>
-              <p className="text-muted-foreground">
-                Créez des colonnes et ajoutez vos tâches. Glissez-déposez pour les organiser
-              </p>
+                <h3 className="text-xl font-semibold">Add tasks</h3>
+                <p className="text-muted-foreground">
+                Create columns and add your tasks. Drag and drop to organize them
+                </p>
             </div>
 
             <div className="text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto text-2xl font-bold text-primary">
                 3
               </div>
-              <h3 className="text-xl font-semibold">Collaborez</h3>
-              <p className="text-muted-foreground">
-                Invitez votre équipe, assignez des tâches et suivez la progression ensemble
-              </p>
+                <h3 className="text-xl font-semibold">Collaborate</h3>
+                <p className="text-muted-foreground">
+                Invite your team, assign tasks, and track progress together
+                </p>
             </div>
           </div>
 
           <div className="mt-16 p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 text-center space-y-6">
             <CheckCircle2 className="w-12 h-12 mx-auto text-primary" />
-            <h3 className="text-2xl font-bold">Prêt à commencer ?</h3>
+            <h3 className="text-2xl font-bold">Ready to get started?</h3>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Rejoignez des milliers d'équipes qui utilisent {process.env.NEXT_PUBLIC_APP_NAME} pour gérer leurs projets efficacement
+              Join thousands of teams using {process.env.NEXT_PUBLIC_APP_NAME} to manage their projects efficiently
             </p>
             <Link href="/dashboard">
-              <Button size="lg" className="gap-2">
-                Commencer maintenant
+                <Button size="lg" className="gap-2">
+                Get started now
                 <ArrowRight className="w-5 h-5" />
-              </Button>
+                </Button>
             </Link>
           </div>
         </div>
@@ -266,7 +260,7 @@ export default function HomePage() {
 
       <footer className="py-12 px-4 border-t border-border">
         <div className="max-w-6xl mx-auto text-center text-sm text-muted-foreground">
-          <p>©2025 {process.env.NEXT_PUBLIC_APP_NAME}. Une alternative moderne à Trello.</p>
+            <p>©2025 {process.env.NEXT_PUBLIC_APP_NAME}. A modern alternative to Trello.</p>
         </div>
       </footer>
     </div>

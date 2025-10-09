@@ -10,13 +10,6 @@ import Link from "next/link"
 import { ParticlesBackground } from "@/components/ui/particles-background"
 
 export default function RegisterPage() {
-  const { user } = useAuth()
-
-  useEffect(() => {
-    if (user) {
-      redirect("/dashboard")
-    }
-  }, [user])
   
   return (
     <div className="min-h-screen bg-background relative pb-16">
@@ -46,14 +39,14 @@ export default function RegisterPage() {
           <div className="text-center space-y-3">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
               <Sparkles className="w-4 h-4" />
-              Gratuit pour toujours
+              Free forever
             </div>
             
             <h1 className="text-4xl md:text-5xl font-bold">
-              Commencez gratuitement
+              Start for free
             </h1>
             <p className="text-lg text-muted-foreground">
-              Créez votre compte et organisez vos projets en quelques secondes
+              Create your account and organize your projects in seconds
             </p>
           </div>
 
@@ -61,24 +54,24 @@ export default function RegisterPage() {
 
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Vous avez déjà un compte ?{" "}
+              Already have an account?{" "}
               <Link href="/login" className="text-primary font-medium hover:underline">
-                Se connecter
+              Sign in
               </Link>
             </p>
           </div>
 
-          <p className="text-xs text-muted-foreground text-center max-w-sm mx-auto">
-            En créant un compte, vous acceptez nos{" "}
+            <p className="text-xs text-muted-foreground text-center max-w-sm mx-auto">
+            By creating an account, you agree to our{" "}
             <Link href="/terms" className="underline hover:text-foreground">
-              conditions d'utilisation
+              Terms of Service
             </Link>{" "}
-            et notre{" "}
+            and{" "}
             <Link href="/privacy" className="underline hover:text-foreground">
-              politique de confidentialité
+              Privacy Policy
             </Link>
             .
-          </p>
+            </p>
         </div>
       </div>
     </div>

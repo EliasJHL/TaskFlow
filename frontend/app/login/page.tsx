@@ -10,14 +10,6 @@ import Link from "next/link"
 import { ParticlesBackground } from "@/components/ui/particles-background"
 
 export default function LoginPage() {
-  const { user } = useAuth()
-
-  useEffect(() => {
-    if (user) {
-      redirect("/dashboard")
-    }
-  }, [user])
-  
   return (
     <div className="min-h-screen w-screen bg-background overflow-hidden">
       <ParticlesBackground />
@@ -57,9 +49,9 @@ export default function LoginPage() {
 
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Pas encore de compte ?{" "}
+              Don't have an account yet?{" "}
               <Link href="/register" className="text-primary font-medium hover:underline">
-                Créer un compte
+              Create an account
               </Link>
             </p>
           </div>

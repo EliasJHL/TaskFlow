@@ -15,7 +15,21 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={
+          <div style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            width: "100vw"
+          }}>
+            <img
+              src="https://i.pinimg.com/originals/a6/ec/56/a6ec563bcc7bfe131ea1976cb17b4915.gif"
+              alt="Loading"
+              style={{ maxWidth: "100%", maxHeight: "60vh" }}
+            />
+          </div>
+        }>
           <Providers>{children}</Providers>
         </Suspense>
         <Analytics />

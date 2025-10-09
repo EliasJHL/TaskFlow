@@ -9,12 +9,14 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/lib/auth"
 import { useToast } from "@/hooks/use-toast"
+import { redirect } from "next/dist/server/api-utils"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
+  
   const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,6 +30,7 @@ export function LoginForm() {
           title: "Connexion réussie",
           description: "Bienvenue dans votre espace de travail !",
         })
+        window.location.href = "/dashboard"
       } else {
         toast({
           title: "Erreur de connexion",
