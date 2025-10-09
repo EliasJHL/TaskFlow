@@ -175,16 +175,16 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
                       className="flex items-center gap-4 p-4 rounded-lg bg-accent cursor-pointer hover:bg-accent/80 transition-colors px-1"
                       onClick={() => handleNavigation("/profile")}
                     >
-                      <Avatar className="h-12 w-12">
-                      <AvatarImage src={user.picture || "/placeholder.svg"} alt={user.username} />
-                      <AvatarFallback>
-                        {user.username
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()}
-                      </AvatarFallback>
-                      </Avatar>
+                        <Avatar className="h-10 w-10 ml-3 ">
+                        <AvatarImage src={user.picture || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"} alt={user.username} />
+                        <AvatarFallback>
+                          {user.username
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()}
+                        </AvatarFallback>
+                        </Avatar>
                       <div className="flex flex-col">
                       <p className="text-sm font-medium">{user.username}</p>
                       <p className="text-xs text-muted-foreground">{user.email}</p>

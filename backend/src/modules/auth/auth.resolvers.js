@@ -62,7 +62,19 @@ const authResolvers = {
 
       return { token: jwtToken, user: newUser };
     },
-  },
+    logout: async (_, __, context) => {
+      if (context.reply) {
+        context.reply.clearCookie('session', {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+          path: '/',
+        });
+      }
+
+      return { success: true, message: 'Logout successful' };
+    }
+  }
 };
 
 export default authResolvers;

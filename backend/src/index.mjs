@@ -16,18 +16,39 @@ import cors from '@fastify/cors';
 dotenv.config();
 
 const schema = readFileSync(join(process.cwd(), 'src/graphql/schema.graphql'), 'utf8');
-const app = Fastify({ logger: true });
+const app = Fastify({ logger: true, trustProxy: true });
 
 await app.register(cors, {
-  origin: 'http://localhost:3001',
+  origin: [
+    'http://localhost:3001',
+    'https://taskflow.eliasjhl-projects.fr',
+    'https://www.taskflow.eliasjhl-projects.fr'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Set-Cookie']
 })
 
-await app.register(cookie, { secret: process.env.COOKIE_SECRET});
-await app.register(jwt, { secret: process.env.JWT_SECRET, cookie: { cookieName: 'session', signed: false } });
+await app.register(cookie, { 
+  secret: process.env.COOKIE_SECRET,
+  parseOptions: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  }
+})
+await app.register(jwt, { secret: process.env.JWT_SECRET,
+  cookie: {
+    cookieName: 'session',
+    signed: true
+  },
+  sign: {
+    expiresIn: '7d'
+  }
+});
 
 app.register(mercurius, {
   schema,

@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Providers } from "@/components/providers"
 import { Suspense } from "react"
 import "./globals.css"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export default function RootLayout({
   children,
@@ -16,8 +17,9 @@ export default function RootLayout({
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <Suspense fallback={<div>Loading...</div>}>
           <Providers>{children}</Providers>
-          <Analytics />
         </Suspense>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

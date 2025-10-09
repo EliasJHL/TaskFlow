@@ -156,6 +156,7 @@ type Mutation {
 
   login(input: LoginInput!): AuthPayload
   register(input: RegisterInput!): AuthPayload
+  logout: Status!
 
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspacePayload!
   updateWorkspace(workspace_id: ID!, input: UpdateWorkspaceInput!): Workspace!
