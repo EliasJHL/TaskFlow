@@ -6,8 +6,10 @@ import { GithubButton } from "@/components/github"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { HomeBackground } from "@/components/home-background"
 import { LayoutGrid, Users, Calendar, TrendingUp, CheckCircle2, ArrowRight, Sparkles, Zap, Target } from "lucide-react"
 import Link from "next/link"
+import { Github, Server } from "lucide-react"
 
 export default function HomePage() {
   const { user } = useAuth()
@@ -32,6 +34,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background relative">
+      <HomeBackground />
+      <div className="relative z-10">
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "py-3" : "py-6"}`}>
         <div
           className={`mx-auto transition-all duration-300 ${
@@ -81,14 +85,25 @@ export default function HomePage() {
 
       <section className="pt-32 pb-20 px-4">
         <div className="max-w-6xl mx-auto text-center space-y-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
-            <Sparkles className="w-4 h-4" />
-            Open source and free forever
-          </div>
+            <div className="flex items-center gap-3 text-xs justify-center">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border">
+              <svg className="w-3.5 h-3.5" viewBox="0 0 76 65" fill="currentColor">
+              <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
+              </svg>
+              <span className="text-muted-foreground">Next.js</span>
+            </div>
+            
+            <div className="w-1 h-1 rounded-full bg-border" />
+            
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border">
+              <Server className="w-3.5 h-3.5" />
+              <span className="text-muted-foreground">Fastify GraphQL</span>
+            </div>
+            </div>
 
             <h1 className="text-5xl md:text-7xl font-bold text-balance">
             Organize your projects with{" "}
-            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <span className="inline-block bg-gradient-to-r from-[#007757FF] to-[#00D4C3FF] bg-clip-text text-transparent">
               simplicity
             </span>
             </h1>
@@ -99,19 +114,14 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link href="/dashboard" className="w-full sm:w-auto">
-                <Button size="lg" className="gap-2 w-full sm:w-auto">
-                Start for free
-                <ArrowRight className="w-5 h-5" />
+                <Button
+                  size="lg"
+                  className="gap-2 w-full sm:w-auto border-1 border-primary rounded-2xl backdrop-blur-md bg-gradient-to-r from-[#007757FF] to-[#00D4C3FF] text-white hover:brightness-110 transition-transform duration-200 hover:scale-105"
+                >
+                  Try for free
+                  <ArrowRight className="w-5 h-5" />
                 </Button>
             </Link>
-            <Button
-              size="lg"
-              variant="outline"
-              className="w-full sm:w-auto"
-              onClick={() => scrollToSection("discover")}
-            >
-              Learn more
-            </Button>
           </div>
 
           <div className="pt-12">
@@ -203,44 +213,6 @@ export default function HomePage() {
 
       <section id="how-it-works" className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold">How it works</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Start organizing your projects in a few simple steps
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto text-2xl font-bold text-primary">
-                1
-              </div>
-                <h3 className="text-xl font-semibold">Create a project</h3>
-                <p className="text-muted-foreground">
-                Start by creating a new board for your project with a name and a color
-                </p>
-            </div>
-
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto text-2xl font-bold text-primary">
-                2
-              </div>
-                <h3 className="text-xl font-semibold">Add tasks</h3>
-                <p className="text-muted-foreground">
-                Create columns and add your tasks. Drag and drop to organize them
-                </p>
-            </div>
-
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto text-2xl font-bold text-primary">
-                3
-              </div>
-                <h3 className="text-xl font-semibold">Collaborate</h3>
-                <p className="text-muted-foreground">
-                Invite your team, assign tasks, and track progress together
-                </p>
-            </div>
-          </div>
 
           <div className="mt-16 p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 text-center space-y-6">
             <CheckCircle2 className="w-12 h-12 mx-auto text-primary" />
@@ -263,6 +235,7 @@ export default function HomePage() {
             <p>©2025 {process.env.NEXT_PUBLIC_APP_NAME}. A modern alternative to Trello.</p>
         </div>
       </footer>
+      </div>
     </div>
   )
 }
