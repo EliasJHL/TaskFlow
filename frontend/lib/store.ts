@@ -3,47 +3,88 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
-export interface Task {
-  id: string
-  title: string
+export interface Workspace {
+  workspaceId: string
+  name: string
   description?: string
-  status: "todo" | "in-progress" | "review" | "done"
-  assignedTo?: string[]
-  dueDate?: string
-  priority: "low" | "medium" | "high"
-  labels: string[]
-  createdAt: string
-  updatedAt: string
-  boardId: string
-  columnId: string
-  order: number
-}
-
-export interface Column {
-  id: string
-  title: string
-  color: string
-  order: number
-  boardId: string
+  owner: string
+  boards: string[]
+  members: string[]
+  pinnedBy: string[]
 }
 
 export interface Board {
-  id: string
+  boardId: string
   title: string
   description?: string
   color: string
-  createdAt: string
-  updatedAt: string
-  members: string[]
-  isArchived: boolean
+  workspaceId: string
+  lists: string[]
+  labels: string[]
 }
 
+export interface List {
+  listId: string
+  title: string
+  position: number
+  color: string
+  board: string
+  cards: string[]
+}
+
+export interface Task {
+  cardId: string
+  title: string
+  description?: string
+  position: number
+  listId: string
+  labelsId: string[]
+  dueDate?: string
+  comments: string[]
+  cardLabels: string[]
+  members: string[]
+  attachments: string[]
+}
+
+export interface Commants {
+  commentId: string
+  content: string
+  createdAt: string
+  cardId: string
+  userId: string
+}
+
+export interface Label {
+  labelId: string
+  name: string
+  color: string
+  boardId: string
+}
+
+export interface Attachment {
+  attachmentId: string
+  cardId: string
+  url: string
+  filename: string
+}
+
+
 interface AppState {
+  workspaces: Workspace[]
   boards: Board[]
-  columns: Column[]
+  lists: List[]
   tasks: Task[]
+  comments: Commants[]
+  labels: Label[]
+  attachments: Attachment[]
+  currentWorkspaceId: string | null
   currentBoardId: string | null
 
+  // Workspace actions
+  createWorkspace: (workspace: Omit<Workspace, "id" | "createdAt" | "updatedAt">) => void
+  updateWorkspace: (id: string, updates: Partial<Workspace>) => void
+  deleteWorkspace: (id: string) => void
+  setCurrentWorkspace: (id: string) => void
   // Board actions
   createBoard: (board: Omit<Board, "id" | "createdAt" | "updatedAt">) => void
   updateBoard: (id: string, updates: Partial<Board>) => void

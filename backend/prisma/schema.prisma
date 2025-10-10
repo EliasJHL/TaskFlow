@@ -63,16 +63,18 @@ model Board {
   board_id     String   @id @default(uuid())
   title        String
   description  String?
+  color        String
   workspace_id String
   workspace    Workspace @relation(fields: [workspace_id], references: [workspace_id])
   lists        List[]
-  labels       Label[]
+  labels      Label[]
 }
 
 model List {
   list_id  String  @id @default(uuid())
   title    String
   position Int
+  color    String
   board_id String
   board    Board   @relation(fields: [board_id], references: [board_id])
   cards    Card[]
