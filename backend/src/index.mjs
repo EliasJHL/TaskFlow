@@ -21,6 +21,7 @@ const app = Fastify({ logger: true, trustProxy: true });
 await app.register(cors, {
   origin: [
     'http://localhost:3001',
+    'http://localhost:3000',
     'https://taskflow.eliasjhl-projects.fr',
     'https://www.taskflow.eliasjhl-projects.fr'
   ],

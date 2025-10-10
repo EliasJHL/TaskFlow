@@ -25,6 +25,7 @@ type Workspace {
   owner: User
   members: [WorkspaceMembers!]!
   boards: [Board!]!
+  is_pinned: Boolean!
 }
 
 type WorkspaceMembers {

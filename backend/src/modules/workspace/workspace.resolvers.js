@@ -13,7 +13,7 @@ const workspaceResolvers = {
     workspaces: async (_, __, { user }) => {
       if (!user) throw new Error('Unauthorized');
 
-      return prisma.workspace.findMany({
+      const workspaces = await prisma.workspace.findMany({
         where: {
           OR: [
             { owner_id: user.user_id },
@@ -23,16 +23,31 @@ const workspaceResolvers = {
         include: {
           owner: true,
           members: {
-            include: { user: { select: { user_id: true, email: true, username: true } } }
+            include: { 
+              user: { 
+                select: { user_id: true, email: true, username: true } 
+              } 
+            }
           }
         }
       });
+
+      const pinned = await prisma.pinnedWorkspace.findMany({
+        where: { user_id: user.user_id },
+        select: { workspace_id: true }
+      });
+      const pinnedIds = new Set(pinned.map(p => p.workspace_id));
+
+      return workspaces.map(ws => ({
+        ...ws,
+        is_pinned: pinnedIds.has(ws.workspace_id)
+      }));
     },
 
     workspace: async (_, { workspace_id }, { user }) => {
       if (!user) throw new Error('Unauthorized');
 
-      return prisma.workspace.findFirst({
+      const ws = await prisma.workspace.findFirst({
         where: {
           workspace_id,
           OR: [
@@ -47,6 +62,17 @@ const workspaceResolvers = {
           }
         }
       });
+
+      if (!ws) return null;
+
+      const pinned = await prisma.pinnedWorkspace.findFirst({
+        where: { user_id: user.user_id, workspace_id }
+      });
+
+      return {
+        ...ws,
+        is_pinned: !!pinned
+      };
     },
   },
 
@@ -66,7 +92,7 @@ const workspaceResolvers = {
         }),
       ].map(p => p).slice(0, 1));
 
-      const ws = await prisma.workspaceMembers.create({
+      await prisma.workspaceMembers.create({
         data: {
           workspace_id: workspace.workspace_id,
           user_id: user.user_id,
@@ -82,7 +108,7 @@ const workspaceResolvers = {
         }
       });
 
-      return {workspace : fullWorkspace };
+      return { workspace: { ...fullWorkspace, is_pinned: false } };
     },
 
     updateWorkspace: async (_, { workspace_id, input }, { user }) => {
@@ -102,7 +128,11 @@ const workspaceResolvers = {
         }
       });
 
-      return updated;
+      const pinned = await prisma.pinnedWorkspace.findFirst({
+        where: { user_id: user.user_id, workspace_id }
+      });
+
+      return { ...updated, is_pinned: !!pinned };
     },
 
     deleteWorkspace: async (_, { workspace_id }, { user }) => {
@@ -115,6 +145,7 @@ const workspaceResolvers = {
 
       await prisma.$transaction([
         prisma.workspaceMembers.deleteMany({ where: { workspace_id } }),
+        prisma.pinnedWorkspace.deleteMany({ where: { workspace_id } }),
         prisma.workspace.delete({ where: { workspace_id } })
       ]);
       return { success: true, message: 'Workspace deleted successfully' };

@@ -32,6 +32,7 @@ model User {
   workspacesOwned Workspace[]
   comments        Comment[]
   card_members    CardMember[]
+  pinned_workspaces Workspace[] @relation("PinnedWorkspaces")
 }
 
 model Workspace {
@@ -44,6 +45,7 @@ model Workspace {
 
   members       WorkspaceMembers[]
   boards        Board[]
+  pinned_by     User[]   @relation("PinnedWorkspaces")
 }
 
 model WorkspaceMembers {
