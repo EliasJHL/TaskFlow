@@ -1,48 +1,96 @@
-# 📊 TaskFlow
+# TaskFlow
 
-TaskFlow est une application web de gestion de projets collaborative focalisée sur l'efficacité, la clarté et la modernité. Elle permet de gérer des équipes, des espaces de travail, des tableaux, des listes et des tâches, tout en offrant une expérience utilisateur soignée aussi bien en mode sombre qu'en mode clair.
+A modern, open-source project management platform for teams.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/eliasjhl/taskflow)](https://github.com/yourusername/taskflow)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+## Overview
+
+TaskFlow is a collaborative project management tool built with TypeScript, React, and GraphQL. It provides a flexible Kanban-style workflow for organizing teams, workspaces, boards, and tasks with both cloud-hosted and self-hosted deployment options.
+
+**Key Features:**
+- Role-based access control (admin, member, viewer)
+- Real-time collaboration
+- Rich card management with comments, labels, and attachments
+- Dark and light mode support
+- Self-hosted or cloud deployment
+
+## Demo
+
+Try the hosted version at [taskflow.app](https://taskflow-eliasjhl-projects.app) or deploy your own instance in under 5 minutes.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- Docker and Docker Compose
+- PostgreSQL 16+ (or use Docker)
+
+### Self-Hosted Installation
+
+Clone the repository and start all services with Docker Compose:
+
+```
+git clone https://github.com/yourusername/taskflow.git
+cd taskflow
+cp .env.example .env
+docker-compose up -d
+```
 
 
+The application will be available at `http://localhost:5173`.
 
-## Présentation
+### Development
 
-TaskFlow apporte une organisation flexible pour le travail en équipe ou en solo. L'application propose :
+Install dependencies:
 
-- L'authentification sécurisée,
+```
+npm install
+```
 
-- La création d'espaces de travail (workspaces) et d'équipes,
+## Architecture
 
-- La gestion des rôles utilisateurs (admin, membre, lecteur) pour chaque espace,
+TaskFlow uses a monorepo structure with the following main components:
 
-- La structuration par tableaux, listes et cartes pour suivre l'avancement des projets,
-
-- La possibilité de commenter, d'attribuer des labels/couleurs et de joindre des fichiers à chaque carte,
-
-- Une interface réactive bâtie avec React, Zustand et Tailwind CSS, avec support automatique du dark et du light mode.
-
-
-## Technologies
-
-- **Frontend** : React, Tailwind CSS, Zustand, Apollo Client
-
-- **Backend** : Node.js, Fastify, Prisma, Mercurius (GraphQL)
-
-- **Base de données** : PostgreSQL (ou SQLite pour le développement)
-
-- **Authentification** : JSON Web Tokens (JWT)
+```
+taskflow/
+├── apps/
+│ ├── backend/ # Fastify GraphQL API
+│ └── frontend/ # React application
+├── packages/
+│ └── shared-types/ # Shared TypeScript definitions
+└── infrastructure/ # Docker and Kubernetes configs
+```
 
 
-## Fonctionnalités envisagées
+## Technology Stack
 
-- Gestion avancée des permissions par rôle
+**Frontend**
+- React 18
+- Tailwind CSS
+- Zustand
+- Apollo Client
 
-- Intégration d’un système de notifications
+**Backend**
+- Node.js
+- Fastify
+- Mercurius (GraphQL)
+- Prisma ORM
+- BullMQ
 
-- Vue Gantt pour la gestion des échéances
+**Infrastructure**
+- PostgreSQL
+- Redis
+- MinIO (S3-compatible storage)
+- Docker
 
-- Déploiement conteneurisé (Docker) simplifié
+## Self-hosted deployement
 
-- Amélioration continue de l’ergonomie et de la rapidité
+. . .
+
 
 
 
