@@ -19,7 +19,7 @@ TaskFlow is a collaborative project management tool built with TypeScript, React
 
 ## Demo
 
-Try the hosted version at [taskflow.app](https://taskflow-eliasjhl-projects.app) or deploy your own instance in under 5 minutes.
+Try the hosted version at [taskflow.app](https://taskflow.eliasjhl-projects.app) or deploy your own instance in under 5 minutes.
 
 ## Getting Started
 
