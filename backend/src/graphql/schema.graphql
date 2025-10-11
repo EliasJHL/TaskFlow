@@ -24,7 +24,7 @@ type Workspace {
   owner_id: ID!
   owner: User
   members: [WorkspaceMembers!]!
-  boards: [Board!]!
+  boards: [Board]
   is_pinned: Boolean!
 }
 
