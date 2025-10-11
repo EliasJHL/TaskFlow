@@ -13,7 +13,7 @@ const workspaceResolvers = {
         workspaces: async(_, __, { user }) => {
             if (!user) throw new Error('Unauthorized');
 
-            const workspaces = await prisma.workspace.findMany({
+            const UserWorkspaces = await prisma.workspace.findMany({
                 where: {
                     OR: [
                         { owner_id: user.user_id },
@@ -38,7 +38,7 @@ const workspaceResolvers = {
             });
             const pinnedIds = new Set(pinned.map(p => p.workspace_id));
 
-            return workspaces.map(ws => ({
+            return UserWorkspaces.map(ws => ({
                 ...ws,
                 is_pinned: pinnedIds.has(ws.workspace_id)
             }));

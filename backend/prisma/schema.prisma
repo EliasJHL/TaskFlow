@@ -32,7 +32,7 @@ model User {
   workspacesOwned Workspace[]
   comments        Comment[]
   card_members    CardMember[]
-  pinned_workspaces Workspace[] @relation("PinnedWorkspaces")
+  pinned_workspaces PinnedWorkspace[]
 }
 
 model Workspace {
@@ -45,7 +45,7 @@ model Workspace {
 
   members       WorkspaceMembers[]
   boards        Board[]
-  pinned_by     User[]   @relation("PinnedWorkspaces")
+  pinned_by     PinnedWorkspace[]
 }
 
 model WorkspaceMembers {
@@ -57,6 +57,15 @@ model WorkspaceMembers {
   user      User      @relation(fields: [user_id], references: [user_id])
 
   @@id([workspace_id, user_id])
+}
+
+model PinnedWorkspace {
+  id           String   @id @default(uuid())
+  user_id      String
+  workspace_id String
+  
+  user         User     @relation(fields: [user_id], references: [user_id])
+  workspace    Workspace @relation(fields: [workspace_id], references: [workspace_id])
 }
 
 model Board {
