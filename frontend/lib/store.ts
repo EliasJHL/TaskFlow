@@ -4,6 +4,7 @@ import { create } from "zustand"
 import { User } from "@/lib/auth"
 import { apolloClient } from "./apollo-client"
 import { WORKSPACES_QUERY } from "./graphql/workspaces/query"
+import { BOARDS_QUERY } from "./graphql/boards/query"
 
 export interface Workspace {
   workspaceId: string
@@ -80,17 +81,17 @@ interface AppState {
   comments: Commants[]
   labels: Label[]
   attachments: Attachment[]
-  currentWorkspaceId: string | null
+  currentWorkspace: Workspace | null
   currentBoardId: string | null
   isLoading: boolean
 
   getWorkspaces: () => Promise<void>
-
   createWorkspace: (workspace: Omit<Workspace, "id" | "createdAt" | "updatedAt">) => void
   updateWorkspace: (id: string, updates: Partial<Workspace>) => void
   deleteWorkspace: (id: string) => void
-  setCurrentWorkspace: (id: string) => void
+  setCurrentWorkspace: (workspace: Workspace | null) => void
 
+  getBoards: (workspaceId: string) => Promise<void>
   createBoard: (board: Omit<Board, "id" | "createdAt" | "updatedAt">) => void
   updateBoard: (id: string, updates: Partial<Board>) => void
   deleteBoard: (id: string) => void
@@ -115,7 +116,7 @@ export const useStore = create<AppState>((set, get) => ({
   comments: [],
   labels: [],
   attachments: [],
-  currentWorkspaceId: null,
+  currentWorkspace: null,
   currentBoardId: null,
   isLoading: false,
 
@@ -147,6 +148,34 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
+  getBoards: async (workspaceId: string) => {
+    try {
+      set({ isLoading: true });
+      const { data } = await apolloClient.query<{ boards: any[] }>({
+        query: BOARDS_QUERY,
+        variables: { workspaceId },
+        fetchPolicy: "network-only",
+      });
+
+      if (data?.boards) {
+        const transformedBoards: Board[] = data.boards.map((b: any) => ({
+          boardId: b.board_id,
+          title: b.title,
+          description: b.description,
+          color: b.color,
+          workspaceId: b.workspace_id,
+          lists: b.lists || [],
+          labels: b.labels || [],
+        }));
+        set({ boards: transformedBoards, isLoading: false });
+      } else {
+        set({ boards: [], isLoading: false });
+      }
+    } catch (error) {
+      set({ isLoading: false });
+    }
+  },
+
   createWorkspace: (workspace) =>
     set((state) => ({
       workspaces: [...state.workspaces, { ...workspace }],
@@ -161,9 +190,9 @@ export const useStore = create<AppState>((set, get) => ({
     set((state) => ({
       workspaces: state.workspaces.filter((ws) => ws.workspaceId !== id),
     })),
-  setCurrentWorkspace: (id) =>
+  setCurrentWorkspace: (workspace: Workspace | null) =>
     set(() => ({
-      currentWorkspaceId: id,
+      currentWorkspace: workspace,
     })),
 
   createBoard: (board) =>

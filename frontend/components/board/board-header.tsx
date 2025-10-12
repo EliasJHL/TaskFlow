@@ -1,6 +1,6 @@
 "use client"
 
-import type { Board } from "@/lib/store"
+import type { Workspace } from "@/lib/store"
 import { useAuth } from "@/lib/auth"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -10,23 +10,21 @@ import { useRouter } from "next/navigation"
 import { TeamManagementDialog } from "./team-management-dialog"
 import { Navigation } from "@/components/navigation"
 
-interface BoardHeaderProps {
-  board: Board
+interface WorkspaceHeaderProps {
+  workspace: Workspace
 }
 
-export function BoardHeader({ board }: BoardHeaderProps) {
-  const { users } = useAuth()
+export function BoardHeader({ workspace }: WorkspaceHeaderProps) {
+  const user = useAuth((state) => state.user)
   const router = useRouter()
   const [showTeamManagement, setShowTeamManagement] = useState(false)
-
-  const boardMembers = users.filter((user) => board.members.includes(user.id))
 
   return (
     <>
       <Navigation
         variant="board"
-        boardTitle={board.title}
-        boardColor={board.color}
+        boardTitle={workspace.name}
+        boardColor={workspace.color}
         onBack={() => router.push("/dashboard")}
       />
 
@@ -34,7 +32,7 @@ export function BoardHeader({ board }: BoardHeaderProps) {
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              {board.description && <p>{board.description}</p>}
+              {workspace.description && <p>{workspace.description}</p>}
             </div>
 
             <div className="flex items-center gap-4">
@@ -43,7 +41,7 @@ export function BoardHeader({ board }: BoardHeaderProps) {
                 onClick={() => setShowTeamManagement(true)}
               >
                 <Users className="h-4 w-4 text-muted-foreground" />
-                <div className="flex -space-x-2">
+                {/* <div className="flex -space-x-2">
                   {boardMembers.slice(0, 4).map((member) => (
                     <Avatar key={member.id} className="h-7 w-7 border-2 border-background">
                       <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
@@ -61,7 +59,7 @@ export function BoardHeader({ board }: BoardHeaderProps) {
                       <span className="text-xs text-muted-foreground">+{boardMembers.length - 4}</span>
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
 
               <Button variant="outline" size="sm" onClick={() => setShowTeamManagement(true)}>
@@ -73,7 +71,7 @@ export function BoardHeader({ board }: BoardHeaderProps) {
         </div>
       </div>
 
-      <TeamManagementDialog open={showTeamManagement} onOpenChange={setShowTeamManagement} board={board} />
+      {/* <TeamManagementDialog open={showTeamManagement} onOpenChange={setShowTeamManagement} board={board} /> */}
     </>
   )
 }
