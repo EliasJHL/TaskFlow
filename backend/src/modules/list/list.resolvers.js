@@ -50,6 +50,7 @@ const listResolvers = {
                 where: { list_id: args.list_id }
             });
         }
+
     }
 };
 

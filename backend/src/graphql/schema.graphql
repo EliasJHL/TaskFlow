@@ -20,6 +20,7 @@ type User {
 type Workspace {
   workspace_id: ID!
   name: String!
+  color: String!
   description: String
   owner_id: ID!
   owner: User
@@ -133,6 +134,7 @@ type AuthPayload {
 input CreateWorkspaceInput {
   name: String!
   description: String
+  color: String
 }
 
 type CreateWorkspacePayload {
@@ -142,6 +144,7 @@ type CreateWorkspacePayload {
 input UpdateWorkspaceInput {
   name: String
   description: String
+  color: String
 }
 
 type Status {

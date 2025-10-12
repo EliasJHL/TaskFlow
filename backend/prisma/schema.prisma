@@ -40,6 +40,7 @@ model Workspace {
   name          String
   description   String?
   owner_id      String
+  color         String
 
   owner         User     @relation(fields: [owner_id], references: [user_id])
 
@@ -95,13 +96,12 @@ model Card {
   description  String?
   position     Int
   list_id      String
-  list         List     @relation(fields: [list_id], references: [list_id])
-  label_id     String?
   due_date     DateTime?
   comments     Comment[]
   card_labels  CardLabel[]
   card_members CardMember[]
   attachments  Attachment[]
+  list         List     @relation(fields: [list_id], references: [list_id])
 }
 
 model Comment {
