@@ -11,44 +11,58 @@ const prisma = new PrismaClient();
 const boardResolvers = {
     Query: {
         boards: async (_, args, context) => {
-            if (!context.user) {
-                throw new Error("Not authenticated");
-            }
-            return await prisma.board.findMany({
-                where: { workspace_id: args.workspace_id }
+            if (!context.user) throw new Error("Not authenticated");
+
+            const boards = await prisma.board.findMany({
+                where: { workspace_id: args.workspace_id },
+                include: {
+                    lists: true,
+                    labels: true
+                }
             });
+
+            const transformedBoards = boards.map(board => ({
+                ...board,
+                lists: board.lists || [],
+                labels: board.labels || []
+            }));
+
+            return transformedBoards;
         }
     },
 
     Mutation: {
-        createBoard: async (_, args, context) => {
+        createBoard: async (_, { input }, context) => {
             if (!context.user) {
                 throw new Error("Not authenticated");
             }
-            const { name, description, workspace_id } = args.input;
-            return await prisma.board.create({
-                data: { name, description, workspace_id }
+            const { title, description, color, workspace_id } = input;
+            const board = await prisma.board.create({
+                data: { title, description, color, workspace_id }
             });
+            if (!board) throw new Error("Board creation failed");
+            return board;
         },
-        
+
         updateBoard: async (_, args, context) => {
             if (!context.user) {
                 throw new Error("Not authenticated");
             }
-            const { board_id, name, description } = args.input;
-            return await prisma.board.update({
+            const { board_id, title, description, color } = args.input;
+            const board = await prisma.board.update({
                 where: { board_id },
-                data: { name, description }
+                data: { title, description, color }
             });
+            return { board };
         },
 
         deleteBoard: async (_, args, context) => {
-            if (!context.user) {
-                throw new Error("Not authenticated");
-            }
-            return await prisma.board.delete({
-                where: { board_id: args.board_id }
-            });
+        if (!context.user) {
+            throw new Error("Not authenticated");
+        }
+        return await prisma.board.delete({
+            where: { board_id: args.board_id }
+        });
         }
     }
 };

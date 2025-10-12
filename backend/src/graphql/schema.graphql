@@ -39,6 +39,9 @@ type Board {
   board_id: ID!
   title: String!
   description: String
+  color: String!
+  lists: [List!]!
+  labels: [Label!]!
   workspace_id: ID!
 }
 
@@ -46,6 +49,7 @@ type List {
   list_id: ID!
   title: String!
   position: Int!
+  color: String!
   board_id: ID!
 }
 
@@ -99,6 +103,8 @@ type Query {
 
   workspaces: [Workspace]
   workspace(workspace_id: ID!): Workspace
+
+  boards(workspace_id: ID!): [Board]
 }
 
 # Input types for mutations
@@ -147,6 +153,28 @@ input UpdateWorkspaceInput {
   color: String
 }
 
+input CreateBoardInput {
+  title: String!
+  description: String
+  color: String!
+  workspace_id: ID!
+}
+
+type CreateBoardPayload {
+  board: Board
+}
+
+input UpdateBoardInput {
+  board_id: ID!
+  title: String
+  description: String
+  color: String
+}
+
+type UpdateBoardPayload {
+  board: Board
+}
+
 type Status {
   success: Boolean!
   message: String
@@ -165,4 +193,8 @@ type Mutation {
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspacePayload!
   updateWorkspace(workspace_id: ID!, input: UpdateWorkspaceInput!): Workspace!
   deleteWorkspace(workspace_id: ID!): Status!
+
+  createBoard(input: CreateBoardInput!): CreateBoardPayload!
+  updateBoard(input: UpdateBoardInput!): Board!
+  deleteBoard(board_id: ID!): Status!
 }
