@@ -4,19 +4,23 @@ import { useAuth } from "@/lib/auth"
 import { useStore } from "@/lib/store"
 import { redirect } from "next/navigation"
 import { useEffect } from "react"
+import { WorkspacesGridSkeleton } from "@/components/dashboard/workspace-grid-skeleton"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
-import { BoardGrid } from "@/components/dashboard/board-grid"
+import { WorkspacesGrid } from "@/components/dashboard/workspaces-grid"
 import { CreateBoardDialog } from "@/components/dashboard/create-board-dialog"
 import { DueDateNotifications } from "@/components/dashboard/due-date-notifications"
 
 export default function DashboardPage() {
-  const { boards } = useStore()
+  const workspaces = useStore((state) => state.workspaces)
+  const getWorkspaces = useStore((state) => state.getWorkspaces)
+  const isLoading = useStore((state) => state.isLoading)
   const user = useAuth((state) => state.user)
 
   useEffect(() => {
     if (!user) {
       redirect("/")
     }
+    getWorkspaces()
   }, [])
 
   return (
@@ -24,23 +28,30 @@ export default function DashboardPage() {
       <DashboardHeader />
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-3 space-y-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-balance">Your pinned Workspaces</h1>
-                <p className="text-muted-foreground mt-2">Quick access to your most important workspaces</p>
+          {workspaces.some(w => w.isPinned) && (
+            <>
+              <div className="lg:col-span-3 space-y-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h1 className="text-3xl font-bold text-balance">Your pinned Workspaces</h1>
+                    <p className="text-muted-foreground mt-2">Quick access to your most important workspaces</p>
+                  </div>
+                </div>
+
+                {isLoading ? (
+                  <WorkspacesGridSkeleton />
+                ) : (
+                  <WorkspacesGrid workspaces={workspaces.filter(w => w.isPinned === true)} />
+                )}
               </div>
-            </div>
-
-            <BoardGrid boards={boards} />
-          </div>
-
-          <div className="lg:col-span-1">
-            <div className="sticky top-8">
-              <h2 className="text-lg font-semibold mb-4">Notifications</h2>
-              <DueDateNotifications />
-            </div>
-          </div>
+              <div className="lg:col-span-1">
+                <div className="sticky top-8">
+                  <h2 className="text-lg font-semibold mb-4">Notifications</h2>
+                  <DueDateNotifications />
+                </div>
+              </div>
+            </>
+          )}
 
           <div className="lg:col-span-3 space-y-8">
             <div className="flex items-center justify-between">
@@ -51,8 +62,21 @@ export default function DashboardPage() {
               <CreateBoardDialog />
             </div>
 
-            <BoardGrid boards={boards} />
+            {isLoading ? (
+              <WorkspacesGridSkeleton />
+            ) : (
+              <WorkspacesGrid workspaces={workspaces.filter(w => w.owner === user?.user_id)} />
+            )}
           </div>
+
+          {workspaces.some(w => !w.isPinned) && (
+            <div className="lg:col-span-1">
+                <div className="sticky top-8">
+                  <h2 className="text-lg font-semibold mb-4">Notifications</h2>
+                  <DueDateNotifications />
+                </div>
+              </div>
+          )}
 
           <div className="lg:col-span-3 space-y-8">
             <div className="flex items-center justify-between">
@@ -62,7 +86,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <BoardGrid boards={boards} />
+            <WorkspacesGrid workspaces={workspaces} />
           </div>
         </div>
       </main>

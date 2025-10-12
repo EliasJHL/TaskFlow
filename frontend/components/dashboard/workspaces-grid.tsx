@@ -1,16 +1,15 @@
 "use client"
 
-import type { Board } from "@/lib/store"
-import { BoardCard } from "./board-card"
+import type { Workspace } from "@/lib/store"
+import { WorkspaceCard } from "./workspace-card"
 
-interface BoardGridProps {
-  boards: Board[]
+interface WorkspacesGridProps {
+  workspaces: Workspace[]
 }
 
-export function BoardGrid({ boards }: BoardGridProps) {
-  const activeBoards = boards.filter((board) => !board.isArchived)
+export function WorkspacesGrid({ workspaces }: WorkspacesGridProps) {
 
-  if (activeBoards.length === 0) {
+  if (workspaces.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="mx-auto max-w-md">
@@ -26,8 +25,8 @@ export function BoardGrid({ boards }: BoardGridProps) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {activeBoards.map((board) => (
-        <BoardCard key={board.id} board={board} />
+      {workspaces.map((workspace) => (
+        <WorkspaceCard key={workspace.workspaceId} workspace={workspace} />
       ))}
     </div>
   )
