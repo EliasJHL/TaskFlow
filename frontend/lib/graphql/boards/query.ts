@@ -21,25 +21,35 @@ export const BOARDS_QUERY = gql`
                 position
                 color
             }
-            labels {
-                label_id
-                name
-                color
-            }
         }
     }
 `;
 
-export const CREATE_BOARD_MUTATION = gql`
-    mutation CreateBoard($input: CreateBoardInput!) {
-        createBoard(input: $input) {
-            board {
-                board_id
-                title
-                description
-                color
-                workspace_id
-            }
+export const BOARD_QUERY = gql`
+  query GetBoard($board_id: ID!) {
+    board(board_id: $board_id) {
+      board_id
+      title
+      description
+      color
+      workspace_id
+      lists {
+        list_id
+        title
+        position
+        color
+        cards {
+          card_id
+          title
+          description
+          position
         }
+      }
+      labels {
+        label_id
+        name
+        color
+      }
     }
+  }
 `;
