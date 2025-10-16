@@ -83,13 +83,14 @@
     --sidebar-ring: oklch(0.439 0 0);
     /* Animated background page.tsx */
     --color-bg1: rgb(30, 34, 40);
-    --color-bg2: rgb(0, 0, 0) --color1: 80, 140, 255;
-    --color2: 180, 90, 255;
-    --color3: 60, 180, 220;
-    --color4: 220, 80, 80;
-    --color5: 200, 200, 80;
-    --color-interactive: 180, 140, 255;
-    --circle-size: 80%;
+    --color-bg2: rgb(0, 0, 0);
+    --color1: 80, 140, 255;
+    --color2: 100, 90, 155;
+    --color3: 60, 100, 120;
+    --color4: 120, 80, 80;
+    --color5: 100, 200, 80;
+    --color-interactive: 100, 140, 155;
+    --circle-size: 70%;
     --blending: hard-light;
 }
 
