@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useStore, type Task } from "@/lib/store"
+import { useStore } from "@/lib/store"
 import { useAuth } from "@/lib/auth"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"

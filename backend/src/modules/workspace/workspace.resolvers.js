@@ -80,14 +80,15 @@ const workspaceResolvers = {
         createWorkspace: async(_, { input }, { user }) => {
             if (!user) throw new Error('Unauthorized');
 
-            const { name, description } = input;
+            const { name, description, color } = input;
 
             const [workspace] = await prisma.$transaction([
                 prisma.workspace.create({
                     data: {
                         name,
                         description,
-                        owner_id: user.user_id
+                        owner_id: user.user_id,
+                        color: color || "#1F1F1FFF"
                     }
                 }),
             ].map(p => p).slice(0, 1));

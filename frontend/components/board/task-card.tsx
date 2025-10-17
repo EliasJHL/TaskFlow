@@ -1,6 +1,6 @@
 "use client"
 
-import type { Task } from "@/lib/store"
+import { useStore, Card as CardTask } from "@/lib/store"
 import { useAuth } from "@/lib/auth"
 import { useState } from "react"
 import { Draggable } from "@hello-pangea/dnd"
@@ -13,41 +13,13 @@ import { fr } from "date-fns/locale"
 import { TaskDetailDialog } from "./task-detail-dialog"
 
 interface TaskCardProps {
-  task: Task
+  card: CardTask
   index: number
 }
 
-export function TaskCard({ task, index }: TaskCardProps) {
-  const { users } = useAuth()
+export function TaskCard({ card, index }: TaskCardProps) {
+  const user = useAuth()
   const [showDetail, setShowDetail] = useState(false)
-
-  const assignedUsers = users.filter((user) => task.assignedTo?.includes(user.id))
-
-  const getPriorityColor = (priority: Task["priority"]) => {
-    switch (priority) {
-      case "high":
-        return "bg-red-500"
-      case "medium":
-        return "bg-yellow-500"
-      case "low":
-        return "bg-green-500"
-      default:
-        return "bg-gray-500"
-    }
-  }
-
-  const getPriorityLabel = (priority: Task["priority"]) => {
-    switch (priority) {
-      case "high":
-        return "Haute"
-      case "medium":
-        return "Moyenne"
-      case "low":
-        return "Basse"
-      default:
-        return "Non définie"
-    }
-  }
 
   const getDueDateStatus = (dueDate?: string) => {
     if (!dueDate) return null
@@ -65,11 +37,11 @@ export function TaskCard({ task, index }: TaskCardProps) {
     }
   }
 
-  const dueDateStatus = getDueDateStatus(task.dueDate)
+  const dueDateStatus = getDueDateStatus(card.dueDate)
 
   return (
     <>
-      <Draggable draggableId={task.id} index={index}>
+      <Draggable draggableId={card.cardId} index={index}>
         {(provided, snapshot) => (
           <Card
             ref={provided.innerRef}
@@ -82,17 +54,22 @@ export function TaskCard({ task, index }: TaskCardProps) {
           >
             <CardContent className="p-4 space-y-3">
               <div className="flex items-start justify-between gap-2">
-                <h4 className="font-medium text-sm leading-tight text-balance flex-1">{task.title}</h4>
-                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${getPriorityColor(task.priority)}`} />
+                <h4 className="font-medium text-sm leading-tight text-balance flex-1">
+                  {card.title}
+                </h4>
               </div>
 
-              {task.description && <p className="text-xs text-muted-foreground line-clamp-2">{task.description}</p>}
+              {card.description && (
+                <p className="text-xs text-muted-foreground line-clamp-2">
+                  {card.description}
+                </p>
+              )}
 
-              {task.labels.length > 0 && (
+              {card.labels && card.labels.length > 0 && (
                 <div className="flex flex-wrap gap-1">
-                  {task.labels.map((label) => (
-                    <Badge key={label} variant="secondary" className="text-xs px-2 py-0">
-                      {label}
+                  {card.labels.map((label) => (
+                    <Badge key={label.labelId} variant="secondary" className="text-xs px-2 py-0">
+                      {label.name}
                     </Badge>
                   ))}
                 </div>
@@ -100,40 +77,33 @@ export function TaskCard({ task, index }: TaskCardProps) {
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {task.dueDate && (
+                  {card.dueDate && (
                     <div
                       className={`flex items-center gap-1 text-xs px-2 py-1 rounded ${dueDateStatus?.bgColor || ""}`}
                     >
                       {dueDateStatus?.status === "overdue" && <AlertCircle className="h-3 w-3" />}
                       <Calendar className="h-3 w-3" />
                       <span className={dueDateStatus?.color || "text-muted-foreground"}>
-                        {format(new Date(task.dueDate), "d MMM", { locale: fr })}
+                        {format(new Date(card.dueDate), "d MMM", { locale: fr })}
                       </span>
                     </div>
                   )}
-
-                  <Badge variant="outline" className="text-xs">
-                    {getPriorityLabel(task.priority)}
-                  </Badge>
                 </div>
 
-                {assignedUsers.length > 0 && (
+                {card.members && card.members.length > 0 && (
                   <div className="flex -space-x-1">
-                    {assignedUsers.slice(0, 2).map((user) => (
-                      <Avatar key={user.id} className="h-6 w-6 border-2 border-background">
-                        <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                    {card.members.slice(0, 2).map((member) => (
+                      <Avatar key={member.user_id} className="h-6 w-6 border-2 border-background">
                         <AvatarFallback className="text-xs">
-                          {user.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()}
+                          {member.user_id.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                     ))}
-                    {assignedUsers.length > 2 && (
+                    {card.members.length > 2 && (
                       <div className="h-6 w-6 rounded-full bg-muted border-2 border-background flex items-center justify-center">
-                        <span className="text-xs text-muted-foreground">+{assignedUsers.length - 2}</span>
+                        <span className="text-xs text-muted-foreground">
+                          +{card.members.length - 2}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -144,7 +114,7 @@ export function TaskCard({ task, index }: TaskCardProps) {
         )}
       </Draggable>
 
-      <TaskDetailDialog open={showDetail} onOpenChange={setShowDetail} task={task} />
+      <TaskDetailDialog open={showDetail} onOpenChange={setShowDetail} card={card} />
     </>
   )
 }

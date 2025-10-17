@@ -1,8 +1,7 @@
 "use client"
 
-import type { Board } from "@/lib/store"
 import { useStore } from "@/lib/store"
-import { useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BoardColumn } from "./board-column"
@@ -13,56 +12,44 @@ import { RoadmapView } from "./roadmap-view"
 import { LayoutGrid, Baseline as Timeline, Calendar, Map } from "lucide-react"
 
 interface BoardViewProps {
-  board: Board
+  boardId: string
 }
 
-export function BoardView({ board }: BoardViewProps) {
-  const { columns, tasks, moveTask, reorderTasks, reorderColumns } = useStore()
+export function BoardView({ boardId }: BoardViewProps) {
+  const lists = useStore((state) => state.lists)
+  const getLists = useStore((state) => state.getLists)
+  const loadingLists = useStore((state) => state.loadingLists)
   const [currentView, setCurrentView] = useState<"board" | "timeline" | "calendar" | "roadmap">("board")
+  
+  const hasLoadedRef = useRef<string | null>(null)
 
-  const boardColumns = columns.filter((column) => column.boardId === board.id).sort((a, b) => a.order - b.order)
+  useEffect(() => {    
+    if (hasLoadedRef.current === boardId) {
+      return
+    }
+    hasLoadedRef.current = boardId
+    getLists(boardId)    
+  }, [boardId])
+
+  const boardColumns = lists
 
   const handleDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId, type } = result
+    // TODO: Implement drag & drop
+    return
+  }
 
-    if (!destination) return
-
-    if (destination.droppableId === source.droppableId && destination.index === source.index) {
-      return
-    }
-
-    if (type === "column") {
-      const newColumnOrder = Array.from(boardColumns)
-      const [reorderedColumn] = newColumnOrder.splice(source.index, 1)
-      newColumnOrder.splice(destination.index, 0, reorderedColumn)
-
-      reorderColumns(
-        board.id,
-        newColumnOrder.map((col) => col.id),
-      )
-      return
-    }
-
-    if (type === "task") {
-      const sourceColumn = source.droppableId
-      const destColumn = destination.droppableId
-
-      if (sourceColumn === destColumn) {
-        const columnTasks = tasks.filter((task) => task.columnId === sourceColumn).sort((a, b) => a.order - b.order)
-
-        const newTaskOrder = Array.from(columnTasks)
-        const [reorderedTask] = newTaskOrder.splice(source.index, 1)
-        newTaskOrder.splice(destination.index, 0, reorderedTask)
-
-        reorderTasks(
-          sourceColumn,
-          newTaskOrder.map((task) => task.id),
-        )
-      } else {
-        // Moving to a different column
-        moveTask(draggableId, destColumn, destination.index)
-      }
-    }
+  if (loadingLists && lists.length === 0) {
+    return (
+      <main className="flex-1 overflow-hidden p-6">
+        <div className="flex items-center justify-center h-full">
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-48"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-64"></div>
+          </div>
+          <p className="text-muted-foreground mt-4">Loading lists...</p>
+        </div>
+      </main>
+    )
   }
 
   return (
@@ -98,12 +85,38 @@ export function BoardView({ board }: BoardViewProps) {
             <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="board" type="column" direction="horizontal">
                 {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef} className="flex gap-6 min-h-full pb-6">
-                    {boardColumns.map((column, index) => (
-                      <BoardColumn key={column.id} column={column} index={index} />
-                    ))}
-                    {provided.placeholder}
-                    <CreateColumnButton boardId={board.id} />
+                  <div 
+                    {...provided.droppableProps} 
+                    ref={provided.innerRef} 
+                    className="flex gap-6 min-h-full pb-6"
+                  >
+                    {boardColumns.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center w-full min-h-[400px] text-center">
+                        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                          <LayoutGrid className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                        <h3 className="text-lg font-semibold mb-2">No lists yet</h3>
+                        <p className="text-muted-foreground mb-6 max-w-md">
+                          Create your first list to start organizing tasks
+                        </p>
+                        <CreateColumnButton boardId={boardId} />
+                      </div>
+                    ) : (
+                      <>
+                        {boardColumns
+                          .sort((a, b) => a.position - b.position)
+                          .map((column, index) => (
+                            <BoardColumn 
+                              key={column.listId} 
+                              column={column} 
+                              index={index} 
+                            />
+                          ))
+                        }
+                        {provided.placeholder}
+                        <CreateColumnButton boardId={boardId} />
+                      </>
+                    )}
                   </div>
                 )}
               </Droppable>
@@ -111,15 +124,15 @@ export function BoardView({ board }: BoardViewProps) {
           </TabsContent>
 
           <TabsContent value="timeline" className="h-full m-0 p-6 overflow-y-auto">
-            <TimelineView boardId={board.id} />
+            <TimelineView boardId={boardId} />
           </TabsContent>
 
           <TabsContent value="calendar" className="h-full m-0 p-6 overflow-y-auto">
-            <CalendarView boardId={board.id} />
+            <CalendarView boardId={boardId} />  
           </TabsContent>
 
           <TabsContent value="roadmap" className="h-full m-0 p-6 overflow-y-auto">
-            <RoadmapView boardId={board.id} />
+            <RoadmapView boardId={boardId} />
           </TabsContent>
         </div>
       </Tabs>

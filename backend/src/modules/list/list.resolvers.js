@@ -15,7 +15,17 @@ const listResolvers = {
                 throw new Error("Not authenticated");
             }
             return await prisma.list.findMany({
-                where: { workspace_id: args.workspace_id, board_id: args.board_id }
+                where: { workspace_id: args.workspace_id, board_id: args.board_id },
+                include: { cards: { orderBy: { position: 'asc' } } }
+            });
+        },
+        list: async (_, args, context) => {
+            if (!context.user) {
+                throw new Error("Not authenticated");
+            }
+            return await prisma.list.findUnique({
+                where: { list_id: args.list_id },
+                include: { cards: { orderBy: { position: 'asc' } } }
             });
         }
     },
@@ -25,9 +35,9 @@ const listResolvers = {
             if (!context.user) {
                 throw new Error("Not authenticated");
             }
-            const { name, description, workspace_id, board_id } = args.input;
+            const { title, board_id, position, color } = args.input;
             return await prisma.list.create({
-                data: { name, description, workspace_id, board_id }
+                data: { title, board_id, position, color }
             });
         },
 
@@ -35,10 +45,10 @@ const listResolvers = {
             if (!context.user) {
                 throw new Error("Not authenticated");
             }
-            const { list_id, name, description } = args.input;
+            const { list_id, title, position, color } = args.input;
             return await prisma.list.update({
                 where: { list_id },
-                data: { name, description }
+                data: { title, position, color }
             });
         },
 
@@ -50,6 +60,7 @@ const listResolvers = {
                 where: { list_id: args.list_id }
             });
         }
+
     }
 };
 

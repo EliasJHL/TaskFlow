@@ -20,6 +20,7 @@ type User {
 type Workspace {
   workspace_id: ID!
   name: String!
+  color: String!
   description: String
   owner_id: ID!
   owner: User
@@ -38,6 +39,9 @@ type Board {
   board_id: ID!
   title: String!
   description: String
+  color: String!
+  lists: [List!]!
+  labels: [Label!]!
   workspace_id: ID!
 }
 
@@ -45,7 +49,9 @@ type List {
   list_id: ID!
   title: String!
   position: Int!
+  color: String!
   board_id: ID!
+  cards: [Card]
 }
 
 type Card {
@@ -54,8 +60,11 @@ type Card {
   description: String
   position: Int!
   list_id: ID!
-  label_id: ID
+  labels: [Label]
   due_date: DateTime
+  comments: [Comment]
+  attachments: [Attachment]
+  members: [CardMember]
 }
 
 type Comment {
@@ -98,6 +107,16 @@ type Query {
 
   workspaces: [Workspace]
   workspace(workspace_id: ID!): Workspace
+
+  boards(workspace_id: ID!): [Board]
+
+  board(board_id: ID!): Board
+  lists(board_id: ID!): [List]
+  list(list_id: ID!): List
+  cards(list_id: ID!): [Card]
+  card(card_id: ID!): Card
+  labels(board_id: ID!): [Label]
+  comments(card_id: ID!): [Comment]
 }
 
 # Input types for mutations
@@ -133,6 +152,7 @@ type AuthPayload {
 input CreateWorkspaceInput {
   name: String!
   description: String
+  color: String
 }
 
 type CreateWorkspacePayload {
@@ -142,11 +162,86 @@ type CreateWorkspacePayload {
 input UpdateWorkspaceInput {
   name: String
   description: String
+  color: String
+}
+
+input CreateBoardInput {
+  title: String!
+  description: String
+  color: String!
+  workspace_id: ID!
+}
+
+type CreateBoardPayload {
+  board: Board
+}
+
+input UpdateBoardInput {
+  board_id: ID!
+  title: String
+  description: String
+  color: String
+}
+
+type UpdateBoardPayload {
+  board: Board
+}
+
+input CreateListInput {
+  title: String!
+  board_id: ID!
+  position: Int!
+  color: String
+}
+
+input UpdateListInput {
+  list_id: ID!
+  title: String
+  position: Int
+  color: String
+}
+
+input CreateCardInput {
+  title: String!
+  list_id: ID!
+  description: String
+  position: Int!
+  due_date: DateTime
+}
+
+input UpdateCardInput {
+  card_id: ID!
+  title: String
+  description: String
+  position: Int
+  due_date: DateTime
+}
+
+input CreateLabelInput {
+  name: String!
+  color: String!
+  board_id: ID!
+}
+
+input UpdateLabelInput {
+  label_id: ID!
+  name: String
+  color: String
 }
 
 type Status {
   success: Boolean!
   message: String
+}
+
+input CreateCommentInput {
+  content: String!
+  card_id: ID!
+}
+
+input UpdateCommentInput {
+  comment_id: ID!
+  content: String!
 }
 
 # Root mutation type
@@ -162,4 +257,32 @@ type Mutation {
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspacePayload!
   updateWorkspace(workspace_id: ID!, input: UpdateWorkspaceInput!): Workspace!
   deleteWorkspace(workspace_id: ID!): Status!
+
+  createBoard(input: CreateBoardInput!): CreateBoardPayload!
+  updateBoard(input: UpdateBoardInput!): Board!
+  deleteBoard(board_id: ID!): Status!
+
+  # Lists
+  createList(input: CreateListInput!): List!
+  updateList(input: UpdateListInput!): List!
+  deleteList(list_id: ID!): Status!
+  reorderLists(board_id: ID!, list_ids: [ID!]!): [List!]!
+
+  # # Cards
+  createCard(input: CreateCardInput!): Card!
+  updateCard(input: UpdateCardInput!): Card!
+  deleteCard(card_id: ID!): Status!
+  moveCard(card_id: ID!, list_id: ID!, position: Int!): Card!
+  
+  # # Labels
+  # createLabel(input: CreateLabelInput!): Label!
+  # updateLabel(input: UpdateLabelInput!): Label!
+  # deleteLabel(label_id: ID!): Status!
+  # addLabelToCard(card_id: ID!, label_id: ID!): Card!
+  # removeLabelFromCard(card_id: ID!, label_id: ID!): Card!
+
+  # # Comments
+  # createComment(input: CreateCommentInput!): Comment!
+  # updateComment(input: UpdateCommentInput!): Comment!
+  # deleteComment(comment_id: ID!): Status!
 }

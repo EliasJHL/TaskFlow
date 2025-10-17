@@ -21,7 +21,8 @@ export default function RootLayout({
             justifyContent: "center",
             alignItems: "center",
             height: "100vh",
-            width: "100vw"
+            width: "100vw",
+            backgroundColor: "var(--background)"
           }}>
             <img
               src="https://i.pinimg.com/originals/a6/ec/56/a6ec563bcc7bfe131ea1976cb17b4915.gif"

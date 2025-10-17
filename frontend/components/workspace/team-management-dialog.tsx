@@ -65,6 +65,7 @@ export function TeamManagementDialog({ open, onOpenChange, board }: TeamManageme
   const handleCreateAndAddMember = () => {
     if (!newMemberEmail.trim() || !newMemberName.trim()) return
 
+    // Check if user already exists
     const existingUser = users.find((u) => u.email === newMemberEmail.trim())
     if (existingUser) {
       toast({
@@ -75,12 +76,14 @@ export function TeamManagementDialog({ open, onOpenChange, board }: TeamManageme
       return
     }
 
+    // Create new user
     addUser({
       name: newMemberName.trim(),
       email: newMemberEmail.trim(),
       role: newMemberRole,
     })
 
+    // Add to board (the new user will have the latest ID)
     setTimeout(() => {
       const newUser = users.find((u) => u.email === newMemberEmail.trim())
       if (newUser) {
