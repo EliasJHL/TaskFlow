@@ -19,7 +19,7 @@ export function BoardHeader({ workspace, board }: BoardHeaderProps) {
         variant="board"
         boardTitle={`${workspace.name}/${board.title}`}
         boardColor={board.color}
-        onBack={() => router.push("/dashboard")}
+        onBack={() => router.push("/workspace/" + workspace.workspaceId)}
       />
 
       <div className="border-b bg-card/30 backdrop-blur-sm">

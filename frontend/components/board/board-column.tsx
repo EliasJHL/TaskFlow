@@ -1,6 +1,6 @@
 "use client"
 
-import type { Column } from "@/lib/store"
+import type { Card as Column } from "@/lib/store"
 import { useStore } from "@/lib/store"
 import { Draggable, Droppable } from "@hello-pangea/dnd"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -18,22 +18,23 @@ interface BoardColumnProps {
 }
 
 export function BoardColumn({ column, index }: BoardColumnProps) {
-  const { tasks, deleteColumn } = useStore()
+  const { cards } = useStore()
   const [showCreateTask, setShowCreateTask] = useState(false)
 
-  const columnTasks = tasks.filter((task) => task.columnId === column.id).sort((a, b) => a.order - b.order)
+  const columnTasks = cards.filter((cardF) => cardF.cardId === column.cardId).sort((a, b) => a.position - b.position)
 
   const handleDeleteColumn = () => {
-    if (columnTasks.length > 0) {
-      if (!confirm("Cette colonne contient des tâches. Êtes-vous sûr de vouloir la supprimer ?")) {
-        return
-      }
-    }
-    deleteColumn(column.id)
+    return;
+    // if (columnTasks.length > 0) {
+    //   if (!confirm("Cette colonne contient des tâches. Êtes-vous sûr de vouloir la supprimer ?")) {
+    //     return
+    //   }
+    // }
+    // deleteColumn(column.id)
   }
 
   return (
-    <Draggable draggableId={column.id} index={index}>
+    <Draggable draggableId={String(column.cardId ?? column.listId ?? `column-${index}`)} index={index}>
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
@@ -44,7 +45,7 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
             <CardHeader {...provided.dragHandleProps} className="pb-3 cursor-grab active:cursor-grabbing">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: column.color }} />
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#F0521D" }} />
                   <h3 className="font-semibold">{column.title}</h3>
                   <Badge variant="secondary" className="text-xs">
                     {columnTasks.length}
@@ -72,7 +73,7 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
             </CardHeader>
 
             <CardContent className="flex-1 overflow-y-auto">
-              <Droppable droppableId={column.id} type="task">
+              <Droppable droppableId={String(column.cardId ?? column.listId ?? `column-${index}`)} type="task">
                 {(provided, snapshot) => (
                   <div
                     {...provided.droppableProps}
@@ -80,7 +81,7 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
                     className={`space-y-3 min-h-2 ${snapshot.isDraggingOver ? "bg-muted/50 rounded-lg p-2" : ""}`}
                   >
                     {columnTasks.map((task, taskIndex) => (
-                      <TaskCard key={task.id} task={task} index={taskIndex} />
+                      <TaskCard key={task.title} task={task} index={taskIndex} />
                     ))}
                     {provided.placeholder}
 
@@ -104,12 +105,12 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
             </CardContent>
           </Card>
 
-          <CreateTaskDialog
+          {/* <CreateTaskDialog
             open={showCreateTask}
             onOpenChange={setShowCreateTask}
-            columnId={column.id}
-            boardId={column.boardId}
-          />
+            columnId={column.listId}
+            boardId={column.cardId}
+          /> */}
         </div>
       )}
     </Draggable>

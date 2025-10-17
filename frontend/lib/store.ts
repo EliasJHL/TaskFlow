@@ -5,6 +5,7 @@ import { User } from "@/lib/auth"
 import { apolloClient } from "./apollo-client"
 import { WORKSPACES_QUERY, WORKSPACE_QUERY } from "./graphql/workspaces/query"
 import { BOARDS_QUERY } from "./graphql/boards/query"
+import { LISTS_QUERY } from "./graphql/lists/query"
 
 export interface Workspace {
   workspaceId: string
@@ -32,7 +33,7 @@ export interface List {
   title: string
   position: number
   color: string
-  board: string
+  board: Board
   cards: string[]
 }
 
@@ -83,6 +84,8 @@ interface AppState {
   currentWorkspace: Workspace | null
   currentBoard: Board | null
   isLoading: boolean
+  loadingLists: boolean
+  loadingCache: Set<string>
 
   getWorkspaces: () => Promise<void>
   getWorkspace: (workspaceId: string) => Promise<void>
@@ -98,6 +101,7 @@ interface AppState {
   deleteBoard: (id: string) => void
   setCurrentBoard: (board: Board | null) => void
 
+  getLists: (boardId: string) => Promise<void>
   createList: (list: Omit<List, "listId">) => void
   updateList: (id: string, updates: Partial<List>) => void
   deleteList: (id: string) => void
@@ -118,6 +122,8 @@ export const useStore = create<AppState>((set, get) => ({
   currentWorkspace: null,
   currentBoard: null,
   isLoading: false,
+  loadingLists: false,
+  loadingCache: new Set(),
 
   getWorkspaces: async () => {
     try {
@@ -149,7 +155,7 @@ export const useStore = create<AppState>((set, get) => ({
       }
     } catch (error) {
       console.error('Error fetching workspaces:', error)
-      set({ isLoading: false })
+      set({ workspaces: [], isLoading: false })
     }
   },
 
@@ -219,45 +225,90 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   getBoard: async (boardId: string) => {
-  console.log('🔍 Getting board from cache:', boardId)
-  set({ isLoading: true })
-  
-  try {
-    // Cherche le board dans les boards déjà chargés
-    const board = get().boards.find(b => b.boardId === boardId)
+    set({ isLoading: true })
     
-    if (!board) {
-      console.log('⚠️ Board not found in cache')
+    try {
+      const board = get().boards.find(b => b.boardId === boardId)
       
-      // Essaie de recharger les boards du workspace
-      const workspace = get().currentWorkspace
-      if (workspace) {
-        console.log('📡 Reloading boards...')
-        await get().getBoards(workspace.workspaceId)
-        
-        const reloadedBoard = get().boards.find(b => b.boardId === boardId)
-        if (reloadedBoard) {
-          set({ currentBoard: reloadedBoard, isLoading: false })
-          console.log('✅ Board loaded:', reloadedBoard.title)
-          return
+      if (!board) {        
+        const workspace = get().currentWorkspace
+        if (workspace) {
+          await get().getBoards(workspace.workspaceId)
+          
+          const reloadedBoard = get().boards.find(b => b.boardId === boardId)
+          if (reloadedBoard) {
+            set({ currentBoard: reloadedBoard, isLoading: false })
+            return
+          }
         }
+        set({ currentBoard: null, isLoading: false })
+        return
       }
-      
-      // Toujours pas trouvé
-      console.log('❌ Board not found after reload')
+      set({ currentBoard: board, isLoading: false })
+    } catch (error) {
       set({ currentBoard: null, isLoading: false })
-      return
     }
-    
-    // Board trouvé dans le cache
-    console.log('✅ Board found in cache:', board.title)
-    set({ currentBoard: board, isLoading: false })
-    
-  } catch (error) {
-    console.error('❌ Error getting board:', error)
-    set({ currentBoard: null, isLoading: false })
-  }
-},
+  },
+
+  getLists: async (boardId: string) => {
+    const cacheKey = `lists-${boardId}`
+    if (get().loadingCache.has(cacheKey)) return
+
+    try {
+      const newCache = new Set(get().loadingCache)
+      newCache.add(cacheKey)
+      set({ loadingLists: true, loadingCache: newCache })
+      
+      const { data } = await apolloClient.query<{ lists: any[] }>({
+        query: LISTS_QUERY,
+        variables: { board_id: boardId },
+        fetchPolicy: "network-only",
+      })
+
+      if (data?.lists) {
+        const transformedLists: List[] = data.lists.map((l: any) => ({
+          listId: l.list_id,
+          title: l.title,
+          position: l.position ?? 0,
+          color: l.color ?? '#CCCCCC',
+          board: {
+            boardId: boardId,
+            title: '',
+            description: '',
+            color: '',
+            workspaceId: '',
+            lists: [],
+            labels: [],
+          },
+          cards: l.cards?.map((c: any) => c.card_id) || [],
+        }))
+                
+        const finalCache = new Set(get().loadingCache)
+        finalCache.delete(cacheKey)
+        set({ 
+          lists: transformedLists, 
+          loadingLists: false,
+          loadingCache: finalCache 
+        })
+      } else {
+        const finalCache = new Set(get().loadingCache)
+        finalCache.delete(cacheKey)
+        set({ 
+          lists: [], 
+          loadingLists: false,
+          loadingCache: finalCache 
+        })
+      }
+    } catch (error) {
+      const finalCache = new Set(get().loadingCache)
+      finalCache.delete(cacheKey)
+      set({ 
+        lists: [], 
+        loadingLists: false,
+        loadingCache: finalCache 
+      })
+    }
+  },
 
   createWorkspace: (workspace) =>
     set((state) => ({

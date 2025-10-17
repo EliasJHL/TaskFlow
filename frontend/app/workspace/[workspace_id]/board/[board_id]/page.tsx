@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/auth"
 import { useStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
-import { use, useEffect } from "react"
+import { use, useEffect, useRef } from "react"
 import { BoardHeader } from "@/components/board/board-header"
 import { BoardView } from "@/components/board/board-view"
 
@@ -17,34 +17,36 @@ export default function BoardPage({
   const board = useStore((state) => state.currentBoard)
   const getBoard = useStore((state) => state.getBoard)
   const getBoards = useStore((state) => state.getBoards)
-  const getWorkspace = useStore((state) => state.getWorkspace)  // ✅ Utilise getWorkspace au lieu de getWorkspaces
+  const getWorkspace = useStore((state) => state.getWorkspace)
   const workspace = useStore((state) => state.currentWorkspace)
   const isLoading = useStore((state) => state.isLoading)
   const { workspace_id: workspaceId, board_id: boardId } = use(params)
+
+  const hasLoadedRef = useRef<string | null>(null)
+  const loadKey = `${workspaceId}-${boardId}`
 
   useEffect(() => {
     if (!user) {
       router.push("/login")
       return
     }
+
+    if (hasLoadedRef.current === loadKey) {
+      return
+    }
+    hasLoadedRef.current = loadKey
     
     const loadData = async () => {
-      console.log('📡 Loading data for board:', boardId)
-      
-      // ✅ 1. Charge le workspace spécifique
-      await getWorkspace(workspaceId)
-      
-      // ✅ 2. Charge les boards du workspace
-      await getBoards(workspaceId)
-      
-      // ✅ 3. Sélectionne le board depuis le cache
-      await getBoard(boardId)
-      
-      console.log('✅ All data loaded')
+      try {
+        await getWorkspace(workspaceId)
+        await getBoards(workspaceId)
+        await getBoard(boardId)        
+      } catch (error) {
+        console.error('Error loading board page:', error)
+      }
     }
-    
-    loadData()
-  }, [user, workspaceId, boardId, router, getWorkspace, getBoards, getBoard])
+    loadData()    
+  }, [user, workspaceId, boardId])
 
   if (!user) return null
 
@@ -84,7 +86,7 @@ export default function BoardPage({
   return (
     <div className="min-h-screen bg-background">
       <BoardHeader workspace={workspace} board={board} />
-      <BoardView board={board} />
+      <BoardView boardId={board.boardId} />
     </div>
   )
 }
