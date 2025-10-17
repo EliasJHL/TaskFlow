@@ -34,7 +34,7 @@ export interface List {
   position: number
   color: string
   board: Board
-  cards: string[]
+  cards: Card[]
 }
 
 export interface Card {
@@ -43,12 +43,11 @@ export interface Card {
   description?: string
   position: number
   listId: string
-  labelsId: string[]
+  labels: Label[]
   dueDate?: string
-  comments: string[]
-  cardLabels: string[]
-  members: string[]
-  attachments: string[]
+  comments: Comments[]
+  members: User[]
+  attachments: Attachment[]
 }
 
 export interface Comments {
@@ -280,7 +279,13 @@ export const useStore = create<AppState>((set, get) => ({
             lists: [],
             labels: [],
           },
-          cards: l.cards?.map((c: any) => c.card_id) || [],
+          cards: l.cards?.map((c: any) => ({
+            cardId: c.card_id,
+            title: c.title,
+            description: c.description || '',
+            position: c.position ?? 0,
+            labels: c.labels?.map((l: any) => l.label_id) || [],
+          })) || [],
         }))
                 
         const finalCache = new Set(get().loadingCache)

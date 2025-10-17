@@ -92,7 +92,7 @@ export function RoadmapView({ boardId }: RoadmapViewProps) {
     const taskDays = differenceInDays(taskDate, rangeStart)
 
     const left = Math.max(0, (taskDays / totalDays) * 100)
-    const width = Math.min(100 - left, 2) // Minimum width for visibility
+    const width = Math.min(100 - left, 2)
 
     return { left: `${left}%`, width: `${width}%` }
   }

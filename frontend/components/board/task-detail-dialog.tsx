@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useStore, type Task } from "@/lib/store"
+import { useStore, type Card as CardTask } from "@/lib/store"
+import { type User as UserCard } from "@/lib/auth"
 import { useAuth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,95 +22,67 @@ import { useToast } from "@/hooks/use-toast"
 interface TaskDetailDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  task: Task
+  card: CardTask
 }
 
-export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogProps) {
+export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogProps) {
   const [isEditing, setIsEditing] = useState(false)
-  const [title, setTitle] = useState(task.title)
-  const [description, setDescription] = useState(task.description || "")
-  const [priority, setPriority] = useState(task.priority)
-  const [dueDate, setDueDate] = useState(task.dueDate || "")
-  const [labels, setLabels] = useState(task.labels)
+  const [title, setTitle] = useState(card.title)
+  const [description, setDescription] = useState(card.description || "")
+  const [dueDate, setDueDate] = useState(card.dueDate || "")
+  const [labels, setLabels] = useState(card.labels || [])
   const [newLabel, setNewLabel] = useState("")
-  const [assignedTo, setAssignedTo] = useState(task.assignedTo || [])
+  const [assignedTo, setAssignedTo] = useState(card.members || [])
 
-  const { updateTask, deleteTask, boards } = useStore()
-  const { users } = useAuth()
+  // const { updateTask, deleteTask, boards } = useStore()
+  const user = useAuth((state) => state.user)
   const { toast } = useToast()
 
-  const board = boards.find((b) => b.id === task.boardId)
-  const boardMembers = users.filter((user) => board?.members.includes(user.id))
-  const assignedUsers = users.filter((user) => assignedTo.includes(user.id))
+  const workspace = useStore((state) => state.currentWorkspace)
+  const workspaceMembers: UserCard[] = workspace?.members || []
+  const assignedUsers: UserCard[] = workspaceMembers.filter((m) => assignedTo.includes(m))
 
   const handleSave = () => {
-    updateTask(task.id, {
-      title: title.trim(),
-      description: description.trim() || undefined,
-      priority,
-      dueDate: dueDate || undefined,
-      labels,
-      assignedTo: assignedTo.length > 0 ? assignedTo : undefined,
-    })
+  //   updateTask(card.cardId, {
+  //     title: title.trim(),
+  //     description: description.trim() || undefined,
+  //     dueDate: dueDate || undefined,
+  //     labels,
+  //     assignedTo: assignedTo.length > 0 ? assignedTo : undefined,
+  //   })
 
-    toast({
-      title: "Tâche mise à jour",
-      description: "Les modifications ont été sauvegardées",
-    })
+  //   toast({
+  //     title: "Tâche mise à jour",
+  //     description: "Les modifications ont été sauvegardées",
+  //   })
 
-    setIsEditing(false)
+  //   setIsEditing(false)
   }
 
   const handleDelete = () => {
-    if (confirm("Êtes-vous sûr de vouloir supprimer cette tâche ?")) {
-      deleteTask(task.id)
-      toast({
-        title: "Tâche supprimée",
-        description: "La tâche a été supprimée avec succès",
-      })
-      onOpenChange(false)
-    }
+  //   if (confirm("Êtes-vous sûr de vouloir supprimer cette tâche ?")) {
+  //     deleteTask(task.id)
+  //     toast({
+  //       title: "Tâche supprimée",
+  //       description: "La tâche a été supprimée avec succès",
+  //     })
+  //     onOpenChange(false)
+  //   }
   }
 
   const addLabel = () => {
-    if (newLabel.trim() && !labels.includes(newLabel.trim())) {
-      setLabels([...labels, newLabel.trim()])
-      setNewLabel("")
-    }
+  //   if (newLabel.trim() && !labels.includes(newLabel.trim())) {
+  //     setLabels([...labels, newLabel.trim()])
+  //     setNewLabel("")
+  //   }
   }
 
   const removeLabel = (labelToRemove: string) => {
-    setLabels(labels.filter((label) => label !== labelToRemove))
+  //   setLabels(labels.filter((label) => label !== labelToRemove))
   }
 
   const toggleUserAssignment = (userId: string) => {
-    setAssignedTo((prev) => (prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]))
-  }
-
-  const getPriorityLabel = (priority: Task["priority"]) => {
-    switch (priority) {
-      case "high":
-        return "Haute"
-      case "medium":
-        return "Moyenne"
-      case "low":
-        return "Basse"
-      default:
-        return "Non définie"
-    }
-  }
-
-  const getPriorityColor = (priority: Task["priority"]) => {
-    switch (priority) {
-      case "high":
-        return "bg-red-500"
-      case "medium":
-        return "bg-yellow-500"
-      case "low":
-        return "bg-green-500"
-      default:
-        return "bg-gray-500"
-    }
+  //   setAssignedTo((prev) => (prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]))
   }
 
   return (
@@ -121,14 +94,14 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
               {isEditing ? (
                 <Input value={title} onChange={(e) => setTitle(e.target.value)} className="text-lg font-semibold" />
               ) : (
-                <DialogTitle className="text-xl">{task.title}</DialogTitle>
+                <DialogTitle className="text-xl">{card.title}</DialogTitle>
               )}
-              <DialogDescription className="mt-1">
-                Créée le {format(new Date(task.createdAt), "d MMMM yyyy", { locale: fr })}
-              </DialogDescription>
+              {/* <DialogDescription className="mt-1">
+                Créée le {format(new Date(card.), "d MMMM yyyy", { locale: fr })}
+              </DialogDescription> */}
             </div>
             <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${getPriorityColor(task.priority)}`} />
+              {/* <div className={`w-3 h-3 rounded-full ${getPriorityColor(task.priority)}`} /> */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -156,7 +129,7 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
               />
             ) : (
               <p className="text-sm text-muted-foreground min-h-[60px] p-3 border rounded-md">
-                {task.description || "Aucune description"}
+                {card.description || "Aucune description"}
               </p>
             )}
           </div>
@@ -166,27 +139,6 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>Priorité</Label>
-                {isEditing ? (
-                  <Select value={priority} onValueChange={(value: "low" | "medium" | "high") => setPriority(value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Basse</SelectItem>
-                      <SelectItem value="medium">Moyenne</SelectItem>
-                      <SelectItem value="high">Haute</SelectItem>
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${getPriorityColor(task.priority)}`} />
-                    <span className="text-sm">{getPriorityLabel(task.priority)}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2">
                 <Label className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   Date limite
@@ -195,8 +147,8 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
                   <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
                 ) : (
                   <p className="text-sm">
-                    {task.dueDate
-                      ? format(new Date(task.dueDate), "d MMMM yyyy", { locale: fr })
+                    {card.dueDate
+                      ? format(new Date(card.dueDate), "d MMMM yyyy", { locale: fr })
                       : "Aucune date limite"}
                   </p>
                 )}
@@ -210,25 +162,25 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
               </Label>
               {isEditing ? (
                 <div className="space-y-2 max-h-32 overflow-y-auto border rounded-md p-2">
-                  {boardMembers.map((user) => (
-                    <div key={user.id} className="flex items-center space-x-2">
+                  {workspaceMembers.map((user) => (
+                    <div key={user.user_id} className="flex items-center space-x-2">
                       <Checkbox
-                        id={`user-${user.id}`}
-                        checked={assignedTo.includes(user.id)}
-                        onCheckedChange={() => toggleUserAssignment(user.id)}
+                        id={`user-${user.user_id}`}
+                        checked={assignedTo.includes(user)}
+                        onCheckedChange={() => toggleUserAssignment(user.user_id)}
                       />
                       <Avatar className="h-6 w-6">
-                        <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                        <AvatarImage src={user.picture || "/placeholder.svg"} alt={user.username} />
                         <AvatarFallback className="text-xs">
-                          {user.name
+                          {user.username
                             .split(" ")
                             .map((n) => n[0])
                             .join("")
                             .toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <Label htmlFor={`user-${user.id}`} className="text-sm font-normal cursor-pointer">
-                        {user.name}
+                      <Label htmlFor={`user-${user.user_id}`} className="text-sm font-normal cursor-pointer">
+                        {user.username}
                       </Label>
                     </div>
                   ))}
@@ -237,18 +189,18 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
                 <div className="flex flex-wrap gap-2">
                   {assignedUsers.length > 0 ? (
                     assignedUsers.map((user) => (
-                      <div key={user.id} className="flex items-center gap-2 bg-muted rounded-md px-2 py-1">
+                      <div key={user.user_id} className="flex items-center gap-2 bg-muted rounded-md px-2 py-1">
                         <Avatar className="h-5 w-5">
-                          <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                          <AvatarImage src={user.picture || "/placeholder.svg"} alt={user.username} />
                           <AvatarFallback className="text-xs">
-                            {user.name
+                            {user.username
                               .split(" ")
                               .map((n) => n[0])
                               .join("")
                               .toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-sm">{user.name}</span>
+                        <span className="text-sm">{user.username}</span>
                       </div>
                     ))
                   ) : (
@@ -284,11 +236,11 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
                 {labels.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {labels.map((label) => (
-                      <Badge key={label} variant="secondary" className="gap-1">
-                        {label}
+                      <Badge key={label.labelId} variant="secondary" className="gap-1">
+                        {label.name}
                         <button
                           type="button"
-                          onClick={() => removeLabel(label)}
+                          onClick={() => removeLabel(label.labelId)}
                           className="hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5"
                         >
                           <X className="h-3 w-3" />
@@ -300,10 +252,10 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
               </div>
             ) : (
               <div className="flex flex-wrap gap-1">
-                {task.labels.length > 0 ? (
-                  task.labels.map((label) => (
-                    <Badge key={label} variant="secondary">
-                      {label}
+                {card.labels.length > 0 ? (
+                  card.labels.map((label) => (
+                    <Badge key={label.labelId} variant="secondary">
+                      {label.name}
                     </Badge>
                   ))
                 ) : (

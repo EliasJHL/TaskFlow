@@ -16,7 +16,14 @@ const boardResolvers = {
             const boards = await prisma.board.findMany({
                 where: { workspace_id: args.workspace_id },
                 include: {
-                    lists: true,
+                    lists: {
+                        orderBy: { position: 'asc' },
+                        include: {
+                            cards: {
+                                orderBy: { position: 'asc' }
+                            }
+                        }
+                    },
                     labels: true
                 }
             });

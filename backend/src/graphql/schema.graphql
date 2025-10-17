@@ -60,11 +60,11 @@ type Card {
   description: String
   position: Int!
   list_id: ID!
-  labels: [Label!]!
+  labels: [Label]
   due_date: DateTime
-  comments: [Comment!]!
-  attachments: [Attachment!]!
-  members: [CardMember!]!
+  comments: [Comment]
+  attachments: [Attachment]
+  members: [CardMember]
 }
 
 type Comment {
@@ -269,10 +269,10 @@ type Mutation {
   reorderLists(board_id: ID!, list_ids: [ID!]!): [List!]!
 
   # # Cards
-  # createCard(input: CreateCardInput!): Card!
-  # updateCard(input: UpdateCardInput!): Card!
-  # deleteCard(card_id: ID!): Status!
-  # moveCard(card_id: ID!, list_id: ID!, position: Int!): Card!
+  createCard(input: CreateCardInput!): Card!
+  updateCard(input: UpdateCardInput!): Card!
+  deleteCard(card_id: ID!): Status!
+  moveCard(card_id: ID!, list_id: ID!, position: Int!): Card!
   
   # # Labels
   # createLabel(input: CreateLabelInput!): Label!

@@ -15,7 +15,8 @@ const listResolvers = {
                 throw new Error("Not authenticated");
             }
             return await prisma.list.findMany({
-                where: { workspace_id: args.workspace_id, board_id: args.board_id }
+                where: { workspace_id: args.workspace_id, board_id: args.board_id },
+                include: { cards: { orderBy: { position: 'asc' } } }
             });
         },
         list: async (_, args, context) => {
@@ -23,7 +24,8 @@ const listResolvers = {
                 throw new Error("Not authenticated");
             }
             return await prisma.list.findUnique({
-                where: { list_id: args.list_id }
+                where: { list_id: args.list_id },
+                include: { cards: { orderBy: { position: 'asc' } } }
             });
         }
     },

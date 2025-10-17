@@ -17,7 +17,7 @@ const cardResolvers = {
             }
             await checkBoardMembership(args.board_id, context.user.user_id);
             return await prisma.card.findMany({
-                where: { workspace_id: args.workspace_id, board_id: args.board_id }
+                where: { board_id: args.board_id }
             });
         },
         card: async (_, args, context) => {
@@ -32,27 +32,46 @@ const cardResolvers = {
     },
 
     Mutation: {
-        createCard: async (_, args, context) => {
-            if (!context.user) {
-                throw new Error("Not authenticated");
+        createCard: async (_, { input }, context) => {
+            if (!context.user) throw new Error("Not authenticated")
+
+            const { title, description, list_id, due_date } = input
+
+            const list = await prisma.list.findUnique({
+                where: { list_id },
+                include: { board: { include: { workspace: true } } }
+            })
+
+            if (!list) throw new Error("List not found")
+
+            const isMember = await prisma.workspaceMembers.findFirst({
+                where: {
+                workspace_id: list.board.workspace_id,
+                user_id: context.user.id
+                }
+            })
+
+            if (!isMember) {
+                throw new Error("Access denied")
             }
-            await checkBoardMembership(args.board_id, context.user.user_id);
+
             const maxPosition = await prisma.card.aggregate({
-                where: { list_id: args.list_id },
-                _max: {
-                    position: true
-                }
-            });
-            const newPosition = (maxPosition._max.position ?? 0) + 1;
-            return await prisma.card.create({
+                where: { list_id },
+                _max: { position: true }
+            })
+
+            const newPosition = (maxPosition._max.position ?? -1) + 1
+
+            const card = await prisma.card.create({
                 data: {
-                    title: args.title,
-                    description: args.description,
-                    list_id: args.list_id,
-                    due_date: args.due_date,
-                    position: newPosition
+                title,
+                description: description || null,
+                list_id,
+                due_date: due_date ? new Date(due_date) : null,
+                position: newPosition
                 }
-            });
+            })
+            return card
         },
         
         updateCard: async (_, args, context) => {
@@ -83,4 +102,4 @@ const cardResolvers = {
     }
 };
 
-export default listResolvers;
+export default cardResolvers;

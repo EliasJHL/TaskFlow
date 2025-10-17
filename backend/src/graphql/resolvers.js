@@ -9,6 +9,7 @@ import authResolvers from '../modules/auth/auth.resolvers.js';
 import workspaceResolvers from '../modules/workspace/workspace.resolvers.js';
 import boardResolvers from '../modules/board/board.resolvers.js';
 import listResolvers from '../modules/list/list.resolvers.js';
+import cardResolvers from '../modules/card/card.resolvers.js';
 import { DateTimeResolver } from 'graphql-scalars';
 
 export default {
@@ -19,6 +20,7 @@ export default {
         ...workspaceResolvers.Query,
         ...boardResolvers.Query,
         ...listResolvers.Query,
+        ...cardResolvers.Query,
     },
     Mutation: {
         ...userResolvers.Mutation,
@@ -26,5 +28,6 @@ export default {
         ...workspaceResolvers.Mutation,
         ...boardResolvers.Mutation,
         ...listResolvers.Mutation,
+        ...cardResolvers.Mutation,
     }
 }
