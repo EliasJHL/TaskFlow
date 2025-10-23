@@ -27,7 +27,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             width: "100vw"
           }}>
             <img
-              src="https://i.pinimg.com/originals/a6/ec/56/a6ec563bcc7bfe131ea1976cb17b4915.gif"
+              src="/load.gif"
               alt="Loading"
               style={{ maxWidth: "100%", maxHeight: "60vh" }}
             />
