@@ -1,4 +1,4 @@
-# TaskFlow
+# TaskFlow - /!\ This project is in developement
 
 A modern, open-source project management platform for teams.
 
@@ -82,9 +82,9 @@ taskflow/
 - BullMQ
 
 **Infrastructure**
-- PostgreSQL
+- Neon PostgreSQL - Self solution coming soon
 - Redis
-- MinIO (S3-compatible storage)
+- AWS S3 Cloud storage - Self solution coming soon
 - Docker
 
 ## Self-hosted deployement
