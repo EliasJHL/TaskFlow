@@ -25,25 +25,26 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
   const [isCreating, setIsCreating] = useState(false)
   const [title, setTitle] = useState("")
   const [selectedColor, setSelectedColor] = useState(columnColors[0])
-  const { createColumn, columns } = useStore()
+  const { createList, lists, currentBoard } = useStore()
   const { toast } = useToast()
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!title.trim()) return
 
-    const boardColumns = columns.filter((col) => col.boardId === boardId)
-    const maxOrder = Math.max(...boardColumns.map((col) => col.order), -1)
+    const boardColumns = lists.filter((col) => col.board.boardId === boardId)
+    const maxOrder = Math.max(...boardColumns.map((col) => col.position), -1)
 
-    createColumn({
+    await createList({
       title: title.trim(),
       color: selectedColor,
-      order: maxOrder + 1,
-      boardId,
+      position: maxOrder + 1,
+      board: currentBoard!,
+      cards: [],
     })
 
     toast({
-      title: "Colonne créée",
-      description: `La colonne "${title}" a été ajoutée`,
+      title: "Column created",
+      description: `The column "${title}" has been added`,
     })
 
     setTitle("")
@@ -70,7 +71,7 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
               if (e.key === "Escape") handleCancel()
             }}
             autoFocus
-          />
+          />          
 
           <div className="flex gap-1">
             {columnColors.map((color) => (
@@ -108,7 +109,7 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
       onClick={() => setIsCreating(true)}
     >
       <Plus className="h-4 w-4 mr-2" />
-      Ajouter une colonne
+      Create new column
     </Button>
   )
 }

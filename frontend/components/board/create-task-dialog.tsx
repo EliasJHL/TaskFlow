@@ -42,13 +42,17 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
 
   const workspaceMembers: UserCard[] = workspace?.members || []
 
+  const addCard = useStore((state) => state.createCard)
+
   const handleSave = () => {
-    updateCard(card.cardId, {
-      title,
-      description,
-      dueDate: dueDate || undefined,
-      members: assignedTo
-    })
+    //   addCard(card.listId, {
+    //     ...card,
+    //     title,
+    //     description,
+    //     dueDate: dueDate || undefined,
+    //     members: assignedTo
+    //   })
+    // }
     onOpenChange(false)
   }
 
@@ -63,17 +67,17 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Détails de la tâche</DialogTitle>
+          <DialogTitle>Create a new task</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="task-title">Titre</Label>
+            <Label htmlFor="task-title">Title</Label>
             <Input
               id="task-title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Titre de la tâche"
+              placeholder="Task title"
             />
           </div>
 
@@ -89,7 +93,7 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="task-due-date">Date limite</Label>
+            <Label htmlFor="task-due-date">Deadline</Label>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <Input
@@ -105,7 +109,7 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Tag className="h-4 w-4" />
-                Étiquettes
+                Labels
               </Label>
               <div className="flex flex-wrap gap-2">
                 {card.labels.map((label) => (
@@ -120,7 +124,7 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              Membres assignés
+              Assigned Members
             </Label>
             {assignedTo.length > 0 ? (
               <div className="flex flex-wrap gap-2">
@@ -148,7 +152,7 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
 
           {card.comments && card.comments.length > 0 && (
             <div className="space-y-2">
-              <Label>Commentaires ({card.comments.length})</Label>
+              <Label>Comments ({card.comments.length})</Label>
               <div className="space-y-2">
                 {card.comments.map((comment) => (
                   <div key={comment.commentId} className="p-3 bg-muted rounded-lg">
@@ -161,14 +165,11 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
         </div>
 
         <DialogFooter className="flex gap-2">
-          <Button variant="destructive" onClick={handleDelete}>
-            Supprimer
-          </Button>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Annuler
+            Cancel
           </Button>
           <Button onClick={handleSave}>
-            Enregistrer
+            Save
           </Button>
         </DialogFooter>
       </DialogContent>

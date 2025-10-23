@@ -2,6 +2,7 @@
 
 import type { List } from "@/lib/store"
 import { useStore } from "@/lib/store"
+import type { Card as CardTask } from "@/lib/store"
 import { Draggable, Droppable } from "@hello-pangea/dnd"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -20,6 +21,25 @@ interface BoardColumnProps {
 export function BoardColumn({ column, index }: BoardColumnProps) {
   const [showCreateTask, setShowCreateTask] = useState(false)
   const columnCards = column.cards || []
+  const addCard = useStore((state) => state.createCard)
+  const [newCard, setNewCard] = useState<CardTask | null>(null)
+
+  const handleCreateTask = () => {
+    const card: CardTask = {
+      cardId: crypto.randomUUID(),
+      title: "",
+      description: "",
+      listId: column.listId,
+      position: columnCards.length,
+      labels: [],
+      members: [],
+      comments: [],
+      attachments: [],
+      dueDate: undefined
+    }
+    setNewCard(card)
+    setShowCreateTask(true)
+  }
 
   return (
     <Draggable draggableId={column.listId} index={index}>
@@ -52,12 +72,6 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setShowCreateTask(true)}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Ajouter une tâche
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             </CardHeader>
@@ -101,13 +115,23 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
               <Button
                 variant="ghost"
                 className="w-full mt-3 justify-start text-muted-foreground hover:text-foreground"
-                onClick={() => setShowCreateTask(true)}
+                onClick={handleCreateTask}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Ajouter une tâche
               </Button>
             </CardContent>
           </Card>
+          {newCard && (
+            <CardDetailDialog
+              open={showCreateTask}
+              onOpenChange={(open) => {
+                setShowCreateTask(open)
+                if (!open) setNewCard(null)
+                }}
+              card={newCard}
+            />
+          )}
         </div>
       )}
     </Draggable>

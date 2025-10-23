@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useStore, type Card as CardTask } from "@/lib/store"
 import { type User as UserCard } from "@/lib/auth"
 import { useAuth } from "@/lib/auth"
@@ -40,7 +40,7 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
 
   const workspace = useStore((state) => state.currentWorkspace)
   const workspaceMembers: UserCard[] = workspace?.members || []
-  const assignedUsers: UserCard[] = workspaceMembers.filter((m) => assignedTo.includes(m))
+  const assignedUsers: UserCard[] = assignedTo
 
   const handleSave = () => {
   //   updateTask(card.cardId, {
@@ -81,9 +81,23 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
   //   setLabels(labels.filter((label) => label !== labelToRemove))
   }
 
-  const toggleUserAssignment = (userId: string) => {
-  //   setAssignedTo((prev) => (prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]))
+  const toggleUserAssignment = (user: UserCard) => {
+    // setAssignedTo((prev) => {
+    //   const isAssigned = prev.some((u) => u.user_id === user.user_id)
+    //   if (isAssigned) {
+    //     return prev.filter((u) => u.user_id !== user.user_id)
+    //   }
+    //   return [...prev, user]
+    // })
   }
+
+  useEffect(() => {
+    setTitle(card.title)
+    setDescription(card.description || "")
+    setDueDate(card.dueDate || "")
+    setLabels(card.labels || [])
+    setAssignedTo(card.members || [])
+  }, [card])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -167,7 +181,7 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
                       <Checkbox
                         id={`user-${user.user_id}`}
                         checked={assignedTo.includes(user)}
-                        onCheckedChange={() => toggleUserAssignment(user.user_id)}
+                        onCheckedChange={() => toggleUserAssignment(user)}
                       />
                       <Avatar className="h-6 w-6">
                         <AvatarImage src={user.picture || "/placeholder.svg"} alt={user.username} />

@@ -26,7 +26,7 @@ export default function SettingsPage() {
     if (!user) {
       router.push("/")
     } else {
-    //   setName(user.name)
+      setName(user.username)
       setEmail(user.email)
     }
   }, [user, router])
@@ -52,8 +52,8 @@ export default function SettingsPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold">Paramètres</h1>
-            <p className="text-muted-foreground">Gérez vos préférences et votre compte</p>
+            <h1 className="text-3xl font-bold">Settings</h1>
+            <p className="text-muted-foreground">Manage your preferences and account</p>
           </div>
         </div>
 
@@ -62,19 +62,19 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <User className="h-5 w-5" />
-                <CardTitle>Profil</CardTitle>
+                <CardTitle>Profile</CardTitle>
               </div>
-              <CardDescription>Informations personnelles et avatar</CardDescription>
+              <CardDescription>Your personal information and avatar</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-4">
-                {/* <Avatar className="h-20 w-20">
-                  <AvatarImage src={user.avatar || "/placeholder.svg"} />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                </Avatar> */}
+                <Avatar className="h-20 w-20">
+                  <AvatarImage src={user.picture || "/placeholder.svg"} />
+                  <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+                </Avatar>
                 <div className="flex-1 space-y-3">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Nom</Label>
+                    <Label htmlFor="name">Username</Label>
                     <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
                   </div>
                   <div className="space-y-2">
@@ -92,21 +92,21 @@ export default function SettingsPage() {
                 <Bell className="h-5 w-5" />
                 <CardTitle>Notifications</CardTitle>
               </div>
-              <CardDescription>Gérez vos préférences de notification</CardDescription>
+              <CardDescription>Manage your notification preferences</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Notifications par email</Label>
-                  <p className="text-sm text-muted-foreground">Recevoir des emails pour les mises à jour</p>
+                  <Label>Email Notifications</Label>
+                  <p className="text-sm text-muted-foreground">Receive emails for updates</p>
                 </div>
                 <Switch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Notifications de tâches</Label>
-                  <p className="text-sm text-muted-foreground">Alertes pour les tâches assignées</p>
+                  <Label>Task Notifications</Label>
+                  <p className="text-sm text-muted-foreground">Alerts for assigned tasks</p>
                 </div>
                 <Switch checked={taskNotifications} onCheckedChange={setTaskNotifications} />
               </div>
@@ -117,15 +117,15 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Palette className="h-5 w-5" />
-                <CardTitle>Apparence</CardTitle>
+                <CardTitle>Appearance</CardTitle>
               </div>
-              <CardDescription>Personnalisez l'apparence de l'application</CardDescription>
+              <CardDescription>Customize the appearance of the application</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Thème</Label>
-                  <p className="text-sm text-muted-foreground">Basculer entre mode clair et sombre</p>
+                  <Label>Theme</Label>
+                  <p className="text-sm text-muted-foreground">Toggle between light and dark mode</p>
                 </div>
                 <ThemeToggle />
               </div>
@@ -136,24 +136,18 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                <CardTitle>Compte</CardTitle>
+                <CardTitle>Account</CardTitle>
               </div>
-              <CardDescription>Gérez votre compte et vos données</CardDescription>
+              <CardDescription>Manage your account and data</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Rôle</Label>
-                  {/* <p className="text-sm text-muted-foreground capitalize">{user.role}</p> */}
-                </div>
-              </div>
               <Separator />
               <div className="flex gap-3">
                 <Button onClick={handleSave} className="flex-1">
-                  Enregistrer les modifications
+                  Save Changes
                 </Button>
                 <Button onClick={handleLogout} variant="destructive">
-                  Se déconnecter
+                  Logout
                 </Button>
               </div>
             </CardContent>

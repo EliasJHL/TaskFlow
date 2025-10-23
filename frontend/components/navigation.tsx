@@ -111,12 +111,7 @@ export function Navigation({ variant = "dashboard", boardTitle, boardColor, onBa
                     style={{ backgroundColor: boardColor }}
                   />
                 )}
-                <h1
-                  className={cn(
-                    "font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent transition-all",
-                    compressed ? "text-sm" : "text-xl",
-                  )}
-                >
+                <h1 className={cn( "font-semibold transition-all", compressed ? "text-sm" : "text-xl")}>
                   {compressed ? boardTitle.slice(0, 20) + (boardTitle.length > 20 ? "..." : "") : boardTitle}
                 </h1>
               </div>

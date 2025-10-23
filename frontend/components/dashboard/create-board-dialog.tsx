@@ -43,39 +43,39 @@ export function CreateBoardDialog() {
   const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!title.trim() || !user) return
+    // e.preventDefault()
+    // if (!title.trim() || !user) return
 
-    setIsLoading(true)
+    // setIsLoading(true)
 
-    try {
-      createBoard({
-        title: title.trim(),
-        description: description.trim() || undefined,
-        color: selectedColor,
-        members: [user.id],
-        isArchived: false,
-      })
+    // try {
+    //   createBoard({
+    //     title: title.trim(),
+    //     description: description.trim() || undefined,
+    //     color: selectedColor,
+    //     members: [user.id],
+    //     isArchived: false,
+    //   })
 
-      toast({
-        title: "Projet créé",
-        description: `Le projet "${title}" a été créé avec succès`,
-      })
+    //   toast({
+    //     title: "Projet créé",
+    //     description: `Le projet "${title}" a été créé avec succès`,
+    //   })
 
-      // Reset form
-      setTitle("")
-      setDescription("")
-      setSelectedColor(boardColors[0])
-      setOpen(false)
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de créer le projet",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
+    //   // Reset form
+    //   setTitle("")
+    //   setDescription("")
+    //   setSelectedColor(boardColors[0])
+    //   setOpen(false)
+    // } catch (error) {
+    //   toast({
+    //     title: "Erreur",
+    //     description: "Impossible de créer le projet",
+    //     variant: "destructive",
+    //   })
+    // } finally {
+    //   setIsLoading(false)
+    // }
   }
 
   return (

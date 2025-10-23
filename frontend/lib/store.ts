@@ -6,6 +6,7 @@ import { apolloClient } from "./apollo-client"
 import { WORKSPACES_QUERY, WORKSPACE_QUERY } from "./graphql/workspaces/query"
 import { BOARDS_QUERY } from "./graphql/boards/query"
 import { LISTS_QUERY } from "./graphql/lists/query"
+import { CREATE_LIST_MUTATION } from "./graphql/lists/mutations"
 
 export interface Workspace {
   workspaceId: string
@@ -355,10 +356,48 @@ export const useStore = create<AppState>((set, get) => ({
   setCurrentBoard: (board: Board | null) =>
     set({ currentBoard: board }),
 
-  createList: (list) =>
-    set((state) => ({
-      lists: [...state.lists, { ...list } as List],
-    })),
+  createList: async (list) => {
+    try {
+      set({ isLoading: true })
+      const input = {
+        title: list.title,
+        board_id: list.board.boardId,  // envoyer l'ID du board, pas l'objet complet
+        position: list.position,
+        color: list.color,
+      };
+      const { data } = await apolloClient.mutate<{
+        createList: {
+          list_id: string,
+          title: string,
+          position: number,
+          color: string,
+        }
+      }>({
+        mutation: CREATE_LIST_MUTATION,
+        variables: { input },
+      });
+      if (data?.createList) {
+        const created = data.createList;
+        const newList: List = {
+          listId: created.list_id,
+          title: created.title,
+          position: created.position,
+          color: created.color,
+          board: list.board,
+          cards: [],
+        };
+        set((state) => ({
+          lists: [...state.lists, newList],
+          isLoading: false,
+        }));
+      } else {
+        set({ isLoading: false });
+      }
+    } catch (error) {
+      console.error(error);
+      set({ isLoading: false });
+    }
+  },
   
   updateList: (id, updates) =>
     set((state) => ({
