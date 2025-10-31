@@ -7,7 +7,7 @@ import { useEffect } from "react"
 import { WorkspacesGridSkeleton } from "@/components/dashboard/workspace-grid-skeleton"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { WorkspacesGrid } from "@/components/dashboard/workspaces-grid"
-import { CreateBoardDialog } from "@/components/dashboard/create-board-dialog"
+import { CreateWorkspaceDialog } from "@/components/dashboard/create-workspace-dialog"
 import { DueDateNotifications } from "@/components/dashboard/due-date-notifications"
 
 export default function DashboardPage() {
@@ -59,7 +59,7 @@ export default function DashboardPage() {
                 <h1 className="text-3xl font-bold text-balance">Your Workspaces</h1>
                 <p className="text-muted-foreground mt-2">Manage your projects and collaborate with your team</p>
               </div>
-              <CreateBoardDialog />
+              <CreateWorkspaceDialog />
             </div>
 
             {isLoading ? (

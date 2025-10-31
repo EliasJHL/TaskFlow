@@ -31,51 +31,49 @@ const boardColors = [
   "#f97316", // orange
 ]
 
-export function CreateBoardDialog() {
+export function CreateWorkspaceDialog() {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [selectedColor, setSelectedColor] = useState(boardColors[0])
   const [isLoading, setIsLoading] = useState(false)
 
-  const { createBoard } = useStore()
+  const { createWorkspace } = useStore()
   const { user } = useAuth()
   const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    // e.preventDefault()
-    // if (!title.trim() || !user) return
+    e.preventDefault()
+    if (!title.trim() || !user) return
 
-    // setIsLoading(true)
+    setIsLoading(true)
 
-    // try {
-    //   createBoard({
-    //     title: title.trim(),
-    //     description: description.trim() || undefined,
-    //     color: selectedColor,
-    //     members: [user.id],
-    //     isArchived: false,
-    //   })
+    try {
+      createWorkspace({
+        name: title.trim(),
+        description: description.trim() || undefined,
+        color: selectedColor,
+      })
 
-    //   toast({
-    //     title: "Projet créé",
-    //     description: `Le projet "${title}" a été créé avec succès`,
-    //   })
+      toast({
+        title: "Workspace created",
+        description: `Workspace "${title}" has been created successfully`,
+      })
 
-    //   // Reset form
-    //   setTitle("")
-    //   setDescription("")
-    //   setSelectedColor(boardColors[0])
-    //   setOpen(false)
-    // } catch (error) {
-    //   toast({
-    //     title: "Erreur",
-    //     description: "Impossible de créer le projet",
-    //     variant: "destructive",
-    //   })
-    // } finally {
-    //   setIsLoading(false)
-    // }
+      setTitle("")
+      setDescription("")
+      setSelectedColor(boardColors[0])
+      setOpen(false)
+      window.location.reload()
+    } catch (error) {
+      toast({
+        title: "An error occurred",
+        description: "Something went wrong while creating the workspace.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -83,21 +81,21 @@ export function CreateBoardDialog() {
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Plus className="h-4 w-4" />
-          Nouveau projet
+          New Workspace
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Créer un nouveau projet</DialogTitle>
-          <DialogDescription>Organisez vos tâches dans un nouvel espace de travail</DialogDescription>
+          <DialogTitle>Create a new workspace</DialogTitle>
+            <DialogDescription>Organize your tasks in a new workspace</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Nom du projet</Label>
+            <Label htmlFor="title">Workspace's name</Label>
             <Input
               id="title"
-              placeholder="Mon nouveau projet"
+              placeholder="My awesome project"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -105,10 +103,10 @@ export function CreateBoardDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description (optionnel)</Label>
+            <Label htmlFor="description">Description (optional)</Label>
             <Textarea
               id="description"
-              placeholder="Décrivez votre projet..."
+              placeholder="Describe your workspace..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
@@ -116,7 +114,7 @@ export function CreateBoardDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label>Couleur du projet</Label>
+            <Label>Color of the workspace</Label>
             <div className="flex gap-2 flex-wrap">
               {boardColors.map((color) => (
                 <button
@@ -134,10 +132,10 @@ export function CreateBoardDialog() {
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Annuler
+              Cancel
             </Button>
             <Button type="submit" disabled={!title.trim() || isLoading}>
-              {isLoading ? "Création..." : "Créer le projet"}
+              {isLoading ? "Loading.." : "Create Workspace"}
             </Button>
           </div>
         </form>
