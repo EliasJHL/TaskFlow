@@ -17,3 +17,23 @@ export const CREATE_LIST_MUTATION = gql`
         }
     }
 `;
+
+export const UPDATE_LIST_MUTATION = gql`
+  mutation UpdateList($input: UpdateListInput!) {
+    updateList(input: $input) {
+      list_id
+      title
+      position
+      color
+    }
+  }
+`;
+
+export const DELETE_LIST_MUTATION = gql`
+  mutation DeleteList($list_id: ID!) {
+    deleteList(list_id: $list_id) {
+      success
+      message
+    }
+  }
+`;

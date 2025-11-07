@@ -39,19 +39,6 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
   const { fetchMembers, addMember, removeMember, updateMemberRole, user: currentUser, members } = useAuth()
   const { toast } = useToast()
 
-  // Créer la liste complète incluant le propriétaire
-  const allMembers = useMemo(() => {
-    return [
-      {
-        workspace_id: workspace.workspaceId,
-        user_id: workspace.ownerId,
-        user: workspace.owner,
-        role: 'OWNER' as const
-      },
-      ...members
-    ];
-  }, [workspace, members]);
-
   useEffect(() => {
     if (open && workspace.workspaceId) {
       setIsLoading(true)
@@ -194,14 +181,14 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Gestion de l'équipe</DialogTitle>
-          <DialogDescription>Gérer les membres de "{workspace.name}"</DialogDescription>
+          <DialogTitle>Team Management</DialogTitle>
+          <DialogDescription>Manage members of "{workspace.name}"</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           <div className="space-y-3">
             <Label className="text-base font-semibold">
-              Membres actuels ({allMembers.length})
+              Current Members ({members.length})
             </Label>
             
             {isLoading ? (
@@ -210,8 +197,8 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
               </div>
             ) : (
               <div className="space-y-2 max-h-64 overflow-y-auto">
-                {allMembers.map((member) => {
-                  const isOwner = member.role === 'OWNER'
+                {members.map((member) => {
+                  const isOwner = member.user.user_id === workspace.ownerId
                   const isCurrentUser = member.user.user_id === currentUser?.user_id
 
                   return (
@@ -234,7 +221,7 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
                         {isOwner ? (
                           <Badge variant="secondary" className="gap-1">
                             <Crown className="h-3 w-3" />
-                            Propriétaire
+                            Owner
                           </Badge>
                         ) : (
                           <Select
@@ -272,7 +259,7 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
           </div>
 
           <div className="space-y-3">
-            <Label className="text-base font-semibold">Inviter un nouveau membre</Label>
+            <Label className="text-base font-semibold">Invite a new member</Label>
             <div className="space-y-3">
               <div className="space-y-2">
                 <Label htmlFor="memberEmail" className="text-sm">
@@ -294,7 +281,7 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
               
               <div className="space-y-2">
                 <Label htmlFor="memberRole" className="text-sm">
-                  Rôle
+                  Role
                 </Label>
                 <Select 
                   value={newMemberRole} 
@@ -319,12 +306,12 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
                 {isAddingMember ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Envoi en cours...
+                    Adding...
                   </>
                 ) : (
                   <>
                     <UserPlus className="h-4 w-4 mr-2" />
-                    Envoyer l'invitation
+                    Add into Workspace
                   </>
                 )}
               </Button>

@@ -419,6 +419,119 @@ const workspaceResolvers = {
             });
 
             return updatedMember;
+        },
+        pinWorkspace: async (_, { workspace_id }, { user }) => {
+            if (!user) throw new Error('Unauthorized');
+
+            const workspace = await prisma.workspace.findFirst({
+            where: {
+                workspace_id,
+                OR: [
+                { owner_id: user.user_id },
+                { members: { some: { user_id: user.user_id } } }
+                ]
+            },
+            include: {
+                owner: true,
+                members: {
+                include: {
+                    user: {
+                    select: {
+                        user_id: true,
+                        email: true,
+                        username: true,
+                        picture: true
+                    }
+                    }
+                }
+                }
+            }
+            });
+
+            if (!workspace) {
+            throw new GraphQLError('Workspace not found', {
+                extensions: { code: 'NOT_FOUND' }
+            });
+            }
+
+            const existingPin = await prisma.pinnedWorkspace.findFirst({
+            where: {
+                user_id: user.user_id,
+                workspace_id
+            }
+            });
+
+            if (existingPin) {
+                return {
+                    workspace: {
+                    ...workspace,
+                    is_pinned: true
+                    }
+                };
+            }
+
+            await prisma.pinnedWorkspace.create({
+                data: {
+                    user_id: user.user_id,
+                    workspace_id
+                }
+            });
+
+            return {
+                workspace: {
+                    ...workspace,
+                    is_pinned: true
+                }
+            };
+        },
+
+        unpinWorkspace: async (_, { workspace_id }, { user }) => {
+            if (!user) throw new Error('Unauthorized');
+
+            const workspace = await prisma.workspace.findFirst({
+                where: {
+                    workspace_id,
+                    OR: [
+                    { owner_id: user.user_id },
+                    { members: { some: { user_id: user.user_id } } }
+                    ]
+                },
+                include: {
+                    owner: true,
+                    members: {
+                    include: {
+                        user: {
+                        select: {
+                            user_id: true,
+                            email: true,
+                            username: true,
+                            picture: true
+                        }
+                        }
+                    }
+                    }
+                }
+            });
+
+            if (!workspace) {
+                throw new GraphQLError('Workspace not found', {
+                    extensions: { code: 'NOT_FOUND' }
+                });
+            }
+
+            await prisma.pinnedWorkspace.deleteMany({
+                where: {
+                    user_id: user.user_id,
+                    workspace_id
+                }
+            });
+
+            return {
+                workspace: {
+                    ...workspace,
+                    is_pinned: false
+                }
+            };
         }
     }
 };

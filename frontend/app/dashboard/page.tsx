@@ -44,12 +44,6 @@ export default function DashboardPage() {
                   <WorkspacesGrid workspaces={workspaces.filter(w => w.isPinned === true)} />
                 )}
               </div>
-              <div className="lg:col-span-1">
-                <div className="sticky top-8">
-                  <h2 className="text-lg font-semibold mb-4">Notifications</h2>
-                  <DueDateNotifications />
-                </div>
-              </div>
             </>
           )}
 
@@ -68,15 +62,6 @@ export default function DashboardPage() {
               <WorkspacesGrid workspaces={workspaces.filter(w => w.owner.user_id === user?.user_id)} />
             )}
           </div>
-
-          {workspaces.some(w => !w.isPinned) && (
-            <div className="lg:col-span-1">
-                <div className="sticky top-8">
-                  <h2 className="text-lg font-semibold mb-4">Notifications</h2>
-                  <DueDateNotifications />
-                </div>
-              </div>
-          )}
 
           <div className="lg:col-span-3 space-y-8">
             <div className="flex items-center justify-between">

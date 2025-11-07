@@ -29,12 +29,14 @@
     "@fastify/cors": "^11.1.0",
     "@fastify/jwt": "^10.0.0",
     "@prisma/client": "^6.19.0",
+    "@types/minio": "^7.1.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "fastify": "^5.6.1",
     "graphql": "^16.11.0",
     "graphql-scalars": "^1.24.2",
-    "mercurius": "^16.3.0"
+    "mercurius": "^16.3.0",
+    "minio": "^8.0.6"
   },
   "devDependencies": {
     "prisma": "^6.19.0"

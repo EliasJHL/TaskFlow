@@ -13,6 +13,7 @@ import mercurius from 'mercurius';
 import dotenv from 'dotenv';
 import resolvers from './graphql/resolvers.js';
 import cors from '@fastify/cors';
+import './s3/minio.mjs';
 dotenv.config();
 
 const schema = readFileSync(join(process.cwd(), 'src/graphql/schema.graphql'), 'utf8');
