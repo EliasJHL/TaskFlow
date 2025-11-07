@@ -2,6 +2,7 @@
 
 import type { Workspace } from "@/lib/store"
 import { useAuth } from "@/lib/auth"
+import { useStore } from "@/lib/store"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -17,6 +18,7 @@ interface WorkspaceHeaderProps {
 export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
   const user = useAuth((state) => state.user)
   const router = useRouter()
+  const workspaceMembers = workspace.members || []
   const [showTeamManagement, setShowTeamManagement] = useState(false)
 
   return (
@@ -41,12 +43,12 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
                 onClick={() => setShowTeamManagement(true)}
               >
                 <Users className="h-4 w-4 text-muted-foreground" />
-                {/* <div className="flex -space-x-2">
-                  {boardMembers.slice(0, 4).map((member) => (
-                    <Avatar key={member.id} className="h-7 w-7 border-2 border-background">
-                      <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
+                <div className="flex -space-x-2">
+                  {workspaceMembers.slice(0, 4).map((member) => (
+                    <Avatar key={member.user_id} className="h-7 w-7 border-2 border-background">
+                      <AvatarImage src={member.picture || "/placeholder.svg"} alt={member.username} />
                       <AvatarFallback className="text-xs">
-                        {member.name
+                        {member.username
                           .split(" ")
                           .map((n) => n[0])
                           .join("")
@@ -54,12 +56,12 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
                       </AvatarFallback>
                     </Avatar>
                   ))}
-                  {boardMembers.length > 4 && (
+                  {workspaceMembers.length > 4 && (
                     <div className="h-7 w-7 rounded-full bg-muted border-2 border-background flex items-center justify-center">
-                      <span className="text-xs text-muted-foreground">+{boardMembers.length - 4}</span>
+                      <span className="text-xs text-muted-foreground">+{workspaceMembers.length - 4}</span>
                     </div>
                   )}
-                </div> */}
+                </div>
               </div>
 
               <Button variant="outline" size="sm" onClick={() => setShowTeamManagement(true)}>
@@ -71,7 +73,7 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
         </div>
       </div>
 
-      {/* <TeamManagementDialog open={showTeamManagement} onOpenChange={setShowTeamManagement} board={board} /> */}
+      <TeamManagementDialog open={showTeamManagement} onOpenChange={setShowTeamManagement} workspace={workspace} />
     </>
   )
 }

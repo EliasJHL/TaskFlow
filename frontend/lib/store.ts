@@ -3,17 +3,27 @@
 import { create } from "zustand"
 import { User } from "@/lib/auth"
 import { apolloClient } from "./apollo-client"
-import { WORKSPACES_QUERY, WORKSPACE_QUERY } from "./graphql/workspaces/query"
-import { BOARDS_QUERY } from "./graphql/boards/query"
-import { LISTS_QUERY } from "./graphql/lists/query"
+//====================== Lists =====================//
 import { CREATE_LIST_MUTATION } from "./graphql/lists/mutations"
+import { LISTS_QUERY } from "./graphql/lists/query"
+//====================== Workspaces =====================//
 import { CREATE_WORKSPACE_MUTATION } from "./graphql/workspaces/mutations"
+import { WORKSPACES_QUERY, WORKSPACE_QUERY } from "./graphql/workspaces/query"
+//====================== Boards =====================//
+import { CREATE_BOARD_MUTATION } from "./graphql/boards/mutations"
+import { BOARDS_QUERY } from "./graphql/boards/query"
 
 export interface Workspace {
   workspaceId: string
   name: string
   description?: string
-  owner: string
+  ownerId: string
+  owner: {
+    user_id: string
+    username: string
+    email: string
+    picture?: string
+  }
   color: string
   boards: string[]
   members: User[]
@@ -34,6 +44,13 @@ export interface Board {
   workspaceId: string
   lists: string[]
   labels: string[]
+}
+
+export interface CreateBoardPayload {
+    title: string
+    description?: string
+    color: string
+    workspaceId: string
 }
 
 export interface List {
@@ -103,7 +120,7 @@ interface AppState {
 
   getBoards: (workspaceId: string) => Promise<void>
   getBoard: (boardId: string) => Promise<void>
-  createBoard: (board: Omit<Board, "boardId">) => void
+  createBoard: (board: CreateBoardPayload) => void
   updateBoard: (id: string, updates: Partial<Board>) => void
   deleteBoard: (id: string) => void
   setCurrentBoard: (board: Board | null) => void
@@ -145,7 +162,13 @@ export const useStore = create<AppState>((set, get) => ({
           workspaceId: ws.workspace_id,
           name: ws.name,
           description: ws.description,
-          owner: ws.owner_id,
+          ownerId: ws.owner_id,
+          owner: {
+            user_id: ws.owner.user_id,
+            username: ws.owner.username,
+            email: ws.owner.email,
+            picture: ws.owner.picture
+          },
           color: ws.color,
           boards: ws.boards || [],
           members: ws.members?.map((m: any) => ({
@@ -181,7 +204,13 @@ export const useStore = create<AppState>((set, get) => ({
           workspaceId: data.workspace.workspace_id,
           name: data.workspace.name,
           description: data.workspace.description || '',
-          owner: data.workspace.owner_id,
+          ownerId: data.workspace.owner_id,
+          owner: {
+            user_id: data.workspace.owner.user_id,
+            username: data.workspace.owner.username,
+            email: data.workspace.owner.email,
+            picture: data.workspace.owner.picture
+          },
           color: data.workspace.color,
           boards: [],
           members: data.workspace.members?.map((m: any) => ({
@@ -325,21 +354,21 @@ export const useStore = create<AppState>((set, get) => ({
 
   createWorkspace: async (workspace: CreateWorkspacePayload) => {
     try {
-    const { data } = await apolloClient.mutate<{ 
-      createWorkspace: { workspace: Workspace } 
-    }>({
-      mutation: CREATE_WORKSPACE_MUTATION,
-      variables: { 
-        input: {
-          name: workspace.name, 
-          description: workspace.description, 
-          color: workspace.color 
-        } 
-      },
-    })
-  } catch (error) {
-    console.error('Error creating workspace:', error)
-  }
+        const { data } = await apolloClient.mutate<{ 
+            createWorkspace: { workspace: Workspace } 
+        }>({
+            mutation: CREATE_WORKSPACE_MUTATION,
+            variables: { 
+            input: {
+                name: workspace.name, 
+                description: workspace.description, 
+                color: workspace.color 
+            } 
+            },
+        })
+    } catch (error) {
+        console.error('Error creating workspace:', error)
+    }
   },
   
   updateWorkspace: (id, updates) =>
@@ -357,10 +386,25 @@ export const useStore = create<AppState>((set, get) => ({
   setCurrentWorkspace: (workspace: Workspace | null) =>
     set({ currentWorkspace: workspace }),
 
-  createBoard: (board) =>
-    set((state) => ({
-      boards: [...state.boards, { ...board } as Board],
-    })),
+  createBoard: async (board: CreateBoardPayload) => {
+    try {
+        const { data } = await apolloClient.mutate<{ 
+            createBoard: { board: Board } 
+        }>({
+            mutation: CREATE_BOARD_MUTATION,
+            variables: { 
+            input: {
+                title: board.title, 
+                description: board.description, 
+                color: board.color,
+                workspace_id: board.workspaceId 
+            } 
+            },
+        })
+    } catch (error) {
+      console.error('Error creating board:', error)
+    }
+  },
   
   updateBoard: (id, updates) =>
     set((state) => ({

@@ -1,9 +1,9 @@
-// components/workspace/boards-grid-detailed.tsx
 "use client"
 
 import { Board } from "@/lib/store"
 import { useRouter } from "next/navigation"
 import { Plus, MoreVertical, Star, Users, Clock } from "lucide-react"
+import { CreateBoardDialog } from "@/components/workspace/create-board-dialog"
 
 interface BoardsGridProps {
   boards: Board[]
@@ -16,10 +16,7 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">Your Boards</h2>
-        <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90">
-          <Plus className="w-4 h-4" />
-          New Board
-        </button>
+        <CreateBoardDialog />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
