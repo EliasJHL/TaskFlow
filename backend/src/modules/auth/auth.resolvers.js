@@ -7,6 +7,7 @@
 
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import { sign } from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -26,8 +27,8 @@ const authResolvers = {
       if (context.reply) {
         context.reply.setCookie('session', jwtToken, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+          secure: false,
+          sameSite: 'lax',
           path: '/',
           maxAge: 7 * 24 * 3600,
         });
@@ -54,7 +55,7 @@ const authResolvers = {
         context.reply.setCookie('session', jwtToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
-          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+          sameSite: 'lax',
           path: '/',
           maxAge: 7 * 24 * 3600,
         });
@@ -66,8 +67,8 @@ const authResolvers = {
       if (context.reply) {
         context.reply.clearCookie('session', {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+          secure: false,
+          sameSite: 'lax',
           path: '/',
         });
       }

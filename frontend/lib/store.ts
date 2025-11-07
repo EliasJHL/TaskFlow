@@ -7,6 +7,7 @@ import { WORKSPACES_QUERY, WORKSPACE_QUERY } from "./graphql/workspaces/query"
 import { BOARDS_QUERY } from "./graphql/boards/query"
 import { LISTS_QUERY } from "./graphql/lists/query"
 import { CREATE_LIST_MUTATION } from "./graphql/lists/mutations"
+import { CREATE_WORKSPACE_MUTATION } from "./graphql/workspaces/mutations"
 
 export interface Workspace {
   workspaceId: string
@@ -17,6 +18,12 @@ export interface Workspace {
   boards: string[]
   members: User[]
   isPinned: boolean
+}
+
+export interface CreateWorkspacePayload {
+  name: string
+  description?: string
+  color: string
 }
 
 export interface Board {
@@ -89,7 +96,7 @@ interface AppState {
 
   getWorkspaces: () => Promise<void>
   getWorkspace: (workspaceId: string) => Promise<void>
-  createWorkspace: (workspace: Omit<Workspace, "workspaceId">) => void
+  createWorkspace: (workspace: CreateWorkspacePayload) => void
   updateWorkspace: (id: string, updates: Partial<Workspace>) => void
   deleteWorkspace: (id: string) => void
   setCurrentWorkspace: (workspace: Workspace | null) => void
@@ -316,10 +323,24 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
-  createWorkspace: (workspace) =>
-    set((state) => ({
-      workspaces: [...state.workspaces, { ...workspace } as Workspace],
-    })),
+  createWorkspace: async (workspace: CreateWorkspacePayload) => {
+    try {
+    const { data } = await apolloClient.mutate<{ 
+      createWorkspace: { workspace: Workspace } 
+    }>({
+      mutation: CREATE_WORKSPACE_MUTATION,
+      variables: { 
+        input: {
+          name: workspace.name, 
+          description: workspace.description, 
+          color: workspace.color 
+        } 
+      },
+    })
+  } catch (error) {
+    console.error('Error creating workspace:', error)
+  }
+  },
   
   updateWorkspace: (id, updates) =>
     set((state) => ({
@@ -361,7 +382,7 @@ export const useStore = create<AppState>((set, get) => ({
       set({ isLoading: true })
       const input = {
         title: list.title,
-        board_id: list.board.boardId,  // envoyer l'ID du board, pas l'objet complet
+        board_id: list.board.boardId,
         position: list.position,
         color: list.color,
       };

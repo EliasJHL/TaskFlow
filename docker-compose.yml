@@ -1,0 +1,36 @@
+services:
+    taskflow-backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        ports:
+            - "8000:3000"
+        depends_on:
+            - postgres-db
+        volumes:
+            - ./backend:/app
+    taskflow-frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        depends_on:
+            - taskflow-backend
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+    postgres-db:
+        image: postgres:15
+        restart: always
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: postgres
+        ports:
+            - "51214:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+
+volumes:
+    pgdata:

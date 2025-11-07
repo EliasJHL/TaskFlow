@@ -44,7 +44,7 @@ await app.register(cookie, {
 await app.register(jwt, { secret: process.env.JWT_SECRET,
   cookie: {
     cookieName: 'session',
-    signed: true
+    signed: false
   },
   sign: {
     expiresIn: '7d'
