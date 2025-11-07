@@ -65,7 +65,7 @@ export default function DashboardPage() {
             {isLoading ? (
               <WorkspacesGridSkeleton />
             ) : (
-              <WorkspacesGrid workspaces={workspaces.filter(w => w.owner === user?.user_id)} />
+              <WorkspacesGrid workspaces={workspaces.filter(w => w.owner.user_id === user?.user_id)} />
             )}
           </div>
 

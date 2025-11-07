@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2025
-** TaskFlow
-** File description:
-** query
-*/
-
 import { gql } from '@apollo/client';
 
 export const WORKSPACES_QUERY = gql`
@@ -14,41 +7,33 @@ export const WORKSPACES_QUERY = gql`
       name
       description
       owner_id
+      owner {
+        user_id
+        username
+        email
+        picture
+      }
       color
       is_pinned
-      members {
-        workspace_id
-        role
-        user {
-          user_id
-          username
-          email
-          picture
-        }
-      }
     }
   }
 `;
 
 export const WORKSPACE_QUERY = gql`
-  query GetWorkspace($workspace_id: ID!) {
+  query Workspace($workspace_id: ID!) {
     workspace(workspace_id: $workspace_id) {
       workspace_id
       name
       description
       owner_id
+      owner {
+        user_id
+        username
+        email
+        picture
+      }
       color
       is_pinned
-      members {
-        workspace_id
-        role
-        user {
-          user_id
-          username
-          email
-          picture
-        }
-      }
     }
   }
-`
+`;

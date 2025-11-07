@@ -6,6 +6,8 @@
  */
 
 import { PrismaClient } from '@prisma/client';
+import { GraphQLError } from 'graphql';
+
 const prisma = new PrismaClient();
 
 const workspaceResolvers = {
@@ -25,7 +27,12 @@ const workspaceResolvers = {
                     members: {
                         include: {
                             user: {
-                                select: { user_id: true, email: true, username: true }
+                                select: { 
+                                    user_id: true, 
+                                    email: true, 
+                                    username: true,
+                                    picture: true
+                                }
                             }
                         }
                     }
@@ -58,7 +65,16 @@ const workspaceResolvers = {
                 include: {
                     owner: true,
                     members: {
-                        include: { user: { select: { user_id: true, email: true, username: true } } }
+                        include: { 
+                            user: { 
+                                select: { 
+                                    user_id: true, 
+                                    email: true, 
+                                    username: true,
+                                    picture: true
+                                } 
+                            } 
+                        }
                     }
                 }
             });
@@ -74,6 +90,57 @@ const workspaceResolvers = {
                 is_pinned: !!pinned
             };
         },
+
+        workspaceMembers: async (_, { workspace_id }, { user }) => {
+            if (!user) {
+                throw new GraphQLError('Not authenticated', {
+                    extensions: { code: 'UNAUTHENTICATED' }
+                });
+            }
+
+            // Vérifier l'accès au workspace
+            const workspace = await prisma.workspace.findUnique({
+                where: { workspace_id },
+                include: {
+                    members: {
+                        where: { user_id: user.user_id }
+                    }
+                }
+            });
+
+            if (!workspace) {
+                throw new GraphQLError('Workspace not found', {
+                    extensions: { code: 'NOT_FOUND' }
+                });
+            }
+
+            const isOwner = workspace.owner_id === user.user_id;
+            const isMember = workspace.members.length > 0;
+
+            if (!isOwner && !isMember) {
+                throw new GraphQLError('Not authorized', {
+                    extensions: { code: 'FORBIDDEN' }
+                });
+            }
+
+            // Récupérer tous les membres
+            const members = await prisma.workspaceMember.findMany({
+                where: { workspace_id },
+                include: {
+                    user: {
+                        select: {
+                            user_id: true,
+                            username: true,
+                            email: true,
+                            picture: true
+                        }
+                    }
+                },
+                orderBy: { joined_at: 'asc' }
+            });
+
+            return members;
+        },
     },
 
     Mutation: {
@@ -82,50 +149,63 @@ const workspaceResolvers = {
 
             const { name, description, color } = input;
 
-            const [workspace] = await prisma.$transaction([
-                prisma.workspace.create({
-                    data: {
-                        name,
-                        description,
-                        owner_id: user.user_id,
-                        color: color || "#1F1F1FFF"
-                    }
-                }),
-            ].map(p => p).slice(0, 1));
-
-            await prisma.workspaceMembers.create({
+            const workspace = await prisma.workspace.create({
                 data: {
-                    workspace_id: workspace.workspace_id,
-                    user_id: user.user_id,
-                    role: 'Admin'
-                }
-            });
-
-            const fullWorkspace = await prisma.workspace.findUnique({
-                where: { workspace_id: workspace.workspace_id },
+                    name,
+                    description,
+                    owner_id: user.user_id,
+                    color: color || "#1F1F1FFF"
+                },
                 include: {
                     owner: true,
-                    members: { include: { user: { select: { user_id: true, email: true, username: true } } } }
+                    members: { 
+                        include: { 
+                            user: { 
+                                select: { 
+                                    user_id: true, 
+                                    email: true, 
+                                    username: true,
+                                    picture: true
+                                } 
+                            } 
+                        } 
+                    }
                 }
             });
 
-            return { workspace: {...fullWorkspace, is_pinned: false } };
+            return { workspace: {...workspace, is_pinned: false } };
         },
 
         updateWorkspace: async(_, { workspace_id, input }, { user }) => {
             if (!user) throw new Error('Unauthorized');
 
             const ws = await prisma.workspace.findUnique({ where: { workspace_id } });
-            const wms = await prisma.workspaceMembers.findFirst({ where: { workspace_id, user_id: user.user_id } });
+            const wms = await prisma.workspaceMember.findFirst({ 
+                where: { workspace_id, user_id: user.user_id } 
+            });
+            
             if (!ws || !wms) throw new Error('Workspace not found');
-            if (wms.role !== 'Admin' && ws.owner_id !== user.user_id) throw new Error("Forbidden: You don't have permission to update this workspace");
+            if (wms.role !== 'ADMIN' && ws.owner_id !== user.user_id) {
+                throw new Error("Forbidden: You don't have permission to update this workspace");
+            }
 
             const updated = await prisma.workspace.update({
                 where: { workspace_id },
                 data: input,
                 include: {
                     owner: true,
-                    members: { include: { user: { select: { user_id: true, email: true, username: true } } } }
+                    members: { 
+                        include: { 
+                            user: { 
+                                select: { 
+                                    user_id: true, 
+                                    email: true, 
+                                    username: true,
+                                    picture: true
+                                } 
+                            } 
+                        } 
+                    }
                 }
             });
 
@@ -140,16 +220,207 @@ const workspaceResolvers = {
             if (!user) throw new Error('Unauthorized');
 
             const ws = await prisma.workspace.findUnique({ where: { workspace_id } });
-            const wms = await prisma.workspaceMembers.findFirst({ where: { workspace_id, user_id: user.user_id } });
+            const wms = await prisma.workspaceMember.findFirst({ 
+                where: { workspace_id, user_id: user.user_id } 
+            });
+            
             if (!ws || !wms) throw new Error('Workspace not found');
-            if (wms.role !== 'Admin' && ws.owner_id !== user.user_id) throw new Error("Forbidden: You don't have permission to delete this workspace");
+            if (wms.role !== 'ADMIN' && ws.owner_id !== user.user_id) {
+                throw new Error("Forbidden: You don't have permission to delete this workspace");
+            }
 
             await prisma.$transaction([
-                prisma.workspaceMembers.deleteMany({ where: { workspace_id } }),
+                prisma.workspaceMember.deleteMany({ where: { workspace_id } }),
                 prisma.pinnedWorkspace.deleteMany({ where: { workspace_id } }),
                 prisma.workspace.delete({ where: { workspace_id } })
             ]);
+            
             return { success: true, message: 'Workspace deleted successfully' };
+        },
+
+        addWorkspaceMember: async (_, { input }, { user }) => {
+            const { workspace_id, user_email, role } = input;
+
+            if (!user) {
+                throw new GraphQLError('Not authenticated', {
+                    extensions: { code: 'UNAUTHENTICATED' }
+                });
+            }
+
+            const workspace = await prisma.workspace.findUnique({
+                where: { workspace_id },
+                include: {
+                    members: {
+                        where: { user_id: user.user_id }
+                    }
+                }
+            });
+
+            if (!workspace) {
+                throw new GraphQLError('Workspace not found', {
+                    extensions: { code: 'NOT_FOUND' }
+                });
+            }
+
+            const isOwner = workspace.owner_id === user.user_id;
+            const isAdmin = workspace.members.some(
+                m => m.user_id === user.user_id && m.role === 'ADMIN'
+            );
+
+            if (!isOwner && !isAdmin) {
+                throw new GraphQLError('Insufficient permissions', {
+                    extensions: { code: 'FORBIDDEN' }
+                });
+            }
+
+            const userToAdd = await prisma.user.findUnique({
+                where: { email: user_email }
+            });
+
+            if (!userToAdd) {
+                throw new GraphQLError('User not found', {
+                    extensions: { code: 'NOT_FOUND' }
+                });
+            }
+
+            const existingMember = await prisma.workspaceMember.findUnique({
+                where: {
+                    workspace_id_user_id: {
+                        workspace_id,
+                        user_id: userToAdd.user_id
+                    }
+                }
+            });
+
+            if (existingMember) {
+                throw new GraphQLError('User is already a member', {
+                    extensions: { code: 'CONFLICT' }
+                });
+            }
+
+            const member = await prisma.workspaceMember.create({
+                data: {
+                    workspace_id,
+                    user_id: userToAdd.user_id,
+                    role: role || 'MEMBER'
+                },
+                include: {
+                    user: true
+                }
+            });
+
+            return member;
+        },
+
+        removeWorkspaceMember: async (_, { workspace_id, user_id }, { user }) => {
+            if (!user) {
+                throw new GraphQLError('Not authenticated', {
+                    extensions: { code: 'UNAUTHENTICATED' }
+                });
+            }
+
+            const workspace = await prisma.workspace.findUnique({
+                where: { workspace_id },
+                include: {
+                    members: {
+                        where: { user_id: user.user_id }
+                    }
+                }
+            });
+
+            if (!workspace) {
+                throw new GraphQLError('Workspace not found', {
+                    extensions: { code: 'NOT_FOUND' }
+                });
+            }
+
+            const isOwner = workspace.owner_id === user.user_id;
+            const isAdmin = workspace.members.some(
+                m => m.user_id === user.user_id && m.role === 'ADMIN'
+            );
+
+            if (!isOwner && !isAdmin && user.user_id !== user_id) {
+                throw new GraphQLError('Insufficient permissions', {
+                    extensions: { code: 'FORBIDDEN' }
+                });
+            }
+
+            if (user_id === workspace.owner_id) {
+                throw new GraphQLError('Cannot remove workspace owner', {
+                    extensions: { code: 'FORBIDDEN' }
+                });
+            }
+
+            await prisma.workspaceMember.delete({
+                where: {
+                    workspace_id_user_id: {
+                        workspace_id,
+                        user_id
+                    }
+                }
+            });
+
+            return {
+                success: true,
+                message: 'Member removed successfully'
+            };
+        },
+
+        updateMemberRole: async (_, { input }, { user }) => {
+            const { workspace_id, user_id, role } = input;
+
+            if (!user) {
+                throw new GraphQLError('Not authenticated', {
+                    extensions: { code: 'UNAUTHENTICATED' }
+                });
+            }
+
+            const workspace = await prisma.workspace.findUnique({
+                where: { workspace_id },
+                include: {
+                    members: {
+                        where: { user_id: user.user_id }
+                    }
+                }
+            });
+
+            if (!workspace) {
+                throw new GraphQLError('Workspace not found', {
+                    extensions: { code: 'NOT_FOUND' }
+                });
+            }
+
+            const isOwner = workspace.owner_id === user.user_id;
+            const isAdmin = workspace.members.some(
+                m => m.user_id === user.user_id && m.role === 'ADMIN'
+            );
+
+            if (!isOwner && !isAdmin) {
+                throw new GraphQLError('Insufficient permissions', {
+                    extensions: { code: 'FORBIDDEN' }
+                });
+            }
+
+            if (user_id === workspace.owner_id) {
+                throw new GraphQLError('Cannot change owner role', {
+                    extensions: { code: 'FORBIDDEN' }
+                });
+            }
+
+            const updatedMember = await prisma.workspaceMember.update({
+                where: {
+                    workspace_id_user_id: {
+                        workspace_id,
+                        user_id
+                    }
+                },
+                data: { role },
+                include: {
+                    user: true
+                }
+            });
+
+            return updatedMember;
         }
     }
 };

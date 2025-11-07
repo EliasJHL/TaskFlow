@@ -23,7 +23,7 @@ type Workspace {
   color: String!
   description: String
   owner_id: ID!
-  owner: User
+  owner: User!
   members: [WorkspaceMembers!]!
   boards: [Board]
   is_pinned: Boolean!
@@ -99,6 +99,14 @@ type CardMember {
   user_id: ID!
 }
 
+type WorkspaceMember {
+  workspace_id: ID!
+  user_id: ID!
+  role: String!
+  user: User!
+  workspace: Workspace!
+}
+
 # Root query type
 type Query {
   users: [User]
@@ -117,6 +125,7 @@ type Query {
   card(card_id: ID!): Card
   labels(board_id: ID!): [Label]
   comments(card_id: ID!): [Comment]
+  workspaceMembers(workspace_id: ID!): [WorkspaceMember!]!
 }
 
 # Input types for mutations
@@ -131,6 +140,18 @@ input UpdateUserInput {
   username: String
   email: String
   password: String
+}
+
+input AddWorkspaceMemberInput {
+  workspace_id: ID!
+  user_email: String!
+  role: Role
+}
+
+input UpdateMemberRoleInput {
+  workspace_id: ID!
+  user_id: ID!
+  role: Role!
 }
 
 input LoginInput {
@@ -246,9 +267,13 @@ input UpdateCommentInput {
 
 # Root mutation type
 type Mutation {
+  # Users
   createUser(input: CreateUserInput!): User
   updateUser(input: UpdateUserInput!): User
   deleteUser(user_id: ID!): User
+  addWorkspaceMember(input: AddWorkspaceMemberInput!): WorkspaceMembers!
+  removeWorkspaceMember(workspace_id: ID!, user_id: ID!): Status!
+  updateMemberRole(input: UpdateMemberRoleInput!): WorkspaceMembers!
 
   login(input: LoginInput!): AuthPayload
   register(input: RegisterInput!): AuthPayload
