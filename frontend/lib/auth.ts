@@ -13,14 +13,15 @@ export interface User {
 }
 
 interface WorkspaceMember {
-  workspace_member_id: string;
+  workspace_id: string;
+  user_id: string;
   user: {
     user_id: string;
     username: string;
     email: string;
     picture?: string;
   };
-  role: 'VIEWER' | 'MEMBER' | 'ADMIN';
+  role: 'Admin' | 'Member' | 'Viewer';
   joined_at: string;
 }
 

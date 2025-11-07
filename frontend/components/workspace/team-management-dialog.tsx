@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useAuth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -32,7 +32,7 @@ interface TeamManagementDialogProps {
 
 export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamManagementDialogProps) {
   const [newMemberEmail, setNewMemberEmail] = useState("")
-  const [newMemberRole, setNewMemberRole] = useState<"VIEWER" | "MEMBER" | "ADMIN">("MEMBER")
+  const [newMemberRole, setNewMemberRole] = useState<"Viewer" | "Member" | "Admin">("Member")
   const [isLoading, setIsLoading] = useState(false)
   const [isAddingMember, setIsAddingMember] = useState(false)
 
@@ -40,17 +40,17 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
   const { toast } = useToast()
 
   // Créer la liste complète incluant le propriétaire
-  const allMembers = [
-    // Propriétaire en premier
-    {
-      workspace_member_id: `owner-${workspace.ownerId}`,
-      user: workspace.owner,
-      role: 'OWNER' as const,
-      joined_at: new Date().toISOString()
-    },
-    // Puis les autres membres
-    ...members
-  ]
+  const allMembers = useMemo(() => {
+    return [
+      {
+        workspace_id: workspace.workspaceId,
+        user_id: workspace.ownerId,
+        user: workspace.owner,
+        role: 'OWNER' as const
+      },
+      ...members
+    ];
+  }, [workspace, members]);
 
   useEffect(() => {
     if (open && workspace.workspaceId) {
@@ -78,7 +78,6 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
       return
     }
 
-    // Vérifier si c'est le propriétaire
     if (newMemberEmail.trim() === workspace.owner.email) {
       toast({
         title: "Membre existant",
@@ -108,7 +107,7 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
       })
 
       setNewMemberEmail("")
-      setNewMemberRole("MEMBER")
+      setNewMemberRole("Member")
     } catch (error: any) {
       console.error('Error adding member:', error)
       
@@ -200,7 +199,6 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Membres actuels */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">
               Membres actuels ({allMembers.length})
@@ -217,7 +215,7 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
                   const isCurrentUser = member.user.user_id === currentUser?.user_id
 
                   return (
-                    <div key={member.workspace_member_id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={`${member.workspace_id}-${member.user_id}`} className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center gap-3 flex-1">
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={member.user.picture} alt={member.user.username} />
@@ -248,9 +246,9 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="ADMIN">Admin</SelectItem>
-                              <SelectItem value="MEMBER">Member</SelectItem>
-                              <SelectItem value="VIEWER">Viewer</SelectItem>
+                              <SelectItem value="Admin">Admin</SelectItem>
+                              <SelectItem value="Member">Member</SelectItem>
+                              <SelectItem value="Viewer">Viewer</SelectItem>
                             </SelectContent>
                           </Select>
                         )}
@@ -273,7 +271,6 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
             )}
           </div>
 
-          {/* Inviter un nouveau membre */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">Inviter un nouveau membre</Label>
             <div className="space-y-3">
@@ -301,15 +298,15 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
                 </Label>
                 <Select 
                   value={newMemberRole} 
-                  onValueChange={(value: "VIEWER" | "MEMBER" | "ADMIN") => setNewMemberRole(value)}
+                  onValueChange={(value: "Viewer" | "Member" | "Admin") => setNewMemberRole(value)}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ADMIN">Administrator</SelectItem>
-                    <SelectItem value="MEMBER">Member</SelectItem>
-                    <SelectItem value="VIEWER">Viewer</SelectItem>
+                    <SelectItem value="Admin">Administrator</SelectItem>
+                    <SelectItem value="Member">Member</SelectItem>
+                    <SelectItem value="Viewer">Viewer</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

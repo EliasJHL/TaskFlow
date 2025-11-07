@@ -98,7 +98,6 @@ const workspaceResolvers = {
                 });
             }
 
-            // Vérifier l'accès au workspace
             const workspace = await prisma.workspace.findUnique({
                 where: { workspace_id },
                 include: {
@@ -123,8 +122,7 @@ const workspaceResolvers = {
                 });
             }
 
-            // Récupérer tous les membres
-            const members = await prisma.workspaceMember.findMany({
+            const members = await prisma.workspaceMembers.findMany({
                 where: { workspace_id },
                 include: {
                     user: {
@@ -136,7 +134,7 @@ const workspaceResolvers = {
                         }
                     }
                 },
-                orderBy: { joined_at: 'asc' }
+                orderBy: { user_id: 'asc' }
             });
 
             return members;
@@ -180,12 +178,12 @@ const workspaceResolvers = {
             if (!user) throw new Error('Unauthorized');
 
             const ws = await prisma.workspace.findUnique({ where: { workspace_id } });
-            const wms = await prisma.workspaceMember.findFirst({ 
+            const wms = await prisma.workspaceMembers.findFirst({ 
                 where: { workspace_id, user_id: user.user_id } 
             });
             
             if (!ws || !wms) throw new Error('Workspace not found');
-            if (wms.role !== 'ADMIN' && ws.owner_id !== user.user_id) {
+            if (wms.role !== 'Admin' && ws.owner_id !== user.user_id) {
                 throw new Error("Forbidden: You don't have permission to update this workspace");
             }
 
@@ -220,17 +218,17 @@ const workspaceResolvers = {
             if (!user) throw new Error('Unauthorized');
 
             const ws = await prisma.workspace.findUnique({ where: { workspace_id } });
-            const wms = await prisma.workspaceMember.findFirst({ 
+            const wms = await prisma.workspaceMembers.findFirst({ 
                 where: { workspace_id, user_id: user.user_id } 
             });
             
             if (!ws || !wms) throw new Error('Workspace not found');
-            if (wms.role !== 'ADMIN' && ws.owner_id !== user.user_id) {
+            if (wms.role !== 'Admin' && ws.owner_id !== user.user_id) {
                 throw new Error("Forbidden: You don't have permission to delete this workspace");
             }
 
             await prisma.$transaction([
-                prisma.workspaceMember.deleteMany({ where: { workspace_id } }),
+                prisma.workspaceMembers.deleteMany({ where: { workspace_id } }),
                 prisma.pinnedWorkspace.deleteMany({ where: { workspace_id } }),
                 prisma.workspace.delete({ where: { workspace_id } })
             ]);
@@ -264,7 +262,7 @@ const workspaceResolvers = {
 
             const isOwner = workspace.owner_id === user.user_id;
             const isAdmin = workspace.members.some(
-                m => m.user_id === user.user_id && m.role === 'ADMIN'
+                m => m.user_id === user.user_id && m.role === 'Admin'
             );
 
             if (!isOwner && !isAdmin) {
@@ -283,7 +281,7 @@ const workspaceResolvers = {
                 });
             }
 
-            const existingMember = await prisma.workspaceMember.findUnique({
+            const existingMember = await prisma.workspaceMembers.findUnique({
                 where: {
                     workspace_id_user_id: {
                         workspace_id,
@@ -298,11 +296,11 @@ const workspaceResolvers = {
                 });
             }
 
-            const member = await prisma.workspaceMember.create({
+            const member = await prisma.workspaceMembers.create({
                 data: {
                     workspace_id,
                     user_id: userToAdd.user_id,
-                    role: role || 'MEMBER'
+                    role: role || 'Member'
                 },
                 include: {
                     user: true
@@ -336,7 +334,7 @@ const workspaceResolvers = {
 
             const isOwner = workspace.owner_id === user.user_id;
             const isAdmin = workspace.members.some(
-                m => m.user_id === user.user_id && m.role === 'ADMIN'
+                m => m.user_id === user.user_id && m.role === 'Admin'
             );
 
             if (!isOwner && !isAdmin && user.user_id !== user_id) {
@@ -351,7 +349,7 @@ const workspaceResolvers = {
                 });
             }
 
-            await prisma.workspaceMember.delete({
+            await prisma.workspaceMembers.delete({
                 where: {
                     workspace_id_user_id: {
                         workspace_id,
@@ -392,7 +390,7 @@ const workspaceResolvers = {
 
             const isOwner = workspace.owner_id === user.user_id;
             const isAdmin = workspace.members.some(
-                m => m.user_id === user.user_id && m.role === 'ADMIN'
+                m => m.user_id === user.user_id && m.role === 'Admin'
             );
 
             if (!isOwner && !isAdmin) {
@@ -407,7 +405,7 @@ const workspaceResolvers = {
                 });
             }
 
-            const updatedMember = await prisma.workspaceMember.update({
+            const updatedMember = await prisma.workspaceMembers.update({
                 where: {
                     workspace_id_user_id: {
                         workspace_id,
