@@ -10,12 +10,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useAuth } from "@/lib/auth"
 import { useToast } from "@/hooks/use-toast"
 import { redirect } from "next/dist/server/api-utils"
+import { useTranslation } from "react-i18next";
 
-export function LoginForm() {
+export function LoginForm({ lang }: { lang: string }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
+  const {t} = useTranslation("common")
   
   const { toast } = useToast()
 
@@ -27,21 +29,21 @@ export function LoginForm() {
       const success = await login(email, password)
       if (success) {
         toast({
-          title: "Connexion réussie",
-          description: "Bienvenue dans votre espace de travail !",
+          title: t("login_success"),
+          description: t("login_success_description"),
         })
-        window.location.href = "/dashboard"
+        window.location.href = `/${lang}/dashboard`
       } else {
         toast({
-          title: "Erreur de connexion",
-          description: "Email ou mot de passe incorrect",
+          title: t("login_fail"),
+          description: t("login_fail_description"),
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la connexion",
+        title: t("login_error"),
+        description: t("login_error_description"),
         variant: "destructive",
       })
     } finally {
@@ -55,7 +57,7 @@ export function LoginForm() {
     <form onSubmit={handleSubmit} className="space-y-2">
       <div className="space-y-2">
         <Label htmlFor="email">
-          Email <span className="text-red-500">*</span>
+          {t("email")} <span className="text-red-500">*</span>
         </Label>
         <Input
           id="email"
@@ -68,7 +70,7 @@ export function LoginForm() {
       </div>
       <div className="space-y-3 pt-2">
         <Label htmlFor="password">
-          Password <span className="text-red-500">*</span>
+          {t("password")} <span className="text-red-500">*</span>
         </Label>
         <Input
           id="password"
@@ -81,11 +83,11 @@ export function LoginForm() {
       </div>
       <div className="text-sm text-muted-foreground text-right mb-2 pt-1">
         <a href="#" className="hover:underline">
-          Forgot password?
+          {t("login_forgot_password")}
         </a>
       </div>
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Signing in..." : "Sign In"}
+        {isLoading ? t("logging_in") : t("login_login")}
       </Button>
     </form>
   </CardContent>

@@ -144,6 +144,10 @@ interface AppState {
   updateList: (listId: string, updates: Partial<List>) => void
   deleteList: (listId: string) => void
 
+  getLabels: (boardId: string) => Promise<void>
+  createLabel: (label: Omit<Label, "labelId">) => void
+  deleteLabel: (labelId: string) => void
+
   createCard: (card: Omit<Card, "cardId">) => void
   updateCard: (id: string, updates: Partial<Card>) => void
   deleteCard: (id: string) => void
@@ -580,6 +584,43 @@ export const useStore = create<AppState>((set, get) => ({
         throw error
     }
   },
+
+  getLabels: async (boardId: string) => {
+    try {
+      set({ isLoading: true })
+      // Assume we have a LABELS_QUERY to fetch labels
+      const { data } = await apolloClient.query<{ labels: any[] }>({
+        query: LABELS_QUERY,
+        variables: { board_id: boardId },
+        fetchPolicy: "network-only",
+      })
+      
+      if (data?.labels) {
+        const transformedLabels: Label[] = data.labels.map((l: any) => ({
+
+          labelId: l.label_id,
+          name: l.name,
+          color: l.color,
+          boardId: l.board_id,
+        }))
+        set({ labels: transformedLabels, isLoading: false })
+      }
+
+    } catch (error) {
+      console.error('Error fetching labels:', error)
+      set({ labels: [], isLoading: false })
+    }
+  },
+
+  createLabel: (label) =>
+    set((state) => ({
+      labels: [...state.labels, { ...label } as Label],
+    })),
+
+  deleteLabel: (labelId) =>
+    set((state) => ({
+      labels: state.labels.filter((l) => l.labelId !== labelId),
+    })),
 
   createCard: (card) =>
     set((state) => ({

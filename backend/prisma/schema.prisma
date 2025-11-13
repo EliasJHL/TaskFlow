@@ -121,7 +121,7 @@ model Label {
   name      String
   color     String
   board_id  String
-  board     Board    @relation(fields: [board_id], references: [board_id])
+  board     Board    @relation(fields: [board_id], references: [board_id]) // To change to be linked to the workspace and not the board
   card_labels CardLabel[]
 }
 

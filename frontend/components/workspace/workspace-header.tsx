@@ -10,6 +10,7 @@ import { Users, Settings } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { TeamManagementDialog } from "./team-management-dialog"
 import { Navigation } from "@/components/navigation"
+import { LabelsModal } from "@/components/workspace/labels-modal"
 
 interface WorkspaceHeaderProps {
   workspace: Workspace
@@ -20,6 +21,7 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
   const router = useRouter()
   const workspaceMembers = workspace.members || []
   const [showTeamManagement, setShowTeamManagement] = useState(false)
+  const [isLabelsModalOpen, setIsLabelsModalOpen] = useState(false)
 
   return (
     <>
@@ -38,10 +40,7 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
             </div>
 
             <div className="flex items-center gap-4">
-              <div
-                className="flex items-center gap-2 cursor-pointer hover:bg-muted rounded-lg p-2 transition-colors"
-                onClick={() => setShowTeamManagement(true)}
-              >
+              <div className="flex items-center gap-2 cursor-pointer hover:bg-muted rounded-lg p-2 transition-colors">
                 <Users className="h-4 w-4 text-muted-foreground" />
                 <div className="flex -space-x-2">
                   {workspaceMembers.slice(0, 4).map((member) => (
@@ -68,6 +67,14 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
                 <Settings className="h-4 w-4 mr-2" />
                 Équipe
               </Button>
+              <Button variant="outline" size="sm" onClick={() => setIsLabelsModalOpen(true)}>
+                <Settings className="h-4 w-4 mr-2" />
+                Labels
+              </Button>
+              <LabelsModal
+                open={isLabelsModalOpen}
+                onOpenChange={setIsLabelsModalOpen}
+              />
             </div>
           </div>
         </div>
