@@ -2,8 +2,10 @@
 
     "home": "Accueil",
     "back": "Retour",
+    "username": "Nom d'utilisateur",
     "email": "Email",
     "password": "Mot de passe",
+    "and": "et",
 
     "discover": "Découvrir",
     "dashboard": "Tableau de bord",
@@ -42,5 +44,27 @@
     "login_fail_description": "Veuillez vérifier vos informations et réessayer.",
     "login_forgot_password": "Mot de passe oublié ?",
     "login_login": "Se connecter",
-    "logging_in": "Connexion.."
+    "logging_in": "Connexion..",
+
+    "register_success": "Inscription réussie !",
+    "register_success_description": "Bienvenue dans votre espace de travail !",
+    "register_fail": "Échec de l'inscription",
+    "register_fail_description": "Veuillez vérifier vos informations et réessayer.",
+    "register_must_contain": "Votre mot de passe doit contenir :",
+    "register_eight_characters": "Au moins 8 caractères",
+    "register_one_uppercase": "Au moins une lettre majuscule",
+    "register_one_lowercase": "Au moins une lettre minuscule",
+    "register_one_number": "Au moins un chiffre",
+    "register_one_special_character": "Au moins un caractère spécial",
+    "register_btn": "S'inscrire",
+    "register_have_account": "Vous avez déjà un compte ?",
+    "register_sign_in": "Connectez-vous",
+    "register_btn_action": "Inscription..",
+    "register_title": "Bienvenue !",
+    "register_description": "Créez votre compte et organisez vos projets en quelques secondes",
+    "register_bubble": "Gratuit pour toujours",
+    "register_msg": "En vous inscrivant, vous acceptez nos",
+    "register_terms": "Conditions d'utilisation",
+    "register_privacy": "Politique de confidentialité"
+
 }
