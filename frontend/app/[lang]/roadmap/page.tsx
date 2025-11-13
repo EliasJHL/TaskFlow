@@ -21,7 +21,7 @@ export default function GlobalRoadmapPage() {
       redirect("/")
     }
   }, [user])
-
+  
   if (!user) {
     return null // Will redirect
   }

@@ -54,7 +54,7 @@ export default function RegisterPage({ params }: { params: { lang: string } }) {
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 {t("register_have_account")}{" "}
-                <Link href="/login" className="text-primary font-medium hover:underline">
+                <Link href={`/${lang}/login`} className="text-primary font-medium hover:underline">
                 {t("register_sign_in")}
                 </Link>
               </p>

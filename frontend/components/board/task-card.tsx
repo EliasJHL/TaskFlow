@@ -11,6 +11,7 @@ import { Calendar, AlertCircle } from "lucide-react"
 import { format, isBefore, addDays } from "date-fns"
 import { fr } from "date-fns/locale"
 import { TaskDetailDialog } from "./task-detail-dialog"
+import { useTranslation } from "react-i18next"
 
 interface TaskCardProps {
   card: CardTask
@@ -20,6 +21,8 @@ interface TaskCardProps {
 export function TaskCard({ card, index }: TaskCardProps) {
   const user = useAuth()
   const [showDetail, setShowDetail] = useState(false)
+  const { i18n } = useTranslation("common")
+  const currentLang = i18n.language
 
   const getDueDateStatus = (dueDate?: string) => {
     if (!dueDate) return null

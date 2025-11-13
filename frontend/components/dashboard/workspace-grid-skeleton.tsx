@@ -1,11 +1,6 @@
 "use client"
 
-import type { Workspace } from "@/lib/store"
 import { WorkspaceCardSkeleton } from "./workspace-card-skeleton"
-
-interface WorkspacesGridProps {
-  workspaces: Workspace[]
-}
 
 export function WorkspacesGridSkeleton() {
 

@@ -13,7 +13,7 @@ i18next
   )
   .init({
     fallbackLng: "en",
-    supportedLngs: ["en", "fr", "es"],
+    supportedLngs: ["en", "fr", "es", "ru", "ch", "de", "it"],
     defaultNS: "common",
     ns: ["common"],
     interpolation: { escapeValue: false },

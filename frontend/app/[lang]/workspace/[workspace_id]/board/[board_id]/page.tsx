@@ -3,15 +3,20 @@
 import { useAuth } from "@/lib/auth"
 import { useStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
-import { use, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { BoardHeader } from "@/components/board/board-header"
 import { BoardView } from "@/components/board/board-view"
+import { useTranslation } from "react-i18next"
 
-export default function BoardPage({
-  params,
-}: {
-  params: Promise<{ workspace_id: string; board_id: string }>
-}) {
+interface BoardPageProps {
+  params: { workspace_id: string; board_id: string }
+}
+
+export default function BoardPage({ params }: BoardPageProps) {
+  const { workspace_id: workspaceId, board_id: boardId } = params
+  const { t, i18n } = useTranslation("common")
+  const currentLang = i18n.language
+
   const { user } = useAuth()
   const router = useRouter()
   const board = useStore((state) => state.currentBoard)
@@ -20,33 +25,30 @@ export default function BoardPage({
   const getWorkspace = useStore((state) => state.getWorkspace)
   const workspace = useStore((state) => state.currentWorkspace)
   const isLoading = useStore((state) => state.isLoading)
-  const { workspace_id: workspaceId, board_id: boardId } = use(params)
 
   const hasLoadedRef = useRef<string | null>(null)
   const loadKey = `${workspaceId}-${boardId}`
 
   useEffect(() => {
     if (!user) {
-      router.push("/login")
+      router.push(`/${currentLang}/login`)
       return
     }
 
-    if (hasLoadedRef.current === loadKey) {
-      return
-    }
+    if (hasLoadedRef.current === loadKey) return
     hasLoadedRef.current = loadKey
-    
+
     const loadData = async () => {
       try {
         await getWorkspace(workspaceId)
         await getBoards(workspaceId)
-        await getBoard(boardId)        
+        await getBoard(boardId)
       } catch (error) {
         console.error('Error loading board page:', error)
       }
     }
-    loadData()    
-  }, [user, workspaceId, boardId])
+    loadData()
+  }, [user, workspaceId, boardId, getWorkspace, getBoards, getBoard, router, currentLang])
 
   if (!user) return null
 
@@ -59,7 +61,7 @@ export default function BoardPage({
             <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-5/6"></div>
             <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-2/3"></div>
           </div>
-          <p className="text-muted-foreground mt-4">Loading board...</p>
+          <p className="text-muted-foreground mt-4">{t("board_loading")}</p>
         </div>
       </div>
     )
@@ -70,13 +72,13 @@ export default function BoardPage({
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-xl text-muted-foreground mb-4">
-            {!workspace ? 'Workspace not found' : 'Board not found'}
+            {!workspace ? t("workspace_not_found") : t("board_not_found")}
           </p>
-          <button 
-            onClick={() => router.push('/dashboard')}
+          <button
+            onClick={() => router.push(`/${currentLang}/dashboard`)}
             className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
           >
-            Back to Dashboard
+            {t("back_to_dashboard")}
           </button>
         </div>
       </div>

@@ -4,8 +4,9 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { X, Plus, Tag } from "lucide-react"
+import { X, Plus } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useTranslation } from "react-i18next"
 
 const COLORS = [
   { name: "Gray", value: "#6B7280" },
@@ -39,6 +40,7 @@ interface LabelsModalProps {
 }
 
 export function LabelsModal({ open, onOpenChange }: LabelsModalProps) {
+  const { t } = useTranslation("common")
   const [labels, setLabels] = useState<Label[]>([])
   const [newLabel, setNewLabel] = useState("")
   const [selectedColor, setSelectedColor] = useState(COLORS[0].value)
@@ -66,18 +68,18 @@ export function LabelsModal({ open, onOpenChange }: LabelsModalProps) {
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-2">
-            <DialogTitle className="text-2xl">Manage labels</DialogTitle>
+            <DialogTitle className="text-2xl">{t("manage_labels")}</DialogTitle>
           </div>
-          <DialogDescription>Add or remove labels for your todo app</DialogDescription>
+          <DialogDescription>{t("labels_modal_description")}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 mt-4">
           <div className="p-6 rounded-2xl bg-background border border-border shadow-lg space-y-4">
-            <h3 className="text-lg font-semibold">New label</h3>
+            <h3 className="text-lg font-semibold">{t("new_label")}</h3>
 
             <div className="flex gap-2">
               <Input
-                placeholder="Label name..."
+                placeholder={t("label_name_placeholder")}
                 value={newLabel}
                 onChange={(e) => setNewLabel(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -93,7 +95,7 @@ export function LabelsModal({ open, onOpenChange }: LabelsModalProps) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Color</label>
+              <label className="text-sm font-medium">{t("color")}</label>
               <div className="flex flex-wrap gap-2">
                 {COLORS.map((color) => (
                   <button
@@ -112,15 +114,15 @@ export function LabelsModal({ open, onOpenChange }: LabelsModalProps) {
 
           <div className="p-6 rounded-2xl bg-muted/30 border border-border space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Labels</h3>
+              <h3 className="text-lg font-semibold">{t("labels")}</h3>
               <span className="text-sm text-muted-foreground">
-                {labels.length} label{labels.length > 1 ? "s" : ""}
+                {labels.length} {labels.length > 1 ? t("labels_plural") : t("labels_singular")}
               </span>
             </div>
 
             <div className="flex flex-wrap gap-3">
               {labels.length === 0 ? (
-                <p className="text-muted-foreground text-sm">No labels yet. Add one above!</p>
+                <p className="text-muted-foreground text-sm">{t("no_labels_yet")}</p>
               ) : (
                 labels.map((label) => (
                   <div
@@ -132,7 +134,7 @@ export function LabelsModal({ open, onOpenChange }: LabelsModalProps) {
                     <button
                       onClick={() => removeLabel(label.name)}
                       className="opacity-0 group-hover:opacity-100 hover:text-destructive transition-all ml-1"
-                      aria-label={`Remove ${label.name}`}
+                      aria-label={t("remove_label", { label: label.name })}
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>

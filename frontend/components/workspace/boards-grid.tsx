@@ -1,12 +1,12 @@
 "use client"
 
-import { Board } from "@/lib/store"
-import { useStore } from "@/lib/store"
+import { Board, useStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
 import { Plus, MoreVertical, Star, Trash2 } from "lucide-react"
 import { CreateBoardDialog } from "@/components/workspace/create-board-dialog"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { useState, useRef, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 
 interface BoardsGridProps {
   boards: Board[]
@@ -19,11 +19,12 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const { deleteBoard } = useStore()
+  const { t, i18n } = useTranslation("common")
+  const currentLang = i18n.language
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        console.log('Click outside menu, closing')
         setMenuOpen(null)
       }
     }
@@ -59,7 +60,7 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
     <>
       <div className="p-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">Your Boards</h2>
+          <h2 className="text-2xl font-bold">{t("your_boards")}</h2>
           <CreateBoardDialog />
         </div>
 
@@ -76,7 +77,7 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
                   backgroundColor: board.color || '#667eea',
                   backgroundImage: `linear-gradient(135deg, ${board.color || '#667eea'} 0%, ${adjustColor(board.color || '#667eea', -30)} 100%)`
                 }}
-                onClick={() => router.push(`/workspace/${board.workspaceId}/board/${board.boardId}`)}
+                onClick={() => router.push(`/${currentLang}/workspace/${board.workspaceId}/board/${board.boardId}`)}
               >
                 <div className="relative z-10">
                   <h3 className="text-white font-bold text-lg line-clamp-2">
@@ -85,7 +86,7 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
                 </div>
                 
                 <div className="absolute inset-0 opacity-10" style={{
-                  backgroundImage: 'url("data:image/svg+xml,%3Csvg width="20" height="20" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23fff" fill-opacity="1"%3E%3Cpath d="M0 0h20v20H0z" fill="none"/%3E%3Ccircle cx="3" cy="3" r="1"/%3E%3Ccircle cx="13" cy="13" r="1"/%3E%3C/g%3E%3C/svg%3E")',
+                  backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23fff\' fill-opacity=\'1\'%3E%3Cpath d=\'M0 0h20v20H0z\' fill=\'none\'/%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E")',
                   backgroundSize: '20px 20px'
                 }} />
               </div>
@@ -93,17 +94,17 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
               {/* Body */}
               <div className="p-4">
                 <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                  {board.description || 'No description provided.'}
+                  {board.description || t("no_description_provided")}
                 </p>
 
                 <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                    <span>{board.lists?.length || 0} lists</span>
+                    <span>{board.lists?.length || 0} {t("lists")}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 bg-green-500 rounded-full" />
-                    <span>{board.labels?.length || 0} labels</span>
+                    <span>{board.labels?.length || 0} {t("labels")}</span>
                   </div>
                 </div>
 
@@ -120,11 +121,11 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
                   <button 
                     onClick={(e) => {
                       e.stopPropagation()
-                      router.push(`/workspace/${board.workspaceId}/board/${board.boardId}`)
+                      router.push(`/${currentLang}/workspace/${board.workspaceId}/board/${board.boardId}`)
                     }}
                     className="text-xs font-medium px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary/20 rounded transition-colors"
                   >
-                    Open Board
+                    {t("open_board")}
                   </button>
                   
                   <div className="relative" ref={menuOpen === board.boardId ? menuRef : null}>
@@ -132,7 +133,6 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
                       className="p-1.5 hover:bg-muted rounded transition-colors"
                       onClick={(e) => {
                         e.stopPropagation()
-                        console.log('MENU BUTTON CLICKED')
                         setMenuOpen(menuOpen === board.boardId ? null : board.boardId)
                       }}
                     >
@@ -149,12 +149,11 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
                             className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-3 py-2 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground text-destructive"
                             onMouseDown={(e) => {
                               e.stopPropagation()
-                              console.log('DELETE BUTTON MOUSEDOWN!!!')
                               handleDeleteClick(board)
                             }}
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Delete Board
+                            {t("delete_board")}
                           </button>
                         </div>
                       </div>
@@ -170,8 +169,8 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
               <Plus className="w-7 h-7 text-muted-foreground group-hover:text-primary transition-colors" />
             </div>
             <div className="text-center">
-              <p className="font-semibold text-foreground mb-1">Create new board</p>
-              <p className="text-xs text-muted-foreground">Start organizing your tasks</p>
+              <p className="font-semibold text-foreground mb-1">{t("create_new_board")}</p>
+              <p className="text-xs text-muted-foreground">{t("start_organizing_tasks")}</p>
             </div>
           </button>
         </div>
@@ -181,26 +180,24 @@ export function BoardsGrid({ boards }: BoardsGridProps) {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Board?</AlertDialogTitle>
+            <AlertDialogTitle>{t("delete_board_question")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete <strong>"{boardToDelete?.title}"</strong>?
+              {t("delete_board_confirm", { title: boardToDelete?.title })}
               {boardToDelete && boardToDelete.lists && boardToDelete.lists.length > 0 && (
                 <span className="block mt-2 text-destructive font-medium">
-                  ⚠️ This will also delete {boardToDelete.lists.length} list{boardToDelete.lists.length > 1 ? 's' : ''} and all their tasks.
+                  {t("delete_board_warning", { count: boardToDelete.lists.length })}
                 </span>
               )}
-              <span className="block mt-2 text-sm">
-                This action cannot be undone.
-              </span>
+              <span className="block mt-2 text-sm">{t("cannot_undo")}</span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              {t("delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

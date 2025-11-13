@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { MoreHorizontal, Users, Archive, Trash2, Pin } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "react-i18next"
 
 interface WorkspaceCardProps {
   workspace: Workspace
@@ -18,10 +19,12 @@ export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
   const router = useRouter()
   const [showMenu, setShowMenu] = useState(false)
   const { deleteWorkspace, pinWorkspace, unpinWorkspace } = useStore()
+  const { t, i18n } = useTranslation("common")
+  const currentLang = i18n.language
 
   const handleOpenWorkspace = () => {
     if (!showMenu) {
-      router.push(`/workspace/${workspace.workspaceId}`)
+      router.push(`/${currentLang}/workspace/${workspace.workspaceId}`)
     }
   }
 
@@ -47,7 +50,7 @@ export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
 
   const handleDeleteWorkspace = async () => {
     console.log(`Deleting workspace ${workspace.workspaceId}`)
-    if (!confirm(`Are you sure you want to delete "${workspace.name}"?`)) {
+    if (!confirm(t("confirm_delete_workspace", { name: workspace.name }))) {
       return
     }
     await deleteWorkspace(workspace.workspaceId)
@@ -56,12 +59,7 @@ export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
 
   return (
     <>
-      {showMenu && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowMenu(false)}
-        />
-      )}
+      {showMenu && <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />}
 
       <Card
         className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 relative"
@@ -88,7 +86,7 @@ export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
               </Button>
 
               {showMenu && (
-                <div 
+                <div
                   className="absolute right-0 top-full mt-1 z-50 min-w-[160px] overflow-hidden rounded-md border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95 slide-in-from-top-2"
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -98,21 +96,21 @@ export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
                       className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-3 py-2 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground active:scale-95"
                     >
                       <Pin className="mr-2 h-4 w-4" />
-                      {workspace.isPinned ? 'Unpin' : 'Pin'}
+                      {workspace.isPinned ? t("unpin") : t("pin")}
                     </button>
                     <button
                       onClick={handleArchiveWorkspace}
                       className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-3 py-2 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground active:scale-95"
                     >
                       <Archive className="mr-2 h-4 w-4" />
-                      Archive
+                      {t("archive")}
                     </button>
                     <button
                       onClick={handleDeleteWorkspace}
                       className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-3 py-2 text-sm outline-none transition-colors hover:bg-destructive hover:text-destructive-foreground text-destructive active:scale-95"
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
-                      Delete
+                      {t("delete")}
                     </button>
                   </div>
                 </div>
@@ -124,7 +122,7 @@ export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between text-sm">
             <Badge variant="secondary" className="text-xs">
-              {workspace.boards.length} {workspace.boards.length === 1 ? 'board' : 'boards'}
+              {workspace.boards.length} {workspace.boards.length === 1 ? t("board") : t("boards")}
             </Badge>
           </div>
 

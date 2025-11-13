@@ -3,17 +3,20 @@
 import { useAuth } from "@/lib/auth"
 import { useStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
-import { use, useEffect } from "react"
+import { useEffect } from "react"
 import { WorkspaceHeader } from "@/components/workspace/workspace-header"
 import { BoardsGrid } from "@/components/workspace/boards-grid"
+import { useTranslation } from "react-i18next"
 
-export default function WorkspacePage({ 
-  params 
-}: { 
-  params: Promise<{ workspace_id: string }>
-}) {
-  const { workspace_id } = use(params)
-  
+interface WorkspacePageProps {
+  params: { workspace_id: string }
+}
+
+export default function WorkspacePage({ params }: WorkspacePageProps) {
+  const { workspace_id } = params
+  const { t, i18n } = useTranslation("common")
+  const currentLang = i18n.language
+
   const { user } = useAuth()
   const router = useRouter()
   const boards = useStore((state) => state.boards)
@@ -24,10 +27,10 @@ export default function WorkspacePage({
 
   useEffect(() => {
     if (!user) {
-      router.push("/login")
+      router.push(`/${currentLang}/login`)
       return
     }
-    
+
     if (workspace_id) {
       const loadData = async () => {
         await getWorkspace(workspace_id)
@@ -35,7 +38,7 @@ export default function WorkspacePage({
       }
       loadData()
     }
-  }, [user, workspace_id, router, getBoards, getWorkspace])
+  }, [user, workspace_id, router, getBoards, getWorkspace, currentLang])
 
   if (!user) return null
 
@@ -48,7 +51,7 @@ export default function WorkspacePage({
             <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-5/6"></div>
             <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-2/3"></div>
           </div>
-          <p className="text-muted-foreground mt-4">Loading workspace...</p>
+          <p className="text-muted-foreground mt-4">{t("workspace_loading")}</p>
         </div>
       </div>
     )
@@ -58,12 +61,12 @@ export default function WorkspacePage({
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-xl text-muted-foreground mb-4">Workspace not found</p>
-          <button 
-            onClick={() => router.push('/dashboard')}
+          <p className="text-xl text-muted-foreground mb-4">{t("workspace_not_found")}</p>
+          <button
+            onClick={() => router.push(`/${currentLang}/dashboard`)}
             className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
           >
-            Back to Dashboard
+            {t("back_to_dashboard")}
           </button>
         </div>
       </div>

@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useStore } from "@/lib/store"
 import { useAuth } from "@/lib/auth"
@@ -19,6 +18,7 @@ import {
 } from "@/components/ui/dialog"
 import { Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "react-i18next"
 
 const boardColors = [
   "#3b82f6", // blue
@@ -32,6 +32,7 @@ const boardColors = [
 ]
 
 export function CreateWorkspaceDialog() {
+  const { t } = useTranslation("common")
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -56,8 +57,8 @@ export function CreateWorkspaceDialog() {
       })
 
       toast({
-        title: "Workspace created",
-        description: `Workspace "${title}" has been created successfully`,
+        title: t("workspace_created_title"),
+        description: t("workspace_created_description", { name: title }),
       })
 
       setTitle("")
@@ -67,8 +68,8 @@ export function CreateWorkspaceDialog() {
       window.location.reload()
     } catch (error) {
       toast({
-        title: "An error occurred",
-        description: "Something went wrong while creating the workspace.",
+        title: t("workspace_error_title"),
+        description: t("workspace_error_description"),
         variant: "destructive",
       })
     } finally {
@@ -81,21 +82,21 @@ export function CreateWorkspaceDialog() {
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Plus className="h-4 w-4" />
-          New Workspace
+          {t("new_workspace")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create a new workspace</DialogTitle>
-            <DialogDescription>Organize your tasks in a new workspace</DialogDescription>
+          <DialogTitle>{t("create_workspace_title")}</DialogTitle>
+          <DialogDescription>{t("create_workspace_description")}</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Workspace's name</Label>
+            <Label htmlFor="title">{t("workspace_name")}</Label>
             <Input
               id="title"
-              placeholder="My awesome project"
+              placeholder={t("workspace_name_placeholder")}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -103,10 +104,10 @@ export function CreateWorkspaceDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description (optional)</Label>
+            <Label htmlFor="description">{t("workspace_description")}</Label>
             <Textarea
               id="description"
-              placeholder="Describe your workspace..."
+              placeholder={t("workspace_description_placeholder")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
@@ -114,7 +115,7 @@ export function CreateWorkspaceDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label>Color of the workspace</Label>
+            <Label>{t("workspace_color")}</Label>
             <div className="flex gap-2 flex-wrap">
               {boardColors.map((color) => (
                 <button
@@ -132,10 +133,10 @@ export function CreateWorkspaceDialog() {
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={!title.trim() || isLoading}>
-              {isLoading ? "Loading.." : "Create Workspace"}
+              {isLoading ? t("loading") : t("create_workspace_button")}
             </Button>
           </div>
         </form>

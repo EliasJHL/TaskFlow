@@ -125,7 +125,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link href="/dashboard" className="w-full sm:w-auto">
+              <Link href={`/${lang}/dashboard`} className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   className="gap-2 w-full sm:w-auto border-1 border-primary rounded-2xl backdrop-blur-md bg-gradient-to-r from-[#007757FF] to-[#00D4C3FF] text-white hover:brightness-110 transition-transform duration-200 hover:scale-105"
@@ -217,7 +217,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               <CheckCircle2 className="w-12 h-12 mx-auto text-primary" />
               <h3 className="text-2xl font-bold">{t("ready_to_get_started")}</h3>
               <p className="text-muted-foreground max-w-xl mx-auto">{t("join_thousands")}</p>
-              <Link href="/dashboard">
+              <Link href={`/${lang}/dashboard`}>
                 <Button size="lg" className="gap-2">
                   {t("get_started_now")}
                   <ArrowRight className="w-5 h-5" />

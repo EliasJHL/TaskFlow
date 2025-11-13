@@ -14,6 +14,7 @@ import { MoreHorizontal, Plus, Trash2 } from "lucide-react"
 import { TaskCard } from "./task-card"
 import { CardDetailDialog } from "./create-task-dialog"
 import { useState, useRef, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 
 interface BoardColumnProps {
   column: List
@@ -21,6 +22,9 @@ interface BoardColumnProps {
 }
 
 export function BoardColumn({ column, index }: BoardColumnProps) {
+  const { t, i18n } = useTranslation("common")
+  const currentLang = i18n.language
+
   const [showCreateTask, setShowCreateTask] = useState(false)
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editedTitle, setEditedTitle] = useState(column.title)
@@ -38,9 +42,7 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
     }
   }, [isEditingTitle])
 
-  const handleTitleClick = () => {
-    setIsEditingTitle(true)
-  }
+  const handleTitleClick = () => setIsEditingTitle(true)
 
   const handleTitleBlur = () => {
     if (editedTitle.trim() && editedTitle !== column.title) {
@@ -52,9 +54,8 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
   }
 
   const handleTitleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleTitleBlur()
-    } else if (e.key === 'Escape') {
+    if (e.key === 'Enter') handleTitleBlur()
+    else if (e.key === 'Escape') {
       setEditedTitle(column.title)
       setIsEditingTitle(false)
     }
@@ -116,10 +117,7 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
                     ) : (
                       <h3 
                         className="font-semibold cursor-text hover:bg-muted/50 px-2 py-1 rounded transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleTitleClick()
-                        }}
+                        onClick={(e) => { e.stopPropagation(); handleTitleClick() }}
                       >
                         {column.title}
                       </h3>
@@ -138,14 +136,11 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setShowDeleteDialog(true)
-                        }}
+                        onClick={(e) => { e.stopPropagation(); setShowDeleteDialog(true) }}
                         className="text-destructive focus:text-destructive"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Supprimer la colonne
+                        {t("delete_column")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -162,21 +157,13 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
                     >
                       {columnCards.length === 0 ? (
                         <div className="text-center py-8 text-muted-foreground">
-                          <p className="text-sm">Aucune tâche</p>
+                          <p className="text-sm">{t("no_tasks")}</p>
                         </div>
                       ) : (
                         columnCards.map((card, cardIndex) => (
-                          <Draggable 
-                            key={card.cardId} 
-                            draggableId={card.cardId} 
-                            index={cardIndex}
-                          >
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
+                          <Draggable key={card.cardId} draggableId={card.cardId} index={cardIndex}>
+                            {(provided) => (
+                              <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                 <TaskCard card={card} index={cardIndex} />
                               </div>
                             )}
@@ -194,7 +181,7 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
                   onClick={handleCreateTask}
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Create a new task
+                  {t("create_new_task")}
                 </Button>
               </CardContent>
             </Card>
@@ -217,24 +204,18 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Supprimer la colonne ?</AlertDialogTitle>
+            <AlertDialogTitle>{t("delete_column")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Êtes-vous sûr de vouloir supprimer la colonne "{column.title}" ? 
-              {columnCards.length > 0 && (
-                <span className="text-destructive font-medium">
-                  {" "}Cette action supprimera également {columnCards.length} tâche{columnCards.length > 1 ? 's' : ''}.
-                </span>
-              )}
-              {" "}Cette action est irréversible.
+              {t("delete_column_confirmation", { name: column.title, count: columnCards.length })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteColumn}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Supprimer
+              {t("delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

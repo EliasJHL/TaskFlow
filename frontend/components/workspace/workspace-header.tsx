@@ -2,7 +2,6 @@
 
 import type { Workspace } from "@/lib/store"
 import { useAuth } from "@/lib/auth"
-import { useStore } from "@/lib/store"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -11,12 +10,15 @@ import { useRouter } from "next/navigation"
 import { TeamManagementDialog } from "./team-management-dialog"
 import { Navigation } from "@/components/navigation"
 import { LabelsModal } from "@/components/workspace/labels-modal"
+import { useTranslation } from "react-i18next"
 
 interface WorkspaceHeaderProps {
   workspace: Workspace
 }
 
 export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
+  const { i18n, t } = useTranslation("common")
+  const currentLang = i18n.language
   const user = useAuth((state) => state.user)
   const router = useRouter()
   const workspaceMembers = workspace.members || []
@@ -29,7 +31,7 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
         variant="board"
         boardTitle={workspace.name}
         boardColor={workspace.color}
-        onBack={() => router.push("/dashboard")}
+        onBack={() => router.push(`/${currentLang}/dashboard`)}
       />
 
       <div className="border-b bg-card/30 backdrop-blur-sm">
@@ -57,7 +59,9 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
                   ))}
                   {workspaceMembers.length > 4 && (
                     <div className="h-7 w-7 rounded-full bg-muted border-2 border-background flex items-center justify-center">
-                      <span className="text-xs text-muted-foreground">+{workspaceMembers.length - 4}</span>
+                      <span className="text-xs text-muted-foreground">
+                        +{workspaceMembers.length - 4}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -65,22 +69,25 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
 
               <Button variant="outline" size="sm" onClick={() => setShowTeamManagement(true)}>
                 <Settings className="h-4 w-4 mr-2" />
-                Équipe
+                {t("team")}
               </Button>
+
               <Button variant="outline" size="sm" onClick={() => setIsLabelsModalOpen(true)}>
                 <Settings className="h-4 w-4 mr-2" />
-                Labels
+                {t("labels")}
               </Button>
-              <LabelsModal
-                open={isLabelsModalOpen}
-                onOpenChange={setIsLabelsModalOpen}
-              />
+
+              <LabelsModal open={isLabelsModalOpen} onOpenChange={setIsLabelsModalOpen} />
             </div>
           </div>
         </div>
       </div>
 
-      <TeamManagementDialog open={showTeamManagement} onOpenChange={setShowTeamManagement} workspace={workspace} />
+      <TeamManagementDialog
+        open={showTeamManagement}
+        onOpenChange={setShowTeamManagement}
+        workspace={workspace}
+      />
     </>
   )
 }
