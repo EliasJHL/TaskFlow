@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import type { Card as CardTask, Label } from "@/lib/store"
 import type { User as UserCard } from "@/lib/auth"
 import { useStore } from "@/lib/store"
@@ -14,9 +15,11 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-import { Calendar, User, Tag, X, Paperclip, MessageSquare, Trash2, Plus } from "lucide-react"
-import { format } from "date-fns"
+import { Calendar, User, Tag, X, Trash2, TagIcon, PlusCircle } from "lucide-react"
+import { format, set } from "date-fns"
 import { fr } from "date-fns/locale"
+import { MultiSelectLabels } from "@/components/multi-select-labels"
+import { MultiSelectUsers } from "@/components/multi-select-users"
 import { useTranslation } from "react-i18next"
 
 interface CardDetailDialogProps {
@@ -24,6 +27,62 @@ interface CardDetailDialogProps {
   onOpenChange: (open: boolean) => void
   card: CardTask
 }
+
+const labels = [
+  {
+    value: "nextjs",
+    label: "Next.js",
+    color: "#000000", // Black
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+    color: "#FF3E00", // Svelte orange
+  },
+  {
+    value: "astro",
+    label: "Astro",
+    color: "#FF5D01", // Astro orange
+  },
+  {
+    value: "nuxt",
+    label: "Nuxt.js",
+    color: "#00DC82", // Nuxt green
+  },
+  {
+    value: "angular",
+    label: "Angular",
+    color: "#DD0031", // Angular red
+  },
+  {
+    value: "vue",
+    label: "Vue.js",
+    color: "#42B883", // Vue green
+  },
+  {
+    value: "solid",
+    label: "SolidJS",
+    color: "#2C4F7C",
+  },
+  {
+    value: "qwik",
+    label: "Qwik",
+    color: "#18B6F6",
+  },
+]
+
+const usersOnWorkspace = [
+  {
+    id: "1",
+    username: "Elias Josué Hajjar llauquen",
+    picture: "https://a.espncdn.com/combiner/i?img=/i/headshots/college-football/players/full/5152030.png",
+  },
+  {
+    id: "2",
+    username: "John Doe",
+    picture: "https://a.espncdn.com/combiner/i?img=/i/headshots/college-football/players/full/5152030.png",
+  },
+]
 
 export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogProps) {
   const { t, i18n } = useTranslation("common")
@@ -41,6 +100,8 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
   const [selectedLabels, setSelectedLabels] = useState<Label[]>(card.labels || [])
   const [newComment, setNewComment] = useState("")
   const [comments, setComments] = useState(card.comments || [])
+  const [selectedLabelsMultiple, setSelectedLabelsMultiple] = React.useState<string[]>([])
+  const [selectedUsersMultiple, setSelectedUsersMultiple] = React.useState<string[]>([])
 
   useEffect(() => {
     setTitle(card.title)
@@ -128,6 +189,32 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
     setNewComment("")
   }
 
+  const handleAddNewItem = () => {
+    alert("Add new item action triggered!")
+    // In a real app, you might open a form to add a new item
+  }
+
+  const customLabelsActions = [
+    {
+      label: "Add New Item",
+      onSelect: handleAddNewItem,
+      icon: PlusCircle,
+    },
+  ]
+
+  const handleAddNewMember = () => {
+    alert("Add new member action triggered!")
+    // In a real app, you might open a form to add a new member
+  }
+
+  const customMembersActions = [
+    {
+      label: "Add New Member",
+      onSelect: handleAddNewMember,
+      icon: PlusCircle,
+    },
+  ]
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -138,7 +225,7 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
         <div className="space-y-6">
           {/* Titre */}
           <div className="space-y-2">
-            <LabelUI htmlFor="task-title">{t("title")} *</LabelUI>
+            <LabelUI htmlFor="task-title">{t("title")}<p className="text-red-500">*</p></LabelUI>
             <Input
               id="task-title"
               value={title}
@@ -156,7 +243,7 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t("description_placeholder")}
-              rows={5}
+              rows={2}
             />
           </div>
 
@@ -182,53 +269,16 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
 
             {/* Priorité */}
             <div className="space-y-2">
-              <LabelUI>{t("priority")}</LabelUI>
-              <Select defaultValue="medium">
-                <SelectTrigger>
-                  <SelectValue placeholder={t("select_priority")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">🟢 {t("low")}</SelectItem>
-                  <SelectItem value="medium">🟡 {t("medium")}</SelectItem>
-                  <SelectItem value="high">🟠 {t("high")}</SelectItem>
-                  <SelectItem value="urgent">🔴 {t("urgent")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Labels */}
-          <div className="space-y-2">
-            <LabelUI className="flex items-center gap-2">
-              <Tag className="h-4 w-4" />
-              {t("labels")}
-            </LabelUI>
-            <div className="flex flex-wrap gap-2">
-              {boardLabels.length === 0 ? (
-                <p className="text-sm text-muted-foreground">{t("no_labels")}</p>
-              ) : (
-                boardLabels.map((label) => {
-                  const isSelected = selectedLabels.find(l => l.labelId === label.labelId)
-                  return (
-                    <Badge
-                      key={label.labelId}
-                      variant={isSelected ? "default" : "outline"}
-                      className="cursor-pointer hover:opacity-80 transition-opacity"
-                      style={{
-                        backgroundColor: isSelected ? label.color : 'transparent',
-                        borderColor: label.color,
-                        color: isSelected ? '#fff' : label.color
-                      }}
-                      onClick={() => handleToggleLabel(label)}
-                    >
-                      {label.name}
-                      {isSelected && <X className="ml-1 h-3 w-3" />}
-                    </Badge>
-                  )
-                })
-              )}
+              <LabelUI>{t("labels")}</LabelUI>
+              <MultiSelectLabels
+                items={labels}
+                selected={selectedLabelsMultiple}
+                onSelectedChange={setSelectedLabelsMultiple}
+                placeholder="Select your favorite labels..."
+                emptyMessage="No label found."
+                maxDisplayItems={2}
+                customActions={customLabelsActions}
+              />
             </div>
           </div>
 
@@ -241,54 +291,15 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
               {t("assigned_members")}
             </LabelUI>
 
-            {assignedMembers.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-3">
-                {assignedMembers.map((member) => (
-                  <Badge key={member.user_id} variant="secondary" className="gap-2 pr-1">
-                    <Avatar className="h-5 w-5">
-                      <AvatarImage src={member.picture} alt={member.username} />
-                      <AvatarFallback className="text-xs">{member.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <span>{member.username}</span>
-                    <button
-                      onClick={() => handleRemoveMember(member.user_id)}
-                      className="hover:bg-destructive hover:text-destructive-foreground rounded-full p-0.5 transition-colors"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-            )}
-
-            {workspaceMembers.length > 0 && (
-              <Select onValueChange={handleAddMember}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t("add_member")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {workspaceMembers
-                    .filter(m => !assignedMembers.find(am => am.user_id === m.user_id))
-                    .map((member) => (
-                      <SelectItem key={member.user_id} value={member.user_id}>
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-6 w-6">
-                            <AvatarImage src={member.picture} alt={member.username} />
-                            <AvatarFallback className="text-xs">
-                              {member.username.substring(0, 2).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span>{member.username}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            )}
-
-            {assignedMembers.length === 0 && workspaceMembers.length === 0 && (
-              <p className="text-sm text-muted-foreground">{t("no_members")}</p>
-            )}
+            <MultiSelectUsers
+                items={usersOnWorkspace}
+                selected={assignedMembers.map(m => m.user_id)}
+                onSelectedChange={setSelectedUsersMultiple}
+                placeholder="Assign members..."
+                emptyMessage="No members found."
+                maxDisplayItems={2}
+                customActions={customMembersActions}
+              />
           </div>
 
           <Separator />

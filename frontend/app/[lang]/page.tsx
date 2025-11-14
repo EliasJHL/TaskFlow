@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function HomePage({ params }: { params: { lang: string } }) {
   const { user } = useAuth();
@@ -82,6 +83,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               </div>
 
               <div className="flex items-center gap-4">
+                <LanguageSwitcher />
                 <GithubButton />
                 <ThemeToggle />
                 <Link href={user ? `/${lang}/dashboard` : `/${lang}/login`}>

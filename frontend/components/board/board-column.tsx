@@ -200,7 +200,6 @@ export function BoardColumn({ column, index }: BoardColumnProps) {
         />
       )}
 
-      {/* Dialog de confirmation de suppression */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
