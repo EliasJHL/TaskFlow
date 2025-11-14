@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -18,6 +18,7 @@ import { Calendar, User, Tag, Trash2, X } from "lucide-react"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "react-i18next"
 
 interface TaskDetailDialogProps {
   open: boolean
@@ -34,51 +35,51 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
   const [newLabel, setNewLabel] = useState("")
   const [assignedTo, setAssignedTo] = useState(card.members || [])
 
-  // const { updateTask, deleteTask, boards } = useStore()
+  // const { updateTask, deleteTask } = useStore()
   const user = useAuth((state) => state.user)
   const { toast } = useToast()
-
   const workspace = useStore((state) => state.currentWorkspace)
   const workspaceMembers: UserCard[] = workspace?.members || []
   const assignedUsers: UserCard[] = assignedTo
 
+  const { t, i18n } = useTranslation("common")
+  const currentLang = i18n.language
+
   const handleSave = () => {
-  //   updateTask(card.cardId, {
-  //     title: title.trim(),
-  //     description: description.trim() || undefined,
-  //     dueDate: dueDate || undefined,
-  //     labels,
-  //     assignedTo: assignedTo.length > 0 ? assignedTo : undefined,
-  //   })
-
-  //   toast({
-  //     title: "Tâche mise à jour",
-  //     description: "Les modifications ont été sauvegardées",
-  //   })
-
-  //   setIsEditing(false)
+    // updateTask(card.cardId, {
+    //   title: title.trim(),
+    //   description: description.trim() || undefined,
+    //   dueDate: dueDate || undefined,
+    //   labels,
+    //   assignedTo: assignedTo.length > 0 ? assignedTo : undefined,
+    // })
+    // toast({
+    //   title: t("task_updated"),
+    //   description: t("task_updated"),
+    // })
+    // setIsEditing(false)
   }
 
   const handleDelete = () => {
-  //   if (confirm("Êtes-vous sûr de vouloir supprimer cette tâche ?")) {
-  //     deleteTask(task.id)
-  //     toast({
-  //       title: "Tâche supprimée",
-  //       description: "La tâche a été supprimée avec succès",
-  //     })
-  //     onOpenChange(false)
-  //   }
+    // if (confirm(t("delete_confirm"))) {
+    //   deleteTask(card.cardId)
+    //   toast({
+    //     title: t("task_deleted"),
+    //     description: t("task_deleted"),
+    //   })
+    //   onOpenChange(false)
+    // }
   }
 
   const addLabel = () => {
-  //   if (newLabel.trim() && !labels.includes(newLabel.trim())) {
-  //     setLabels([...labels, newLabel.trim()])
-  //     setNewLabel("")
-  //   }
+    // if (newLabel.trim() && !labels.includes(newLabel.trim())) {
+    //   setLabels([...labels, newLabel.trim()])
+    //   setNewLabel("")
+    // }
   }
 
   const removeLabel = (labelToRemove: string) => {
-  //   setLabels(labels.filter((label) => label !== labelToRemove))
+    // setLabels(labels.filter((label) => label !== labelToRemove))
   }
 
   const toggleUserAssignment = (user: UserCard) => {
@@ -106,16 +107,16 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
           <div className="flex items-start justify-between">
             <div className="flex-1">
               {isEditing ? (
-                <Input value={title} onChange={(e) => setTitle(e.target.value)} className="text-lg font-semibold" />
+                <Input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="text-lg font-semibold"
+                />
               ) : (
                 <DialogTitle className="text-xl">{card.title}</DialogTitle>
               )}
-              {/* <DialogDescription className="mt-1">
-                Créée le {format(new Date(card.), "d MMMM yyyy", { locale: fr })}
-              </DialogDescription> */}
             </div>
             <div className="flex items-center gap-2">
-              {/* <div className={`w-3 h-3 rounded-full ${getPriorityColor(task.priority)}`} /> */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -132,18 +133,18 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
               <Tag className="h-4 w-4" />
-              Description
+              {t("description")}
             </Label>
             {isEditing ? (
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Ajoutez une description..."
+                placeholder={t("description")}
                 rows={4}
               />
             ) : (
               <p className="text-sm text-muted-foreground min-h-[60px] p-3 border rounded-md">
-                {card.description || "Aucune description"}
+                {card.description || t("no_description")}
               </p>
             )}
           </div>
@@ -155,7 +156,7 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
-                  Date limite
+                  {t("due_date")}
                 </Label>
                 {isEditing ? (
                   <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
@@ -163,7 +164,7 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
                   <p className="text-sm">
                     {card.dueDate
                       ? format(new Date(card.dueDate), "d MMMM yyyy", { locale: fr })
-                      : "Aucune date limite"}
+                      : t("no_due_date")}
                   </p>
                 )}
               </div>
@@ -172,7 +173,7 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                Assigné à
+                {t("assigned_to")}
               </Label>
               {isEditing ? (
                 <div className="space-y-2 max-h-32 overflow-y-auto border rounded-md p-2">
@@ -218,7 +219,7 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
                       </div>
                     ))
                   ) : (
-                    <p className="text-sm text-muted-foreground">Non assignée</p>
+                    <p className="text-sm text-muted-foreground">{t("unassigned")}</p>
                   )}
                 </div>
               )}
@@ -228,12 +229,12 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
           <Separator />
 
           <div className="space-y-2">
-            <Label>Étiquettes</Label>
+            <Label>{t("labels")}</Label>
             {isEditing ? (
               <div className="space-y-2">
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Ajouter une étiquette"
+                    placeholder={t("add_label")}
                     value={newLabel}
                     onChange={(e) => setNewLabel(e.target.value)}
                     onKeyDown={(e) => {
@@ -244,7 +245,7 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
                     }}
                   />
                   <Button type="button" variant="outline" onClick={addLabel}>
-                    Ajouter
+                    {t("add_label")}
                   </Button>
                 </div>
                 {labels.length > 0 && (
@@ -273,7 +274,7 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
                     </Badge>
                   ))
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucune étiquette</p>
+                  <p className="text-sm text-muted-foreground">{t("no_description")}</p>
                 )}
               </div>
             )}
@@ -283,12 +284,12 @@ export function TaskDetailDialog({ open, onOpenChange, card }: TaskDetailDialogP
             {isEditing ? (
               <>
                 <Button variant="outline" onClick={() => setIsEditing(false)}>
-                  Annuler
+                  {t("cancel")}
                 </Button>
-                <Button onClick={handleSave}>Sauvegarder</Button>
+                <Button onClick={handleSave}>{t("save")}</Button>
               </>
             ) : (
-              <Button onClick={() => setIsEditing(true)}>Modifier</Button>
+              <Button onClick={() => setIsEditing(true)}>{t("edit")}</Button>
             )}
           </div>
         </div>

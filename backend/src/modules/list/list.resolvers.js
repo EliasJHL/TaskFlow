@@ -56,9 +56,15 @@ const listResolvers = {
             if (!context.user) {
                 throw new Error("Not authenticated");
             }
-            return await prisma.list.delete({
-                where: { list_id: args.list_id }
-            });
+            try {
+                await prisma.list.delete({
+                    where: { list_id: args.list_id }
+                });
+            } catch (error) {
+                console.error('Error deleting list:', error);
+                throw error;
+            }
+            return { success: true, message: 'List deleted successfully' };
         }
 
     }

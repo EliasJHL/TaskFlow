@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState } from "react"
 import { useAuth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { UserPlus, UserMinus, Crown, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "react-i18next"
 
 interface Workspace {
   workspaceId: string;
@@ -31,6 +32,7 @@ interface TeamManagementDialogProps {
 }
 
 export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamManagementDialogProps) {
+  const { t } = useTranslation("common")
   const [newMemberEmail, setNewMemberEmail] = useState("")
   const [newMemberRole, setNewMemberRole] = useState<"Viewer" | "Member" | "Admin">("Member")
   const [isLoading, setIsLoading] = useState(false)
@@ -39,85 +41,48 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
   const { fetchMembers, addMember, removeMember, updateMemberRole, user: currentUser, members } = useAuth()
   const { toast } = useToast()
 
-  // Créer la liste complète incluant le propriétaire
-  const allMembers = useMemo(() => {
-    return [
-      {
-        workspace_id: workspace.workspaceId,
-        user_id: workspace.ownerId,
-        user: workspace.owner,
-        role: 'OWNER' as const
-      },
-      ...members
-    ];
-  }, [workspace, members]);
-
   useEffect(() => {
     if (open && workspace.workspaceId) {
       setIsLoading(true)
       fetchMembers(workspace.workspaceId)
-        .catch((error) => {
-          console.error('Error loading members:', error)
+        .catch(() => {
           toast({
-            title: "Erreur",
-            description: "Impossible de charger les membres",
+            title: t("error"),
+            description: t("cannot_load_members"),
             variant: "destructive",
           })
         })
         .finally(() => setIsLoading(false))
     }
-  }, [open, workspace.workspaceId])
+  }, [open, workspace.workspaceId, fetchMembers, toast, t])
 
   const handleAddMember = async () => {
     if (!newMemberEmail.trim()) {
-      toast({
-        title: "Email requis",
-        description: "Veuillez entrer un email valide",
-        variant: "destructive",
-      })
+      toast({ title: t("email_required"), description: t("enter_valid_email"), variant: "destructive" })
       return
     }
 
     if (newMemberEmail.trim() === workspace.owner.email) {
-      toast({
-        title: "Membre existant",
-        description: "Le propriétaire est déjà membre du workspace",
-        variant: "destructive",
-      })
+      toast({ title: t("existing_member"), description: t("owner_already_member"), variant: "destructive" })
       return
     }
 
     const isAlreadyMember = members.some(m => m.user.email === newMemberEmail.trim())
     if (isAlreadyMember) {
-      toast({
-        title: "Membre existant",
-        description: "Cet utilisateur est déjà membre du workspace",
-        variant: "destructive",
-      })
+      toast({ title: t("existing_member"), description: t("user_already_member"), variant: "destructive" })
       return
     }
 
     setIsAddingMember(true)
     try {
       await addMember(workspace.workspaceId, newMemberEmail.trim(), newMemberRole)
-      
-      toast({
-        title: "Invitation envoyée",
-        description: `Une invitation a été envoyée à ${newMemberEmail}`,
-      })
-
+      toast({ title: t("invitation_sent"), description: t("invitation_sent_to", { email: newMemberEmail }) })
       setNewMemberEmail("")
       setNewMemberRole("Member")
     } catch (error: any) {
-      console.error('Error adding member:', error)
-      
-      const errorMessage = error?.message?.includes('User not found') 
-        ? "Aucun utilisateur trouvé avec cet email"
-        : "Impossible d'ajouter le membre"
-      
       toast({
-        title: "Erreur",
-        description: errorMessage,
+        title: t("error"),
+        description: error?.message?.includes('User not found') ? t("user_not_found") : t("cannot_add_member"),
         variant: "destructive",
       })
     } finally {
@@ -127,66 +92,33 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
 
   const handleRemoveMember = async (userId: string) => {
     if (userId === currentUser?.user_id) {
-      toast({
-        title: "Action impossible",
-        description: "Vous ne pouvez pas vous retirer vous-même du workspace",
-        variant: "destructive",
-      })
+      toast({ title: t("action_not_allowed"), description: t("cannot_remove_self"), variant: "destructive" })
       return
     }
-
     if (userId === workspace.ownerId) {
-      toast({
-        title: "Action impossible",
-        description: "Le propriétaire ne peut pas être retiré du workspace",
-        variant: "destructive",
-      })
+      toast({ title: t("action_not_allowed"), description: t("cannot_remove_owner"), variant: "destructive" })
       return
     }
-
     try {
       await removeMember(workspace.workspaceId, userId)
-      
       const member = members.find((m) => m.user.user_id === userId)
-      toast({
-        title: "Membre retiré",
-        description: `${member?.user.username} a été retiré du workspace`,
-      })
-    } catch (error) {
-      console.error('Error removing member:', error)
-      toast({
-        title: "Erreur",
-        description: "Impossible de retirer le membre",
-        variant: "destructive",
-      })
+      toast({ title: t("member_removed"), description: t("member_removed_name", { name: member?.user.username }) })
+    } catch {
+      toast({ title: t("error"), description: t("cannot_remove_member"), variant: "destructive" })
     }
   }
 
   const handleUpdateRole = async (userId: string, newRole: string) => {
     if (userId === workspace.ownerId) {
-      toast({
-        title: "Action impossible",
-        description: "Le rôle du propriétaire ne peut pas être modifié",
-        variant: "destructive",
-      })
+      toast({ title: t("action_not_allowed"), description: t("cannot_change_owner_role"), variant: "destructive" })
       return
     }
-
     try {
       await updateMemberRole(workspace.workspaceId, userId, newRole)
-      
       const member = members.find((m) => m.user.user_id === userId)
-      toast({
-        title: "Rôle mis à jour",
-        description: `${member?.user.username} est maintenant ${newRole.toLowerCase()}`,
-      })
-    } catch (error) {
-      console.error('Error updating role:', error)
-      toast({
-        title: "Erreur",
-        description: "Impossible de modifier le rôle",
-        variant: "destructive",
-      })
+      toast({ title: t("role_updated"), description: t("role_updated_name", { name: member?.user.username, role: newRole.toLowerCase() }) })
+    } catch {
+      toast({ title: t("error"), description: t("cannot_update_role"), variant: "destructive" })
     }
   }
 
@@ -194,14 +126,14 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Gestion de l'équipe</DialogTitle>
-          <DialogDescription>Gérer les membres de "{workspace.name}"</DialogDescription>
+          <DialogTitle>{t("team_management")}</DialogTitle>
+          <DialogDescription>{t("manage_members_workspace", { workspace: workspace.name })}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           <div className="space-y-3">
             <Label className="text-base font-semibold">
-              Membres actuels ({allMembers.length})
+              {t("current_members", { count: members.length })}
             </Label>
             
             {isLoading ? (
@@ -210,8 +142,8 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
               </div>
             ) : (
               <div className="space-y-2 max-h-64 overflow-y-auto">
-                {allMembers.map((member) => {
-                  const isOwner = member.role === 'OWNER'
+                {members.map((member) => {
+                  const isOwner = member.user.user_id === workspace.ownerId
                   const isCurrentUser = member.user.user_id === currentUser?.user_id
 
                   return (
@@ -219,14 +151,11 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
                       <div className="flex items-center gap-3 flex-1">
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={member.user.picture} alt={member.user.username} />
-                          <AvatarFallback className="text-xs">
-                            {member.user.username.substring(0, 2).toUpperCase()}
-                          </AvatarFallback>
+                          <AvatarFallback className="text-xs">{member.user.username.substring(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
                           <p className="text-sm font-medium">
-                            {member.user.username}
-                            {isCurrentUser && " (vous)"}
+                            {member.user.username} {isCurrentUser && `(${t("you")})`}
                           </p>
                           <p className="text-xs text-muted-foreground">{member.user.email}</p>
                         </div>
@@ -234,7 +163,7 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
                         {isOwner ? (
                           <Badge variant="secondary" className="gap-1">
                             <Crown className="h-3 w-3" />
-                            Propriétaire
+                            {t("owner")}
                           </Badge>
                         ) : (
                           <Select
@@ -246,9 +175,9 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="Admin">Admin</SelectItem>
-                              <SelectItem value="Member">Member</SelectItem>
-                              <SelectItem value="Viewer">Viewer</SelectItem>
+                              <SelectItem value="Admin">{t("admin")}</SelectItem>
+                              <SelectItem value="Member">{t("member")}</SelectItem>
+                              <SelectItem value="Viewer">{t("viewer")}</SelectItem>
                             </SelectContent>
                           </Select>
                         )}
@@ -272,30 +201,22 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
           </div>
 
           <div className="space-y-3">
-            <Label className="text-base font-semibold">Inviter un nouveau membre</Label>
+            <Label className="text-base font-semibold">{t("invite_new_member")}</Label>
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label htmlFor="memberEmail" className="text-sm">
-                  Email
-                </Label>
+                <Label htmlFor="memberEmail" className="text-sm">{t("email")}</Label>
                 <Input
                   id="memberEmail"
                   type="email"
-                  placeholder="email@exemple.com"
+                  placeholder={t("email_placeholder")}
                   value={newMemberEmail}
                   onChange={(e) => setNewMemberEmail(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleAddMember()
-                    }
-                  }}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleAddMember() }}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="memberRole" className="text-sm">
-                  Rôle
-                </Label>
+                <Label htmlFor="memberRole" className="text-sm">{t("role")}</Label>
                 <Select 
                   value={newMemberRole} 
                   onValueChange={(value: "Viewer" | "Member" | "Admin") => setNewMemberRole(value)}
@@ -304,9 +225,9 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Admin">Administrator</SelectItem>
-                    <SelectItem value="Member">Member</SelectItem>
-                    <SelectItem value="Viewer">Viewer</SelectItem>
+                    <SelectItem value="Admin">{t("admin")}</SelectItem>
+                    <SelectItem value="Member">{t("member")}</SelectItem>
+                    <SelectItem value="Viewer">{t("viewer")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -319,12 +240,12 @@ export function TeamManagementDialog({ open, onOpenChange, workspace }: TeamMana
                 {isAddingMember ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Envoi en cours...
+                    {t("adding")}
                   </>
                 ) : (
                   <>
                     <UserPlus className="h-4 w-4 mr-2" />
-                    Envoyer l'invitation
+                    {t("add_to_workspace")}
                   </>
                 )}
               </Button>

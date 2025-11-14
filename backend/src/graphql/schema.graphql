@@ -265,6 +265,10 @@ input UpdateCommentInput {
   content: String!
 }
 
+type PinWorkspacePayload {
+  workspace: Workspace!
+}
+
 # Root mutation type
 type Mutation {
   # Users
@@ -279,10 +283,14 @@ type Mutation {
   register(input: RegisterInput!): AuthPayload
   logout: Status!
 
+  # Workspaces
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspacePayload!
   updateWorkspace(workspace_id: ID!, input: UpdateWorkspaceInput!): Workspace!
   deleteWorkspace(workspace_id: ID!): Status!
+  pinWorkspace(workspace_id: ID!): PinWorkspacePayload!
+  unpinWorkspace(workspace_id: ID!): PinWorkspacePayload!
 
+  # Boards
   createBoard(input: CreateBoardInput!): CreateBoardPayload!
   updateBoard(input: UpdateBoardInput!): Board!
   deleteBoard(board_id: ID!): Status!

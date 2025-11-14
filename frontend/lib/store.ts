@@ -4,14 +4,26 @@ import { create } from "zustand"
 import { User } from "@/lib/auth"
 import { apolloClient } from "./apollo-client"
 //====================== Lists =====================//
-import { CREATE_LIST_MUTATION } from "./graphql/lists/mutations"
+import {
+    CREATE_LIST_MUTATION,
+    DELETE_LIST_MUTATION
+} from "./graphql/lists/mutations"
 import { LISTS_QUERY } from "./graphql/lists/query"
 //====================== Workspaces =====================//
-import { CREATE_WORKSPACE_MUTATION } from "./graphql/workspaces/mutations"
+import { 
+    CREATE_WORKSPACE_MUTATION,
+    DELETE_WORKSPACE_MUTATION,
+    PIN_WORKSPACE_MUTATION,
+    UNPIN_WORKSPACE_MUTATION
+} from "./graphql/workspaces/mutations"
 import { WORKSPACES_QUERY, WORKSPACE_QUERY } from "./graphql/workspaces/query"
 //====================== Boards =====================//
-import { CREATE_BOARD_MUTATION } from "./graphql/boards/mutations"
+import {
+    CREATE_BOARD_MUTATION,
+    DELETE_BOARD_MUTATION
+} from "./graphql/boards/mutations"
 import { BOARDS_QUERY } from "./graphql/boards/query"
+import { th } from "date-fns/locale"
 
 export interface Workspace {
   workspaceId: string
@@ -43,7 +55,7 @@ export interface Board {
   color: string
   workspaceId: string
   lists: string[]
-  labels: string[]
+  labels: Label[]
 }
 
 export interface CreateBoardPayload {
@@ -116,19 +128,25 @@ interface AppState {
   createWorkspace: (workspace: CreateWorkspacePayload) => void
   updateWorkspace: (id: string, updates: Partial<Workspace>) => void
   deleteWorkspace: (id: string) => void
+  pinWorkspace: (workspaceId: string) => void
+  unpinWorkspace: (workspaceId: string) => void
   setCurrentWorkspace: (workspace: Workspace | null) => void
 
   getBoards: (workspaceId: string) => Promise<void>
   getBoard: (boardId: string) => Promise<void>
   createBoard: (board: CreateBoardPayload) => void
   updateBoard: (id: string, updates: Partial<Board>) => void
-  deleteBoard: (id: string) => void
+  deleteBoard: (boardId: string) => void
   setCurrentBoard: (board: Board | null) => void
 
   getLists: (boardId: string) => Promise<void>
   createList: (list: Omit<List, "listId">) => void
-  updateList: (id: string, updates: Partial<List>) => void
-  deleteList: (id: string) => void
+  updateList: (listId: string, updates: Partial<List>) => void
+  deleteList: (listId: string) => void
+
+  getLabels: (boardId: string) => Promise<void>
+  createLabel: (label: Omit<Label, "labelId">) => void
+  deleteLabel: (labelId: string) => void
 
   createCard: (card: Omit<Card, "cardId">) => void
   updateCard: (id: string, updates: Partial<Card>) => void
@@ -378,10 +396,24 @@ export const useStore = create<AppState>((set, get) => ({
       ),
     })),
   
-  deleteWorkspace: (id) =>
-    set((state) => ({
-      workspaces: state.workspaces.filter((ws) => ws.workspaceId !== id),
-    })),
+  deleteWorkspace: async (workspaceId: string) => {
+    try {
+        const { data }  = await apolloClient.mutate<{ 
+            deleteWorkspace: { success: boolean; message: string } 
+        }>({
+            mutation: DELETE_WORKSPACE_MUTATION,
+            variables: { workspace_id: workspaceId },
+        })
+        if (data?.deleteWorkspace.success) {
+            set((state) => ({
+                workspaces: state.workspaces.filter((ws) => ws.workspaceId !== workspaceId),
+            }))
+        }
+    } catch (error) {
+        console.error('Error deleting workspace:', error)
+        throw error
+    }
+  },
   
   setCurrentWorkspace: (workspace: Workspace | null) =>
     set({ currentWorkspace: workspace }),
@@ -413,10 +445,73 @@ export const useStore = create<AppState>((set, get) => ({
       ),
     })),
   
-  deleteBoard: (id) =>
-    set((state) => ({
-      boards: state.boards.filter((b) => b.boardId !== id),
-    })),
+  deleteBoard: async (boardId) => {
+    try {
+        const { data } = await apolloClient.mutate<{ 
+            deleteBoard: { success: boolean; message: string } 
+        }>({
+            mutation: DELETE_BOARD_MUTATION,
+            variables: { board_id: boardId },
+        })
+        if (data?.deleteBoard.success) {
+            set((state) => ({
+                boards: state.boards.filter((b) => b.boardId !== boardId),
+            }))
+        }
+    } catch (error) {
+        console.error('Error deleting board:', error)
+        throw error
+    }
+  },
+
+  pinWorkspace: async (workspaceId: string) => {
+    try {
+        const { data } = await apolloClient.mutate<{ 
+        pinWorkspace: { workspace: { workspace_id: string; is_pinned: boolean } } 
+        }>({
+        mutation: PIN_WORKSPACE_MUTATION,
+        variables: { workspace_id: workspaceId },
+        })
+        
+        if (data?.pinWorkspace.workspace) {
+        set((state) => ({
+            workspaces: state.workspaces.map((ws) =>
+            ws.workspaceId === workspaceId
+                ? { ...ws, isPinned: data.pinWorkspace.workspace.is_pinned }
+                : ws
+            ),
+        }))
+        }
+    } catch (error) {
+        console.error('Error pinning workspace:', error)
+        throw error
+    }
+    },
+
+    unpinWorkspace: async (workspaceId: string) => {
+    try {
+        const { data } = await apolloClient.mutate<{ 
+        unpinWorkspace: { workspace: { workspace_id: string; is_pinned: boolean } } 
+        }>({
+        mutation: UNPIN_WORKSPACE_MUTATION,
+        variables: { workspace_id: workspaceId },
+        })
+        
+        if (data?.unpinWorkspace.workspace) {
+        set((state) => ({
+            workspaces: state.workspaces.map((ws) =>
+            ws.workspaceId === workspaceId
+                ? { ...ws, isPinned: data.unpinWorkspace.workspace.is_pinned }
+                : ws
+            ),
+        }))
+        }
+    } catch (error) {
+        console.error('Error unpinning workspace:', error)
+        throw error
+    }
+  },
+
   
   setCurrentBoard: (board: Board | null) =>
     set({ currentBoard: board }),
@@ -471,9 +566,60 @@ export const useStore = create<AppState>((set, get) => ({
       ),
     })),
   
-  deleteList: (id) =>
+  deleteList: async (listId) => {
+    try {
+        const { data } = await apolloClient.mutate<{ 
+            deleteList: { success: boolean; message: string } 
+        }>({
+            mutation: DELETE_LIST_MUTATION,
+            variables: { list_id: listId },
+        })
+        if (data?.deleteList.success) {
+            set((state) => ({
+                lists: state.lists.filter((l) => l.listId !== listId),
+            }))
+        }
+    } catch (error) {
+        console.error('Error deleting list:', error)
+        throw error
+    }
+  },
+
+  getLabels: async (boardId: string) => {
+    try {
+      set({ isLoading: true })
+      // Assume we have a LABELS_QUERY to fetch labels
+      const { data } = await apolloClient.query<{ labels: any[] }>({
+        query: LABELS_QUERY,
+        variables: { board_id: boardId },
+        fetchPolicy: "network-only",
+      })
+      
+      if (data?.labels) {
+        const transformedLabels: Label[] = data.labels.map((l: any) => ({
+
+          labelId: l.label_id,
+          name: l.name,
+          color: l.color,
+          boardId: l.board_id,
+        }))
+        set({ labels: transformedLabels, isLoading: false })
+      }
+
+    } catch (error) {
+      console.error('Error fetching labels:', error)
+      set({ labels: [], isLoading: false })
+    }
+  },
+
+  createLabel: (label) =>
     set((state) => ({
-      lists: state.lists.filter((l) => l.listId !== id),
+      labels: [...state.labels, { ...label } as Label],
+    })),
+
+  deleteLabel: (labelId) =>
+    set((state) => ({
+      labels: state.labels.filter((l) => l.labelId !== labelId),
     })),
 
   createCard: (card) =>

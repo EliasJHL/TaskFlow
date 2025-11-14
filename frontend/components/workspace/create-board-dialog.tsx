@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog"
 import { Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "react-i18next"
 
 const boardColors = [
   "#3b82f6", // blue
@@ -41,6 +42,8 @@ export function CreateBoardDialog() {
   const { createBoard } = useStore()
   const { user } = useAuth()
   const { toast } = useToast()
+  const { t, i18n } = useTranslation("common")
+  const currentLang = i18n.language
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,8 +60,8 @@ export function CreateBoardDialog() {
       })
 
       toast({
-        title: "Board created",
-        description: `Board "${title}" has been created successfully`,
+        title: t("board_created"),
+        description: t("board_created_description", { title }),
       })
 
       setTitle("")
@@ -68,8 +71,8 @@ export function CreateBoardDialog() {
       window.location.reload()
     } catch (error) {
       toast({
-        title: "An error occurred",
-        description: "Something went wrong while creating the board.",
+        title: t("error_occurred"),
+        description: t("board_create_error"),
         variant: "destructive",
       })
     } finally {
@@ -82,21 +85,21 @@ export function CreateBoardDialog() {
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Plus className="h-4 w-4" />
-          New Board
+          {t("new_board")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create a new board</DialogTitle>
-            <DialogDescription>Organize your tasks</DialogDescription>
+          <DialogTitle>{t("create_new_board")}</DialogTitle>
+          <DialogDescription>{t("organize_your_tasks")}</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Board's name</Label>
+            <Label htmlFor="title">{t("board_name")}</Label>
             <Input
               id="title"
-              placeholder="My awesome project"
+              placeholder={t("board_name_placeholder")}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -104,10 +107,10 @@ export function CreateBoardDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description (optional)</Label>
+            <Label htmlFor="description">{t("board_description_optional")}</Label>
             <Textarea
               id="description"
-              placeholder="Describe your workspace..."
+              placeholder={t("board_description_placeholder")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
@@ -115,7 +118,7 @@ export function CreateBoardDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label>Color of the Board</Label>
+            <Label>{t("board_color")}</Label>
             <div className="flex gap-2 flex-wrap">
               {boardColors.map((color) => (
                 <button
@@ -133,10 +136,10 @@ export function CreateBoardDialog() {
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={!title.trim() || isLoading}>
-              {isLoading ? "Loading.." : "Create Board"}
+              {isLoading ? t("loading") : t("create_board")}
             </Button>
           </div>
         </form>

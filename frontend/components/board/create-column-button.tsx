@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Plus, X, Check } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "react-i18next"
+import { useRouter } from "next/navigation"
 
 interface CreateColumnButtonProps {
   boardId: string
@@ -27,6 +29,9 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
   const [selectedColor, setSelectedColor] = useState(columnColors[0])
   const { createList, lists, currentBoard } = useStore()
   const { toast } = useToast()
+  const { t, i18n } = useTranslation("common")
+  const currentLang = i18n.language
+  const router = useRouter()
 
   const handleCreate = async () => {
     if (!title.trim()) return
@@ -43,13 +48,16 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
     })
 
     toast({
-      title: "Column created",
-      description: `The column "${title}" has been added`,
+      title: t("column_created"),
+      description: t("column_created_desc", { name: title }),
     })
 
     setTitle("")
     setSelectedColor(columnColors[0])
     setIsCreating(false)
+
+    // Redirection dynamique
+    router.push(`/${currentLang}/workspace/${currentBoard?.workspaceId}/board/${boardId}`)
   }
 
   const handleCancel = () => {
@@ -63,7 +71,7 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
       <Card className="w-80 flex-shrink-0">
         <CardContent className="p-4 space-y-3">
           <Input
-            placeholder="Nom de la colonne"
+            placeholder={t("column_name")}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => {
@@ -90,11 +98,11 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
           <div className="flex gap-2">
             <Button size="sm" onClick={handleCreate} disabled={!title.trim()}>
               <Check className="h-4 w-4 mr-1" />
-              Créer
+              {t("create")}
             </Button>
             <Button size="sm" variant="ghost" onClick={handleCancel}>
               <X className="h-4 w-4 mr-1" />
-              Annuler
+              {t("cancel")}
             </Button>
           </div>
         </CardContent>
@@ -109,7 +117,7 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
       onClick={() => setIsCreating(true)}
     >
       <Plus className="h-4 w-4 mr-2" />
-      Create new column
+      {t("create_new_column")}
     </Button>
   )
 }

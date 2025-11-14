@@ -9,14 +9,16 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/lib/auth"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "react-i18next";
 
-export function RegisterForm() {
+export function RegisterForm({ lang }: { lang: string }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [username, setUsername] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const { register } =  useAuth()
+  const {t} = useTranslation("common")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,21 +28,21 @@ export function RegisterForm() {
       const success = await register(username, email, password)
       if (success) {
         toast({
-          title: "Inscription réussie",
-          description: "Bienvenue dans votre espace de travail !",
+          title: t("register_success"),
+          description: t("register_success_description"),
         })
-        window.location.href = "/dashboard"
+        window.location.href = `/${lang}/dashboard`
       } else {
         toast({
-          title: "Erreur",
-          description: "Quelque chose s'est mal passé",
+          title: t("register_fail"),
+          description: t("register_fail_description"),
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'inscription",
+        title: t("register_fail"),
+        description: t("register_fail_description"),
         variant: "destructive",
       })
     } finally {
@@ -54,7 +56,7 @@ export function RegisterForm() {
         <form onSubmit={handleSubmit} className="space-y-2">
           <div className="space-y-2">
             <Label htmlFor="username">
-              Username <span className="text-red-500">*</span>
+              {t("username")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="username"
@@ -67,12 +69,12 @@ export function RegisterForm() {
           </div>
           <div className="space-y-2 pt-2">
             <Label htmlFor="email">
-              Email <span className="text-red-500">*</span>
+              {t("email")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="email"
               type="email"
-              placeholder="example@example.com"
+              placeholder="john@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -80,7 +82,7 @@ export function RegisterForm() {
           </div>
           <div className="space-y-3 pt-2">
             <Label htmlFor="password">
-              Password <span className="text-red-500">*</span>
+              {t("password")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="password"
@@ -92,27 +94,27 @@ export function RegisterForm() {
             />
             {password.length > 0 && (
                 <div className="text-xs mt-2 text-gray-600 space-y-1">
-                    <div>Password must contain:</div>
+                    <div>{t("register_must_contain")}</div>
                     <ul className="list-disc ml-4">
                         {[
                             {
-                                label: "At least 8 characters",
+                                label: t("register_eight_characters"),
                                 valid: password.length >= 8,
                             },
                             {
-                                label: "One uppercase letter",
+                                label: t("register_one_uppercase"),
                                 valid: /[A-Z]/.test(password),
                             },
                             {
-                                label: "One lowercase letter",
+                                label: t("register_one_lowercase"),
                                 valid: /[a-z]/.test(password),
                             },
                             {
-                                label: "One number",
+                                label: t("register_one_number"),
                                 valid: /\d/.test(password),
                             },
                             {
-                                label: "One special character",
+                                label: t("register_one_special_character"),
                                 valid: /[!@#$%^&*(),.?":{}|<>]/.test(password),
                             },
                         ].map((rule, idx) => (
@@ -131,7 +133,7 @@ export function RegisterForm() {
           </div>
           <div className="pt-4 flex justify-center">
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Creating..." : "Create Account"}
+              {isLoading ? t("register_btn_action") : t("register_btn")}
             </Button>
           </div>
         </form>
