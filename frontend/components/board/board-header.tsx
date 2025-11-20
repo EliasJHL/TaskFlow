@@ -1,27 +1,29 @@
-"use client"
+"use client";
 
-import type { Workspace, Board } from "@/lib/store"
-import { useRouter } from "next/navigation"
-import { Navigation } from "@/components/navigation"
-import { useTranslation } from "react-i18next"
+import type { Workspace, Board } from "@/lib/store";
+import { useRouter } from "next/navigation";
+import { Navigation } from "@/components/navigation";
+import { useTranslation } from "react-i18next";
 
 interface BoardHeaderProps {
-  workspace: Workspace
-  board: Board
+  workspace: Workspace;
+  board: Board;
 }
 
 export function BoardHeader({ workspace, board }: BoardHeaderProps) {
-  const router = useRouter()
-  const { i18n, t } = useTranslation("common")
-  const currentLang = i18n.language
-  
+  const router = useRouter();
+  const { i18n, t } = useTranslation("common");
+  const currentLang = i18n.language;
+
   return (
     <>
       <Navigation
         variant="board"
         boardTitle={`${workspace.name}/${board.title}`}
         boardColor={board.color}
-        onBack={() => router.push(`/${currentLang}/workspace/${workspace.workspaceId}`)}
+        onBack={() =>
+          router.push(`/${currentLang}/workspace/${workspace.workspaceId}`)
+        }
       />
 
       <div className="border-b bg-card/30 backdrop-blur-sm">
@@ -34,5 +36,5 @@ export function BoardHeader({ workspace, board }: BoardHeaderProps) {
         </div>
       </div>
     </>
-  )
+  );
 }

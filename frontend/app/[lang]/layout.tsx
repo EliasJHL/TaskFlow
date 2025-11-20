@@ -14,7 +14,6 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { lang: string };
 }) {
-
   const { lang } = await params;
 
   return (

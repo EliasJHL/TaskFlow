@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Check, ChevronsUpDown, XCircle } from "lucide-react"
+import * as React from "react";
+import { Check, ChevronsUpDown, XCircle } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -13,34 +13,33 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Tag } from "@/components/tag"
-
-interface LabelItem {
-  value: string
-  label: string
-  color: string
-}
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Tag } from "@/components/tag";
+import { Label } from "@/lib/store";
 
 interface CustomAction {
-  label: string
-  onSelect: () => void
-  icon?: React.ElementType
+  label: string;
+  onSelect: () => void;
+  icon?: React.ElementType;
 }
 
 interface MultiSelectLabelsProps {
-  items: LabelItem[]
-  selected: string[]
-  onSelectedChange: (selected: string[]) => void
-  placeholder?: string
-  emptyMessage?: string
-  maxDisplayItems?: number
-  customActions?: CustomAction[]
+  labels: Label[];
+  selected: string[];
+  onSelectedChange: (selected: string[]) => void;
+  placeholder?: string;
+  emptyMessage?: string;
+  maxDisplayItems?: number;
+  customActions?: CustomAction[];
 }
 
 export function MultiSelectLabels({
-  items,
+  labels,
   selected,
   onSelectedChange,
   placeholder = "Select items...",
@@ -48,33 +47,35 @@ export function MultiSelectLabels({
   maxDisplayItems = 3,
   customActions,
 }: MultiSelectLabelsProps) {
-  const [open, setOpen] = React.useState(false)
-  const [inputValue, setInputValue] = React.useState("")
+  const [open, setOpen] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState("");
 
   const handleSelect = (itemValue: string) => {
     const newSelected = selected.includes(itemValue)
       ? selected.filter((s) => s !== itemValue)
-      : [...selected, itemValue]
-    onSelectedChange(newSelected)
-    setInputValue("")
-  }
+      : [...selected, itemValue];
+    onSelectedChange(newSelected);
+    setInputValue("");
+  };
 
   const handleRemove = (itemValue: string) => {
-    const newSelected = selected.filter((s) => s !== itemValue)
-    onSelectedChange(newSelected)
-  }
+    const newSelected = selected.filter((s) => s !== itemValue);
+    onSelectedChange(newSelected);
+  };
 
   const handleClearAll = (e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent popover from closing
-    onSelectedChange([])
-    setInputValue("")
-  }
+    e.stopPropagation();
+    onSelectedChange([]);
+    setInputValue("");
+  };
 
   // Get the full item objects for selected values
-  const selectedItems = selected.map((value) => items.find((item) => item.value === value)).filter(Boolean) as LabelItem[]
+  const selectedItems = selected
+    .map((name) => labels.find((label) => label.name === name))
+    .filter(Boolean) as Label[];
 
-  const displayItems = selectedItems.slice(0, maxDisplayItems)
-  const overflowCount = selectedItems.length - maxDisplayItems
+  const displayItems = selectedItems.slice(0, maxDisplayItems);
+  const overflowCount = selectedItems.length - maxDisplayItems;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -90,9 +91,9 @@ export function MultiSelectLabels({
               <>
                 {displayItems.map((item) => (
                   <Tag
-                    key={item.value}
-                    label={item.label}
-                    onRemove={() => handleRemove(item.value)}
+                    key={item.name}
+                    label={item.name}
+                    onRemove={() => handleRemove(item.name)}
                     color={item.color}
                   />
                 ))}
@@ -129,19 +130,32 @@ export function MultiSelectLabels({
       </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
         <Command>
-          <CommandInput placeholder="Search items..." value={inputValue} onValueChange={setInputValue} />
+          <CommandInput
+            placeholder="Search items..."
+            value={inputValue}
+            onValueChange={setInputValue}
+          />
           <CommandList>
             <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup>
-              {items.map((item) => {
+              {labels.map((label) => {
                 return (
-                  <CommandItem key={item.value} value={item.label} onSelect={() => handleSelect(item.value)}>
+                  <CommandItem
+                    key={label.labelId}
+                    value={label.name}
+                    onSelect={() => handleSelect(label.labelId)}
+                  >
                     <Check
-                      className={cn("mr-2 h-4 w-4", selected.includes(item.value) ? "opacity-100" : "opacity-0")}
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        selected.includes(label.name)
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
                     />
-                    {item.label} {/* Removed item icon here */}
+                    {label.name} {/* Removed item icon here */}
                   </CommandItem>
-                )
+                );
               })}
             </CommandGroup>
             {customActions && customActions.length > 0 && (
@@ -149,20 +163,20 @@ export function MultiSelectLabels({
                 <CommandSeparator />
                 <CommandGroup>
                   {customActions.map((action, index) => {
-                    const ActionIcon = action.icon
+                    const ActionIcon = action.icon;
                     return (
                       <CommandItem
                         key={`custom-action-${index}`}
                         value={action.label}
                         onSelect={() => {
-                          action.onSelect()
-                          setOpen(false)
+                          action.onSelect();
+                          setOpen(false);
                         }}
                       >
                         {ActionIcon && <ActionIcon className="mr-2 h-4 w-4" />}
                         {action.label}
                       </CommandItem>
-                    )
+                    );
                   })}
                 </CommandGroup>
               </>
@@ -171,5 +185,5 @@ export function MultiSelectLabels({
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

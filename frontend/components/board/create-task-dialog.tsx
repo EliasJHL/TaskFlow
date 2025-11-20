@@ -1,125 +1,86 @@
-"use client"
+"use client";
 
-import React from "react"
-import type { Card as CardTask, Label } from "@/lib/store"
-import type { User as UserCard } from "@/lib/auth"
-import { useStore } from "@/lib/store"
-import { useAuth } from "@/lib/auth"
-import { useState, useEffect } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label as LabelUI } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { Calendar, User, Tag, X, Trash2, TagIcon, PlusCircle } from "lucide-react"
-import { format, set } from "date-fns"
-import { fr } from "date-fns/locale"
-import { MultiSelectLabels } from "@/components/multi-select-labels"
-import { MultiSelectUsers } from "@/components/multi-select-users"
-import { useTranslation } from "react-i18next"
+import React from "react";
+import type { Card as CardTask, Label } from "@/lib/store";
+import type { User as UserCard } from "@/lib/auth";
+import { useStore } from "@/lib/store";
+import { useAuth } from "@/lib/auth";
+import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label as LabelUI } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { Calendar, User, Trash2, PlusCircle } from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { MultiSelectLabels } from "@/components/multi-select-labels";
+import { MultiSelectUsers } from "@/components/multi-select-users";
+import { useTranslation } from "react-i18next";
 
 interface CardDetailDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  card: CardTask
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  card: CardTask;
 }
 
-const labels = [
-  {
-    value: "nextjs",
-    label: "Next.js",
-    color: "#000000", // Black
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-    color: "#FF3E00", // Svelte orange
-  },
-  {
-    value: "astro",
-    label: "Astro",
-    color: "#FF5D01", // Astro orange
-  },
-  {
-    value: "nuxt",
-    label: "Nuxt.js",
-    color: "#00DC82", // Nuxt green
-  },
-  {
-    value: "angular",
-    label: "Angular",
-    color: "#DD0031", // Angular red
-  },
-  {
-    value: "vue",
-    label: "Vue.js",
-    color: "#42B883", // Vue green
-  },
-  {
-    value: "solid",
-    label: "SolidJS",
-    color: "#2C4F7C",
-  },
-  {
-    value: "qwik",
-    label: "Qwik",
-    color: "#18B6F6",
-  },
-]
+export function CardDetailDialog({
+  open,
+  onOpenChange,
+  card,
+}: CardDetailDialogProps) {
+  const { t, i18n } = useTranslation("common");
+  const currentLang = i18n.language;
 
-const usersOnWorkspace = [
-  {
-    id: "1",
-    username: "Elias Josué Hajjar llauquen",
-    picture: "https://a.espncdn.com/combiner/i?img=/i/headshots/college-football/players/full/5152030.png",
-  },
-  {
-    id: "2",
-    username: "John Doe",
-    picture: "https://a.espncdn.com/combiner/i?img=/i/headshots/college-football/players/full/5152030.png",
-  },
-]
+  const { user } = useAuth();
+  const currentBoard = useStore((state) => state.currentBoard);
+  const workspace = useStore((state) => state.currentWorkspace);
+  const { createCard, updateCard, deleteCard } = useStore();
 
-export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogProps) {
-  const { t, i18n } = useTranslation("common")
-  const currentLang = i18n.language
+  const usersOnWorkspace = workspace?.members || [];
+  const workspaceLabels = currentBoard?.labels || [];
 
-  const { user } = useAuth()
-  const currentBoard = useStore((state) => state.currentBoard)
-  const workspace = useStore((state) => state.currentWorkspace)
-  const { createCard, updateCard, deleteCard } = useStore()
-
-  const [title, setTitle] = useState(card.title)
-  const [description, setDescription] = useState(card.description || "")
-  const [dueDate, setDueDate] = useState(card.dueDate || "")
-  const [assignedMembers, setAssignedMembers] = useState<UserCard[]>(card.members || [])
-  const [selectedLabels, setSelectedLabels] = useState<Label[]>(card.labels || [])
-  const [newComment, setNewComment] = useState("")
-  const [comments, setComments] = useState(card.comments || [])
-  const [selectedLabelsMultiple, setSelectedLabelsMultiple] = React.useState<string[]>([])
-  const [selectedUsersMultiple, setSelectedUsersMultiple] = React.useState<string[]>([])
+  const [title, setTitle] = useState(card.title);
+  const [description, setDescription] = useState(card.description || "");
+  const [dueDate, setDueDate] = useState(card.dueDate || "");
+  const [assignedMembers, setAssignedMembers] = useState<UserCard[]>(
+    card.members || []
+  );
+  const [selectedLabels, setSelectedLabels] = useState<Label[]>(
+    card.labels || []
+  );
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState(card.comments || []);
+  const [selectedLabelsMultiple, setSelectedLabelsMultiple] = React.useState<
+    string[]
+  >([]);
+  const [selectedUsersMultiple, setSelectedUsersMultiple] = React.useState<
+    string[]
+  >([]);
 
   useEffect(() => {
-    setTitle(card.title)
-    setDescription(card.description || "")
-    setDueDate(card.dueDate || "")
-    setAssignedMembers(card.members || [])
-    setSelectedLabels(card.labels || [])
-    setComments(card.comments || [])
-  }, [card])
+    setTitle(card.title);
+    setDescription(card.description || "");
+    setDueDate(card.dueDate || "");
+    setAssignedMembers(card.members || []);
+    setSelectedLabels(card.labels || []);
+    setComments(card.comments || []);
+  }, [card]);
 
-  const workspaceMembers: UserCard[] = workspace?.members || []
-  const boardLabels: Label[] = currentBoard?.labels || []
-  const isNewCard = !card.cardId || card.title === ""
+  const workspaceMembers: UserCard[] = workspace?.members || [];
+  const isNewCard = !card.cardId || card.title === "";
 
   const handleSave = async () => {
     if (!title.trim()) {
-      alert(t("title_required"))
-      return
+      alert(t("title_required"));
+      return;
     }
 
     const cardData = {
@@ -130,69 +91,71 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
       dueDate: dueDate || undefined,
       members: assignedMembers,
       labels: selectedLabels,
-      comments
-    }
+      comments,
+    };
 
     if (isNewCard) {
-      await createCard(cardData)
+      await createCard(cardData);
     } else {
-      await updateCard(card.cardId, cardData)
+      await updateCard(card.cardId, cardData);
     }
 
     // Redirection dynamique
     if (currentBoard && workspace) {
-      window.location.href = `/${currentLang}/workspace/${workspace.workspaceId}/board/${currentBoard.boardId}`
+      window.location.href = `/${currentLang}/workspace/${workspace.workspaceId}/board/${currentBoard.boardId}`;
     }
 
-    onOpenChange(false)
-  }
+    onOpenChange(false);
+  };
 
   const handleDelete = async () => {
     if (confirm(t("confirm_delete_task"))) {
-      await deleteCard(card.cardId)
-      onOpenChange(false)
+      await deleteCard(card.cardId);
+      onOpenChange(false);
     }
-  }
+  };
 
   const handleAddMember = (memberId: string) => {
-    const member = workspaceMembers.find(m => m.user_id === memberId)
-    if (member && !assignedMembers.find(m => m.user_id === memberId)) {
-      setAssignedMembers([...assignedMembers, member])
+    const member = workspaceMembers.find((m) => m.user_id === memberId);
+    if (member && !assignedMembers.find((m) => m.user_id === memberId)) {
+      setAssignedMembers([...assignedMembers, member]);
     }
-  }
+  };
 
   const handleRemoveMember = (memberId: string) => {
-    setAssignedMembers(assignedMembers.filter(m => m.user_id !== memberId))
-  }
+    setAssignedMembers(assignedMembers.filter((m) => m.user_id !== memberId));
+  };
 
   const handleToggleLabel = (label: Label) => {
-    const exists = selectedLabels.find(l => l.labelId === label.labelId)
+    const exists = selectedLabels.find((l) => l.labelId === label.labelId);
     if (exists) {
-      setSelectedLabels(selectedLabels.filter(l => l.labelId !== label.labelId))
+      setSelectedLabels(
+        selectedLabels.filter((l) => l.labelId !== label.labelId)
+      );
     } else {
-      setSelectedLabels([...selectedLabels, label])
+      setSelectedLabels([...selectedLabels, label]);
     }
-  }
+  };
 
   const handleAddComment = () => {
-    if (!newComment.trim()) return
+    if (!newComment.trim()) return;
 
     const comment = {
       commentId: crypto.randomUUID(),
       content: newComment.trim(),
       cardId: card.cardId,
       userId: user?.user_id || "",
-      createdAt: new Date().toISOString()
-    }
+      createdAt: new Date().toISOString(),
+    };
 
-    setComments([...comments, comment])
-    setNewComment("")
-  }
+    setComments([...comments, comment]);
+    setNewComment("");
+  };
 
   const handleAddNewItem = () => {
-    alert("Add new item action triggered!")
+    alert("Add new item action triggered!");
     // In a real app, you might open a form to add a new item
-  }
+  };
 
   const customLabelsActions = [
     {
@@ -200,12 +163,12 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
       onSelect: handleAddNewItem,
       icon: PlusCircle,
     },
-  ]
+  ];
 
   const handleAddNewMember = () => {
-    alert("Add new member action triggered!")
+    alert("Add new member action triggered!");
     // In a real app, you might open a form to add a new member
-  }
+  };
 
   const customMembersActions = [
     {
@@ -213,19 +176,24 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
       onSelect: handleAddNewMember,
       icon: PlusCircle,
     },
-  ]
+  ];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{isNewCard ? t("create_task") : t("task_details")}</DialogTitle>
+          <DialogTitle>
+            {isNewCard ? t("create_task") : t("task_details")}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Titre */}
           <div className="space-y-2">
-            <LabelUI htmlFor="task-title">{t("title")}<p className="text-red-500">*</p></LabelUI>
+            <LabelUI htmlFor="task-title">
+              {t("title")}
+              <p className="text-red-500">*</p>
+            </LabelUI>
             <Input
               id="task-title"
               value={title}
@@ -250,14 +218,19 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Date limite */}
             <div className="space-y-2">
-              <LabelUI htmlFor="task-due-date" className="flex items-center gap-2">
+              <LabelUI
+                htmlFor="task-due-date"
+                className="flex items-center gap-2"
+              >
                 <Calendar className="h-4 w-4" />
                 {t("due_date")}
               </LabelUI>
               <Input
                 id="task-due-date"
                 type="datetime-local"
-                value={dueDate ? format(new Date(dueDate), "yyyy-MM-dd'T'HH:mm") : ""}
+                value={
+                  dueDate ? format(new Date(dueDate), "yyyy-MM-dd'T'HH:mm") : ""
+                }
                 onChange={(e) => setDueDate(e.target.value)}
               />
               {dueDate && (
@@ -271,10 +244,10 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
             <div className="space-y-2">
               <LabelUI>{t("labels")}</LabelUI>
               <MultiSelectLabels
-                items={labels}
+                labels={workspaceLabels}
                 selected={selectedLabelsMultiple}
                 onSelectedChange={setSelectedLabelsMultiple}
-                placeholder="Select your favorite labels..."
+                placeholder="Select your labels..."
                 emptyMessage="No label found."
                 maxDisplayItems={2}
                 customActions={customLabelsActions}
@@ -292,14 +265,14 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
             </LabelUI>
 
             <MultiSelectUsers
-                items={usersOnWorkspace}
-                selected={assignedMembers.map(m => m.user_id)}
-                onSelectedChange={setSelectedUsersMultiple}
-                placeholder="Assign members..."
-                emptyMessage="No members found."
-                maxDisplayItems={2}
-                customActions={customMembersActions}
-              />
+              users={usersOnWorkspace}
+              selected={assignedMembers.map((m) => m.user_id)}
+              onSelectedChange={setSelectedUsersMultiple}
+              placeholder="Assign members..."
+              emptyMessage="No members found."
+              maxDisplayItems={2}
+              customActions={customMembersActions}
+            />
           </div>
 
           <Separator />
@@ -326,5 +299,5 @@ export function CardDetailDialog({ open, onOpenChange, card }: CardDetailDialogP
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

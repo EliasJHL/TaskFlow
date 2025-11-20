@@ -1,56 +1,65 @@
-"use client"
+"use client";
 
-import { useAuth } from "@/lib/auth"
-import { useStore } from "@/lib/store"
-import { useRouter } from "next/navigation"
-import { useEffect, useRef } from "react"
-import { BoardHeader } from "@/components/board/board-header"
-import { BoardView } from "@/components/board/board-view"
-import { useTranslation } from "react-i18next"
+import { useAuth } from "@/lib/auth";
+import { useStore } from "@/lib/store";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { BoardHeader } from "@/components/board/board-header";
+import { BoardView } from "@/components/board/board-view";
+import { useTranslation } from "react-i18next";
 
 interface BoardPageProps {
-  params: { workspace_id: string; board_id: string }
+  params: { workspace_id: string; board_id: string };
 }
 
 export default function BoardPage({ params }: BoardPageProps) {
-  const { workspace_id: workspaceId, board_id: boardId } = params
-  const { t, i18n } = useTranslation("common")
-  const currentLang = i18n.language
+  const { workspace_id: workspaceId, board_id: boardId } = params;
+  const { t, i18n } = useTranslation("common");
+  const currentLang = i18n.language;
 
-  const { user } = useAuth()
-  const router = useRouter()
-  const board = useStore((state) => state.currentBoard)
-  const getBoard = useStore((state) => state.getBoard)
-  const getBoards = useStore((state) => state.getBoards)
-  const getWorkspace = useStore((state) => state.getWorkspace)
-  const workspace = useStore((state) => state.currentWorkspace)
-  const isLoading = useStore((state) => state.isLoading)
+  const { user } = useAuth();
+  const router = useRouter();
+  const board = useStore((state) => state.currentBoard);
+  const getBoard = useStore((state) => state.getBoard);
+  const getBoards = useStore((state) => state.getBoards);
+  const getWorkspace = useStore((state) => state.getWorkspace);
+  const workspace = useStore((state) => state.currentWorkspace);
+  const isLoading = useStore((state) => state.isLoading);
 
-  const hasLoadedRef = useRef<string | null>(null)
-  const loadKey = `${workspaceId}-${boardId}`
+  const hasLoadedRef = useRef<string | null>(null);
+  const loadKey = `${workspaceId}-${boardId}`;
 
   useEffect(() => {
     if (!user) {
-      router.push(`/${currentLang}/login`)
-      return
+      router.push(`/${currentLang}/login`);
+      return;
     }
 
-    if (hasLoadedRef.current === loadKey) return
-    hasLoadedRef.current = loadKey
+    if (hasLoadedRef.current === loadKey) return;
+    hasLoadedRef.current = loadKey;
 
     const loadData = async () => {
       try {
-        await getWorkspace(workspaceId)
-        await getBoards(workspaceId)
-        await getBoard(boardId)
+        await getWorkspace(workspaceId);
+        await getBoards(workspaceId);
+        await getBoard(boardId);
       } catch (error) {
-        console.error('Error loading board page:', error)
+        console.error("Error loading board page:", error);
       }
-    }
-    loadData()
-  }, [user, workspaceId, boardId, getWorkspace, getBoards, getBoard, router, currentLang])
+    };
+    loadData();
+  }, [
+    user,
+    workspaceId,
+    boardId,
+    getWorkspace,
+    getBoards,
+    getBoard,
+    router,
+    currentLang,
+  ]);
 
-  if (!user) return null
+  if (!user) return null;
 
   if (isLoading) {
     return (
@@ -64,7 +73,7 @@ export default function BoardPage({ params }: BoardPageProps) {
           <p className="text-muted-foreground mt-4">{t("board_loading")}</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (!workspace || !board) {
@@ -82,7 +91,7 @@ export default function BoardPage({ params }: BoardPageProps) {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -90,5 +99,5 @@ export default function BoardPage({ params }: BoardPageProps) {
       <BoardHeader workspace={workspace} board={board} />
       <BoardView boardId={board.boardId} />
     </div>
-  )
+  );
 }

@@ -1,46 +1,46 @@
-"use client"
+"use client";
 
-import { useAuth } from "@/lib/auth"
-import { useStore } from "@/lib/store"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
-import { WorkspaceHeader } from "@/components/workspace/workspace-header"
-import { BoardsGrid } from "@/components/workspace/boards-grid"
-import { useTranslation } from "react-i18next"
+import { useAuth } from "@/lib/auth";
+import { useStore } from "@/lib/store";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { WorkspaceHeader } from "@/components/workspace/workspace-header";
+import { BoardsGrid } from "@/components/workspace/boards-grid";
+import { useTranslation } from "react-i18next";
 
 interface WorkspacePageProps {
-  params: { workspace_id: string }
+  params: { workspace_id: string };
 }
 
 export default function WorkspacePage({ params }: WorkspacePageProps) {
-  const { workspace_id } = params
-  const { t, i18n } = useTranslation("common")
-  const currentLang = i18n.language
+  const { workspace_id } = params;
+  const { t, i18n } = useTranslation("common");
+  const currentLang = i18n.language;
 
-  const { user } = useAuth()
-  const router = useRouter()
-  const boards = useStore((state) => state.boards)
-  const getBoards = useStore((state) => state.getBoards)
-  const getWorkspace = useStore((state) => state.getWorkspace)
-  const workspace = useStore((state) => state.currentWorkspace)
-  const isLoading = useStore((state) => state.isLoading)
+  const { user } = useAuth();
+  const router = useRouter();
+  const boards = useStore((state) => state.boards);
+  const getBoards = useStore((state) => state.getBoards);
+  const getWorkspace = useStore((state) => state.getWorkspace);
+  const workspace = useStore((state) => state.currentWorkspace);
+  const isLoading = useStore((state) => state.isLoading);
 
   useEffect(() => {
     if (!user) {
-      router.push(`/${currentLang}/login`)
-      return
+      router.push(`/${currentLang}/login`);
+      return;
     }
 
     if (workspace_id) {
       const loadData = async () => {
-        await getWorkspace(workspace_id)
-        await getBoards(workspace_id)
-      }
-      loadData()
+        await getWorkspace(workspace_id);
+        await getBoards(workspace_id);
+      };
+      loadData();
     }
-  }, [user, workspace_id, router, getBoards, getWorkspace, currentLang])
+  }, [user, workspace_id, router, getBoards, getWorkspace, currentLang]);
 
-  if (!user) return null
+  if (!user) return null;
 
   if (isLoading) {
     return (
@@ -54,14 +54,16 @@ export default function WorkspacePage({ params }: WorkspacePageProps) {
           <p className="text-muted-foreground mt-4">{t("workspace_loading")}</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (!workspace) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-xl text-muted-foreground mb-4">{t("workspace_not_found")}</p>
+          <p className="text-xl text-muted-foreground mb-4">
+            {t("workspace_not_found")}
+          </p>
           <button
             onClick={() => router.push(`/${currentLang}/dashboard`)}
             className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
@@ -70,7 +72,7 @@ export default function WorkspacePage({ params }: WorkspacePageProps) {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -78,5 +80,5 @@ export default function WorkspacePage({ params }: WorkspacePageProps) {
       <WorkspaceHeader workspace={workspace} />
       <BoardsGrid boards={boards} />
     </div>
-  )
+  );
 }

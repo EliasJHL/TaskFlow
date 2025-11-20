@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { ThemeProvider } from "next-themes"
-import { Toaster } from "@/components/ui/toaster"
-import { useAuth } from "@/lib/auth"
-import { useEffect } from "react"
-import { ApolloProvider } from "@apollo/client/react"
-import { apolloClient } from "@/lib/apollo-client"
-import i18n from "@/lib/i18n/client"
-import { I18nextProvider } from "react-i18next"
+import type React from "react";
+import { ThemeProvider } from "next-themes";
+import { Toaster } from "@/components/ui/toaster";
+import { useAuth } from "@/lib/auth";
+import { useEffect } from "react";
+import { ApolloProvider } from "@apollo/client/react";
+import { apolloClient } from "@/lib/apollo-client";
+import i18n from "@/lib/i18n/client";
+import { I18nextProvider } from "react-i18next";
 
 interface ProvidersProps {
-  children: React.ReactNode
-  locale: string
+  children: React.ReactNode;
+  locale: string;
 }
 
 export function Providers({ children, locale }: ProvidersProps) {
-  const checkAuth = useAuth((state) => state.checkAuth)
-  const isInitialized = useAuth((state) => state.isInitialized)
+  const checkAuth = useAuth((state) => state.checkAuth);
+  const isInitialized = useAuth((state) => state.isInitialized);
 
   useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
+    checkAuth();
+  }, [checkAuth]);
 
   useEffect(() => {
     if (i18n.language !== locale) {
-      i18n.changeLanguage(locale)
+      i18n.changeLanguage(locale);
     }
-  }, [locale])
+  }, [locale]);
 
   if (!isInitialized) {
     return (
@@ -46,7 +46,7 @@ export function Providers({ children, locale }: ProvidersProps) {
           style={{ maxWidth: "100%", maxHeight: "60vh" }}
         />
       </div>
-    )
+    );
   }
 
   return (
@@ -61,5 +61,5 @@ export function Providers({ children, locale }: ProvidersProps) {
         <Toaster />
       </ThemeProvider>
     </ApolloProvider>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const ADD_WORKSPACE_MEMBER_MUTATION = gql`
   mutation AddWorkspaceMember($input: AddWorkspaceMemberInput!) {

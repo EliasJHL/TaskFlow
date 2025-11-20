@@ -48,6 +48,7 @@ model Workspace {
   members       WorkspaceMembers[]
   boards        Board[]
   pinned_by     PinnedWorkspace[]
+  labels        Label[]
 }
 
 model WorkspaceMembers {
@@ -78,7 +79,6 @@ model Board {
   workspace_id String
   workspace    Workspace @relation(fields: [workspace_id], references: [workspace_id])
   lists        List[]
-  labels      Label[]
 }
 
 model List {
@@ -120,8 +120,8 @@ model Label {
   label_id  String   @id @default(uuid())
   name      String
   color     String
-  board_id  String
-  board     Board    @relation(fields: [board_id], references: [board_id]) // To change to be linked to the workspace and not the board
+  workspace_id  String
+  workspace     Workspace    @relation(fields: [board_id], references: [board_id])
   card_labels CardLabel[]
 }
 

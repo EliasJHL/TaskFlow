@@ -26,6 +26,7 @@ type Workspace {
   owner: User!
   members: [WorkspaceMembers!]!
   boards: [Board]
+  labels: [Label]
   is_pinned: Boolean!
 }
 
@@ -41,7 +42,6 @@ type Board {
   description: String
   color: String!
   lists: [List!]!
-  labels: [Label!]!
   workspace_id: ID!
 }
 
@@ -306,7 +306,7 @@ type Mutation {
   updateCard(input: UpdateCardInput!): Card!
   deleteCard(card_id: ID!): Status!
   moveCard(card_id: ID!, list_id: ID!, position: Int!): Card!
-  
+
   # # Labels
   # createLabel(input: CreateLabelInput!): Label!
   # updateLabel(input: UpdateLabelInput!): Label!

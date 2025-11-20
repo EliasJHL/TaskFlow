@@ -1,11 +1,11 @@
 /*
-** EPITECH PROJECT, 2025
-** TaskFlow
-** File description:
-** mutations
-*/
+ ** EPITECH PROJECT, 2025
+ ** TaskFlow
+ ** File description:
+ ** mutations
+ */
 
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const REGISTER_MUTATION = gql`
   mutation Register($input: RegisterInput!) {

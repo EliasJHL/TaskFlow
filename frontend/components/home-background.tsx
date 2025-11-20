@@ -1,43 +1,49 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
+import { useEffect } from "react";
 // import "@/app/home-bg.css"
 
 export function HomeBackground() {
   useEffect(() => {
-    const interBubble = document.querySelector<HTMLDivElement>(".interactive")
-    if (!interBubble) return
+    const interBubble = document.querySelector<HTMLDivElement>(".interactive");
+    if (!interBubble) return;
 
-    let curX = 0
-    let curY = 0
-    let tgX = 0
-    let tgY = 0
+    let curX = 0;
+    let curY = 0;
+    let tgX = 0;
+    let tgY = 0;
 
     function move() {
-      curX += (tgX - curX) / 20
-      curY += (tgY - curY) / 20
-      interBubble.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`
-      requestAnimationFrame(move)
+      curX += (tgX - curX) / 20;
+      curY += (tgY - curY) / 20;
+      interBubble.style.transform = `translate(${Math.round(
+        curX
+      )}px, ${Math.round(curY)}px)`;
+      requestAnimationFrame(move);
     }
 
     window.addEventListener("mousemove", (e) => {
-      tgX = e.clientX
-      tgY = e.clientY
-    })
+      tgX = e.clientX;
+      tgY = e.clientY;
+    });
 
-    move()
+    move();
 
     return () => {
-      window.removeEventListener("mousemove", () => {})
-    }
-  }, [])
+      window.removeEventListener("mousemove", () => {});
+    };
+  }, []);
 
   return (
     <div className="gradient-bg">
       <svg xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="goo">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+            <feGaussianBlur
+              in="SourceGraphic"
+              stdDeviation="10"
+              result="blur"
+            />
             <feColorMatrix
               in="blur"
               mode="matrix"
@@ -57,5 +63,5 @@ export function HomeBackground() {
         <div className="interactive"></div>
       </div>
     </div>
-  )
+  );
 }

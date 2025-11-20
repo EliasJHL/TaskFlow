@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import type { Workspace } from "@/lib/store"
-import { useAuth } from "@/lib/auth"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Users, Settings } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { TeamManagementDialog } from "./team-management-dialog"
-import { Navigation } from "@/components/navigation"
-import { LabelsModal } from "@/components/workspace/labels-modal"
-import { useTranslation } from "react-i18next"
+import type { Workspace } from "@/lib/store";
+import { useAuth } from "@/lib/auth";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Users, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { TeamManagementDialog } from "./team-management-dialog";
+import { Navigation } from "@/components/navigation";
+import { LabelsModal } from "@/components/workspace/labels-modal";
+import { useTranslation } from "react-i18next";
 
 interface WorkspaceHeaderProps {
-  workspace: Workspace
+  workspace: Workspace;
 }
 
 export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
-  const { i18n, t } = useTranslation("common")
-  const currentLang = i18n.language
-  const user = useAuth((state) => state.user)
-  const router = useRouter()
-  const workspaceMembers = workspace.members || []
-  const [showTeamManagement, setShowTeamManagement] = useState(false)
-  const [isLabelsModalOpen, setIsLabelsModalOpen] = useState(false)
+  const { i18n, t } = useTranslation("common");
+  const currentLang = i18n.language;
+  const user = useAuth((state) => state.user);
+  const router = useRouter();
+  const workspaceMembers = workspace.members || [];
+  const [showTeamManagement, setShowTeamManagement] = useState(false);
+  const [isLabelsModalOpen, setIsLabelsModalOpen] = useState(false);
 
   return (
     <>
@@ -46,8 +46,14 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
                 <Users className="h-4 w-4 text-muted-foreground" />
                 <div className="flex -space-x-2">
                   {workspaceMembers.slice(0, 4).map((member) => (
-                    <Avatar key={member.user_id} className="h-7 w-7 border-2 border-background">
-                      <AvatarImage src={member.picture || "/placeholder.svg"} alt={member.username} />
+                    <Avatar
+                      key={member.user_id}
+                      className="h-7 w-7 border-2 border-background"
+                    >
+                      <AvatarImage
+                        src={member.picture || "/placeholder.svg"}
+                        alt={member.username}
+                      />
                       <AvatarFallback className="text-xs">
                         {member.username
                           .split(" ")
@@ -67,17 +73,28 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
                 </div>
               </div>
 
-              <Button variant="outline" size="sm" onClick={() => setShowTeamManagement(true)}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowTeamManagement(true)}
+              >
                 <Settings className="h-4 w-4 mr-2" />
                 {t("team")}
               </Button>
 
-              <Button variant="outline" size="sm" onClick={() => setIsLabelsModalOpen(true)}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsLabelsModalOpen(true)}
+              >
                 <Settings className="h-4 w-4 mr-2" />
                 {t("labels")}
               </Button>
 
-              <LabelsModal open={isLabelsModalOpen} onOpenChange={setIsLabelsModalOpen} />
+              <LabelsModal
+                open={isLabelsModalOpen}
+                onOpenChange={setIsLabelsModalOpen}
+              />
             </div>
           </div>
         </div>
@@ -89,5 +106,5 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
         workspace={workspace}
       />
     </>
-  )
+  );
 }
