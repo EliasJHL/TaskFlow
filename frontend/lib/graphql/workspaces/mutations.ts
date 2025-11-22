@@ -1,24 +1,24 @@
 /*
-** EPITECH PROJECT, 2025
-** TaskFlow
-** File description:
-** mutations
-*/
+ ** EPITECH PROJECT, 2025
+ ** TaskFlow
+ ** File description:
+ ** mutations
+ */
 
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const CREATE_WORKSPACE_MUTATION = gql`
-    mutation CreateWorkspace($input: CreateWorkspaceInput!) {
-        createWorkspace(input: $input) {
-            workspace {
-                workspace_id
-                name
-                description
-                color
-                owner_id
-            }
-        }
+  mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+    createWorkspace(input: $input) {
+      workspace {
+        workspace_id
+        name
+        description
+        color
+        owner_id
+      }
     }
+  }
 `;
 
 export const UPDATE_WORKSPACE_MUTATION = gql`

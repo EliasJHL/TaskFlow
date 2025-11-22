@@ -1,0 +1,23 @@
+scalar DateTime
+scalar Upload
+
+enum Role {
+  Admin
+  Member
+  Viewer
+}
+
+type Status {
+  success: Boolean!
+  message: String
+}
+
+type FileResponse {
+  success: Boolean!
+  url: String
+  message: String
+}
+
+type Mutation {
+  uploadFile(file: Upload!): FileResponse!
+}

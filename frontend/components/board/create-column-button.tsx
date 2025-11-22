@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useStore } from "@/lib/store"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import { Plus, X, Check } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import { useTranslation } from "react-i18next"
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { useStore } from "@/lib/store";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, X, Check } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
 
 interface CreateColumnButtonProps {
-  boardId: string
+  boardId: string;
 }
 
 const columnColors = [
@@ -21,23 +21,23 @@ const columnColors = [
   "#10b981", // emerald
   "#3b82f6", // blue
   "#06b6d4", // cyan
-]
+];
 
 export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
-  const [isCreating, setIsCreating] = useState(false)
-  const [title, setTitle] = useState("")
-  const [selectedColor, setSelectedColor] = useState(columnColors[0])
-  const { createList, lists, currentBoard } = useStore()
-  const { toast } = useToast()
-  const { t, i18n } = useTranslation("common")
-  const currentLang = i18n.language
-  const router = useRouter()
+  const [isCreating, setIsCreating] = useState(false);
+  const [title, setTitle] = useState("");
+  const [selectedColor, setSelectedColor] = useState(columnColors[0]);
+  const { createList, lists, currentBoard } = useStore();
+  const { toast } = useToast();
+  const { t, i18n } = useTranslation("common");
+  const currentLang = i18n.language;
+  const router = useRouter();
 
   const handleCreate = async () => {
-    if (!title.trim()) return
+    if (!title.trim()) return;
 
-    const boardColumns = lists.filter((col) => col.board.boardId === boardId)
-    const maxOrder = Math.max(...boardColumns.map((col) => col.position), -1)
+    const boardColumns = lists.filter((col) => col.board.boardId === boardId);
+    const maxOrder = Math.max(...boardColumns.map((col) => col.position), -1);
 
     await createList({
       title: title.trim(),
@@ -45,26 +45,28 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
       position: maxOrder + 1,
       board: currentBoard!,
       cards: [],
-    })
+    });
 
     toast({
       title: t("column_created"),
       description: t("column_created_desc", { name: title }),
-    })
+    });
 
-    setTitle("")
-    setSelectedColor(columnColors[0])
-    setIsCreating(false)
+    setTitle("");
+    setSelectedColor(columnColors[0]);
+    setIsCreating(false);
 
     // Redirection dynamique
-    router.push(`/${currentLang}/workspace/${currentBoard?.workspaceId}/board/${boardId}`)
-  }
+    router.push(
+      `/${currentLang}/workspace/${currentBoard?.workspaceId}/board/${boardId}`
+    );
+  };
 
   const handleCancel = () => {
-    setTitle("")
-    setSelectedColor(columnColors[0])
-    setIsCreating(false)
-  }
+    setTitle("");
+    setSelectedColor(columnColors[0]);
+    setIsCreating(false);
+  };
 
   if (isCreating) {
     return (
@@ -75,11 +77,11 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleCreate()
-              if (e.key === "Escape") handleCancel()
+              if (e.key === "Enter") handleCreate();
+              if (e.key === "Escape") handleCancel();
             }}
             autoFocus
-          />          
+          />
 
           <div className="flex gap-1">
             {columnColors.map((color) => (
@@ -87,7 +89,9 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
                 key={color}
                 type="button"
                 className={`h-6 w-6 rounded border-2 transition-all ${
-                  selectedColor === color ? "border-foreground scale-110" : "border-transparent hover:scale-105"
+                  selectedColor === color
+                    ? "border-foreground scale-110"
+                    : "border-transparent hover:scale-105"
                 }`}
                 style={{ backgroundColor: color }}
                 onClick={() => setSelectedColor(color)}
@@ -107,7 +111,7 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -119,5 +123,5 @@ export function CreateColumnButton({ boardId }: CreateColumnButtonProps) {
       <Plus className="h-4 w-4 mr-2" />
       {t("create_new_column")}
     </Button>
-  )
+  );
 }

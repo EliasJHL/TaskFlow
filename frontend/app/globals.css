@@ -2,9 +2,7 @@
 @import 'tw-animate-css';
 @custom-variant dark (&:is(.dark *));
 :root {
-    --background: #eeeeee;
-    --foreground: oklch(0.145 0 0);
-    --card: #f3f2f2;
+    --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
@@ -46,28 +44,30 @@
     --color-interactive: 100, 255, 140;
     --circle-size: 80%;
     --blending: hard-light;
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
 }
 
 .dark {
-    --background: #121212;
-    --foreground: #eeeeee;
-    --card: #0f0f0f;
-    --card-foreground: #eeeeee;
-    --popover: #0f0f0f;
-    --popover-foreground: #eeeeee;
-    --primary: #eeeeee;
-    --primary-foreground: #0f0f0f;
-    --secondary: #0f0f0f;
-    --secondary-foreground: #eeeeee;
-    --muted: #0f0f0f;
-    --muted-foreground: #eeeeee;
-    --accent: #0f0f0f;
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
     --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.396 0.141 25.723);
+    --destructive: oklch(0.704 0.191 22.216);
     --destructive-foreground: oklch(100% 0.00011 271.152);
-    --border: oklch(0.269 0 0);
-    --input: oklch(0.269 0 0);
-    --ring: oklch(0.439 0 0);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
     --chart-1: oklch(0.488 0.243 264.376);
     --chart-2: oklch(0.696 0.17 162.48);
     --chart-3: oklch(0.769 0.188 70.08);
@@ -79,8 +79,8 @@
     --sidebar-primary-foreground: oklch(0.985 0 0);
     --sidebar-accent: oklch(0.269 0 0);
     --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(0.269 0 0);
-    --sidebar-ring: oklch(0.439 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
     /* Animated background page.tsx */
     --color-bg1: rgb(30, 34, 40);
     --color-bg2: rgb(0, 0, 0) --color1: 80, 140, 255;
@@ -162,7 +162,6 @@
         background-clip: text;
     }
 }
-
 
 /* Home page animated background */
 
@@ -301,6 +300,5 @@
     left: -50%;
     opacity: 0.5;
 }
-
 
 /* End Home page animated background */

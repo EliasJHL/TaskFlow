@@ -1,11 +1,11 @@
 /*
-** EPITECH PROJECT, 2025
-** TaskFlow
-** File description:
-** query
-*/
+ ** EPITECH PROJECT, 2025
+ ** TaskFlow
+ ** File description:
+ ** query
+ */
 
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const LISTS_QUERY = gql`
   query GetLists($board_id: ID!) {

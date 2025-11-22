@@ -1,65 +1,70 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { type Workspace } from "@/lib/store"
-import { useStore } from "@/lib/store"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { MoreHorizontal, Users, Archive, Trash2, Pin } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useTranslation } from "react-i18next"
+import { useState } from "react";
+import { type Workspace } from "@/lib/store";
+import { useStore } from "@/lib/store";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { MoreHorizontal, Users, Archive, Trash2, Pin } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 interface WorkspaceCardProps {
-  workspace: Workspace
+  workspace: Workspace;
 }
 
 export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
-  const router = useRouter()
-  const [showMenu, setShowMenu] = useState(false)
-  const { deleteWorkspace, pinWorkspace, unpinWorkspace } = useStore()
-  const { t, i18n } = useTranslation("common")
-  const currentLang = i18n.language
+  const router = useRouter();
+  const [showMenu, setShowMenu] = useState(false);
+  const { deleteWorkspace, pinWorkspace, unpinWorkspace } = useStore();
+  const { t, i18n } = useTranslation("common");
+  const currentLang = i18n.language;
 
   const handleOpenWorkspace = () => {
     if (!showMenu) {
-      router.push(`/${currentLang}/workspace/${workspace.workspaceId}`)
+      router.push(`/${currentLang}/workspace/${workspace.workspaceId}`);
     }
-  }
+  };
 
   const handleMenuToggle = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setShowMenu(!showMenu)
-  }
+    e.stopPropagation();
+    setShowMenu(!showMenu);
+  };
 
   const handleArchiveWorkspace = () => {
-    console.log(`Archiving workspace ${workspace.workspaceId}`)
-    setShowMenu(false)
-  }
+    console.log(`Archiving workspace ${workspace.workspaceId}`);
+    setShowMenu(false);
+  };
 
   const handlePinWorkspace = async () => {
-    console.log(`Pinning workspace ${workspace.workspaceId}`)
+    console.log(`Pinning workspace ${workspace.workspaceId}`);
     if (workspace.isPinned) {
-      await unpinWorkspace(workspace.workspaceId)
+      await unpinWorkspace(workspace.workspaceId);
     } else {
-      await pinWorkspace(workspace.workspaceId)
+      await pinWorkspace(workspace.workspaceId);
     }
-    setShowMenu(false)
-  }
+    setShowMenu(false);
+  };
 
   const handleDeleteWorkspace = async () => {
-    console.log(`Deleting workspace ${workspace.workspaceId}`)
+    console.log(`Deleting workspace ${workspace.workspaceId}`);
     if (!confirm(t("confirm_delete_workspace", { name: workspace.name }))) {
-      return
+      return;
     }
-    await deleteWorkspace(workspace.workspaceId)
-    setShowMenu(false)
-  }
+    await deleteWorkspace(workspace.workspaceId);
+    setShowMenu(false);
+  };
 
   return (
     <>
-      {showMenu && <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />}
+      {showMenu && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setShowMenu(false)}
+        />
+      )}
 
       <Card
         className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 relative"
@@ -69,9 +74,13 @@ export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="space-y-1 flex-1">
-              <h3 className="font-semibold text-lg leading-tight text-balance">{workspace.name}</h3>
+              <h3 className="font-semibold text-lg leading-tight text-balance">
+                {workspace.name}
+              </h3>
               {workspace.description && (
-                <p className="text-sm text-muted-foreground line-clamp-2">{workspace.description}</p>
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  {workspace.description}
+                </p>
               )}
             </div>
 
@@ -122,7 +131,8 @@ export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between text-sm">
             <Badge variant="secondary" className="text-xs">
-              {workspace.boards.length} {workspace.boards.length === 1 ? t("board") : t("boards")}
+              {workspace.boards.length}{" "}
+              {workspace.boards.length === 1 ? t("board") : t("boards")}
             </Badge>
           </div>
 
@@ -131,8 +141,14 @@ export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
               <Users className="h-4 w-4 text-muted-foreground" />
               <div className="flex -space-x-2">
                 {workspace.members.slice(0, 3).map((member) => (
-                  <Avatar key={member.user_id} className="h-6 w-6 border-2 border-background">
-                    <AvatarImage src={member.picture || "/placeholder.svg"} alt={member.username} />
+                  <Avatar
+                    key={member.user_id}
+                    className="h-6 w-6 border-2 border-background"
+                  >
+                    <AvatarImage
+                      src={member.picture || "/placeholder.svg"}
+                      alt={member.username}
+                    />
                     <AvatarFallback className="text-xs">
                       {member.username
                         .split(" ")
@@ -144,16 +160,21 @@ export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
                 ))}
                 {workspace.members.length > 3 && (
                   <div className="h-6 w-6 rounded-full bg-muted border-2 border-background flex items-center justify-center">
-                    <span className="text-xs text-muted-foreground">+{workspace.members.length - 3}</span>
+                    <span className="text-xs text-muted-foreground">
+                      +{workspace.members.length - 3}
+                    </span>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: workspace.color }} />
+            <div
+              className="h-3 w-3 rounded-full"
+              style={{ backgroundColor: workspace.color }}
+            />
           </div>
         </CardContent>
       </Card>
     </>
-  )
+  );
 }

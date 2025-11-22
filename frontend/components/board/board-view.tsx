@@ -1,42 +1,44 @@
-"use client"
+"use client";
 
-import { useStore } from "@/lib/store"
-import { useEffect, useState, useRef } from "react"
-import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { BoardColumn } from "./board-column"
-import { CreateColumnButton } from "./create-column-button"
-import { TimelineView } from "./timeline-view"
-import { CalendarView } from "./calendar-view"
-import { RoadmapView } from "./roadmap-view"
-import { LayoutGrid, Baseline as Timeline, Calendar, Map } from "lucide-react"
+import { useStore } from "@/lib/store";
+import { useEffect, useState, useRef } from "react";
+import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BoardColumn } from "./board-column";
+import { CreateColumnButton } from "./create-column-button";
+import { TimelineView } from "./timeline-view";
+import { CalendarView } from "./calendar-view";
+import { RoadmapView } from "./roadmap-view";
+import { LayoutGrid, Baseline as Timeline, Calendar, Map } from "lucide-react";
 
 interface BoardViewProps {
-  boardId: string
+  boardId: string;
 }
 
 export function BoardView({ boardId }: BoardViewProps) {
-  const lists = useStore((state) => state.lists)
-  const getLists = useStore((state) => state.getLists)
-  const loadingLists = useStore((state) => state.loadingLists)
-  const [currentView, setCurrentView] = useState<"board" | "timeline" | "calendar" | "roadmap">("board")
-  
-  const hasLoadedRef = useRef<string | null>(null)
+  const lists = useStore((state) => state.lists);
+  const getLists = useStore((state) => state.getLists);
+  const loadingLists = useStore((state) => state.loadingLists);
+  const [currentView, setCurrentView] = useState<
+    "board" | "timeline" | "calendar" | "roadmap"
+  >("board");
 
-  useEffect(() => {    
+  const hasLoadedRef = useRef<string | null>(null);
+
+  useEffect(() => {
     if (hasLoadedRef.current === boardId) {
-      return
+      return;
     }
-    hasLoadedRef.current = boardId
-    getLists(boardId)    
-  }, [boardId])
+    hasLoadedRef.current = boardId;
+    getLists(boardId);
+  }, [boardId]);
 
-  const boardColumns = lists
+  const boardColumns = lists;
 
   const handleDragEnd = (result: DropResult) => {
     // TODO: Implement drag & drop
-    return
-  }
+    return;
+  };
 
   if (loadingLists && lists.length === 0) {
     return (
@@ -49,7 +51,7 @@ export function BoardView({ boardId }: BoardViewProps) {
           <p className="text-muted-foreground mt-4">Loading lists...</p>
         </div>
       </main>
-    )
+    );
   }
 
   return (
@@ -83,11 +85,15 @@ export function BoardView({ boardId }: BoardViewProps) {
         <div className="flex-1 overflow-hidden">
           <TabsContent value="board" className="h-full m-0 p-6 overflow-x-auto">
             <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="board" type="column" direction="horizontal">
+              <Droppable
+                droppableId="board"
+                type="column"
+                direction="horizontal"
+              >
                 {(provided) => (
-                  <div 
-                    {...provided.droppableProps} 
-                    ref={provided.innerRef} 
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
                     className="flex gap-6 min-h-full pb-6"
                   >
                     {boardColumns.length === 0 ? (
@@ -95,7 +101,9 @@ export function BoardView({ boardId }: BoardViewProps) {
                         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
                           <LayoutGrid className="w-8 h-8 text-muted-foreground" />
                         </div>
-                        <h3 className="text-lg font-semibold mb-2">No lists yet</h3>
+                        <h3 className="text-lg font-semibold mb-2">
+                          No lists yet
+                        </h3>
                         <p className="text-muted-foreground mb-6 max-w-md">
                           Create your first list to start organizing tasks
                         </p>
@@ -106,13 +114,12 @@ export function BoardView({ boardId }: BoardViewProps) {
                         {boardColumns
                           .sort((a, b) => a.position - b.position)
                           .map((column, index) => (
-                            <BoardColumn 
-                              key={column.listId} 
-                              column={column} 
-                              index={index} 
+                            <BoardColumn
+                              key={column.listId}
+                              column={column}
+                              index={index}
                             />
-                          ))
-                        }
+                          ))}
                         {provided.placeholder}
                         <CreateColumnButton boardId={boardId} />
                       </>
@@ -123,19 +130,28 @@ export function BoardView({ boardId }: BoardViewProps) {
             </DragDropContext>
           </TabsContent>
 
-          <TabsContent value="timeline" className="h-full m-0 p-6 overflow-y-auto">
+          <TabsContent
+            value="timeline"
+            className="h-full m-0 p-6 overflow-y-auto"
+          >
             <TimelineView boardId={boardId} />
           </TabsContent>
 
-          <TabsContent value="calendar" className="h-full m-0 p-6 overflow-y-auto">
-            <CalendarView boardId={boardId} />  
+          <TabsContent
+            value="calendar"
+            className="h-full m-0 p-6 overflow-y-auto"
+          >
+            <CalendarView boardId={boardId} />
           </TabsContent>
 
-          <TabsContent value="roadmap" className="h-full m-0 p-6 overflow-y-auto">
+          <TabsContent
+            value="roadmap"
+            className="h-full m-0 p-6 overflow-y-auto"
+          >
             <RoadmapView boardId={boardId} />
           </TabsContent>
         </div>
       </Tabs>
     </main>
-  )
+  );
 }

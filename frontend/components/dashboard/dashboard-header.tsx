@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Navigation } from "@/components/navigation"
+import { Navigation } from "@/components/navigation";
 
 export function DashboardHeader() {
-  return <Navigation variant="dashboard" />
+  return <Navigation variant="dashboard" />;
 }

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Users, Calendar } from "lucide-react"
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Users, Calendar } from "lucide-react";
 
 export function WorkspaceCardSkeleton() {
   return (
@@ -43,5 +43,5 @@ export function WorkspaceCardSkeleton() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

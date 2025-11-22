@@ -1,0 +1,75 @@
+type Workspace {
+  workspace_id: ID!
+  name: String!
+  color: String!
+  description: String
+  owner_id: ID!
+  owner: User!
+  members: [WorkspaceMembers!]!
+  boards: [Board]
+  labels: [Label]
+  is_pinned: Boolean!
+}
+
+type WorkspaceMembers {
+  workspace_id: ID!
+  user: User!
+  role: Role!
+}
+
+type WorkspaceMember {
+  workspace_id: ID!
+  user_id: ID!
+  role: String!
+  user: User!
+  workspace: Workspace!
+}
+
+input CreateWorkspaceInput {
+  name: String!
+  description: String
+  color: String
+}
+
+type CreateWorkspacePayload {
+  workspace: Workspace
+}
+
+input UpdateWorkspaceInput {
+  name: String
+  description: String
+  color: String
+}
+
+input AddWorkspaceMemberInput {
+  workspace_id: ID!
+  user_email: String!
+  role: Role
+}
+
+input UpdateMemberRoleInput {
+  workspace_id: ID!
+  user_id: ID!
+  role: Role!
+}
+
+type PinWorkspacePayload {
+  workspace: Workspace!
+}
+
+type Query {
+  workspaces: [Workspace]
+  workspace(workspace_id: ID!): Workspace
+  workspaceMembers(workspace_id: ID!): [WorkspaceMember!]!
+}
+
+type Mutation {
+  createWorkspace(input: CreateWorkspaceInput!): CreateWorkspacePayload!
+  updateWorkspace(workspace_id: ID!, input: UpdateWorkspaceInput!): Workspace!
+  deleteWorkspace(workspace_id: ID!): Status!
+  pinWorkspace(workspace_id: ID!): PinWorkspacePayload!
+  unpinWorkspace(workspace_id: ID!): PinWorkspacePayload!
+  addWorkspaceMember(input: AddWorkspaceMemberInput!): WorkspaceMembers!
+  removeWorkspaceMember(workspace_id: ID!, user_id: ID!): Status!
+  updateMemberRole(input: UpdateMemberRoleInput!): WorkspaceMembers!
+}

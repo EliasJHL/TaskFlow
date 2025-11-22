@@ -18,12 +18,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function HomePage({ params }: { params: { lang: string } }) {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
-  const { t } = useTranslation("common");
-  const { lang } = params;
+  const { i18n, t } = useTranslation("common");
+  const currentLang = i18n.language;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,7 +57,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <img  
+                <img
                   src="https://i.ibb.co/svnNFVFW/download-1.png"
                   alt="Logo"
                   className="w-10 h-10 rounded-lg object-cover"
@@ -82,9 +83,10 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               </div>
 
               <div className="flex items-center gap-4">
+                <LanguageSwitcher />
                 <GithubButton />
                 <ThemeToggle />
-                <Link href={user ? `/${lang}/dashboard` : `/${lang}/login`}>
+                <Link href={user ? `/${currentLang}/dashboard` : `/${currentLang}/login`}>
                   <Button size={scrolled ? "sm" : "default"} id="login-button">
                     {user ? t("dashboard") : t("login")}
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -99,7 +101,11 @@ export default function HomePage({ params }: { params: { lang: string } }) {
           <div className="max-w-6xl mx-auto text-center space-y-8">
             <div className="flex items-center gap-3 text-xs justify-center">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border">
-                <svg className="w-3.5 h-3.5" viewBox="0 0 76 65" fill="currentColor">
+                <svg
+                  className="w-3.5 h-3.5"
+                  viewBox="0 0 76 65"
+                  fill="currentColor"
+                >
                   <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
                 </svg>
                 <span className="text-muted-foreground">Next.js</span>
@@ -125,7 +131,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link href={`/${lang}/dashboard`} className="w-full sm:w-auto">
+              <Link href={`/${currentLang}/dashboard`} className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   className="gap-2 w-full sm:w-auto border-1 border-primary rounded-2xl backdrop-blur-md bg-gradient-to-r from-[#007757FF] to-[#00D4C3FF] text-white hover:brightness-110 transition-transform duration-200 hover:scale-105"
@@ -140,7 +146,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               <div className="relative rounded-2xl border border-border bg-muted/30 p-2 shadow-2xl">
                 <div className="aspect-video rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                   <img
-                    src="https://www.sysnove.fr/images/blog/trello-board.png"
+                    src="https://www.media.thiga.co/hs-fs/hubfs/Imported_Blog_Media/gif-trello.gif?width=1532&height=919&name=gif-trello.gif"
                     alt="Aperçu de l'interface"
                     className="rounded-lg shadow-lg mx-auto w-full h-auto object-cover"
                   />
@@ -153,7 +159,9 @@ export default function HomePage({ params }: { params: { lang: string } }) {
         <section id="discover" className="py-20 px-4 bg-muted/30">
           <div className="max-w-6xl mx-auto">
             <div className="text-center space-y-4 mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold">{t("everything_you_need")}</h2>
+              <h2 className="text-4xl md:text-5xl font-bold">
+                {t("everything_you_need")}
+              </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                 {t("powerful_features")}
               </p>
@@ -164,16 +172,24 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <LayoutGrid className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{t("kanban_boards")}</h3>
-                <p className="text-muted-foreground">{t("kanban_description")}</p>
+                <h3 className="text-xl font-semibold mb-2">
+                  {t("kanban_boards")}
+                </h3>
+                <p className="text-muted-foreground">
+                  {t("kanban_description")}
+                </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-background border border-border hover:shadow-lg transition-shadow">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <Users className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{t("collaboration")}</h3>
-                <p className="text-muted-foreground">{t("collaboration_description")}</p>
+                <h3 className="text-xl font-semibold mb-2">
+                  {t("collaboration")}
+                </h3>
+                <p className="text-muted-foreground">
+                  {t("collaboration_description")}
+                </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-background border border-border hover:shadow-lg transition-shadow">
@@ -181,15 +197,21 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                   <Calendar className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{t("due_dates")}</h3>
-                <p className="text-muted-foreground">{t("due_dates_description")}</p>
+                <p className="text-muted-foreground">
+                  {t("due_dates_description")}
+                </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-background border border-border hover:shadow-lg transition-shadow">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <TrendingUp className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{t("roadmap_view")}</h3>
-                <p className="text-muted-foreground">{t("roadmap_description")}</p>
+                <h3 className="text-xl font-semibold mb-2">
+                  {t("roadmap_view")}
+                </h3>
+                <p className="text-muted-foreground">
+                  {t("roadmap_description")}
+                </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-background border border-border hover:shadow-lg transition-shadow">
@@ -197,15 +219,21 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                   <Zap className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{t("dark_mode")}</h3>
-                <p className="text-muted-foreground">{t("dark_mode_description")}</p>
+                <p className="text-muted-foreground">
+                  {t("dark_mode_description")}
+                </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-background border border-border hover:shadow-lg transition-shadow">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <Target className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{t("clean_design")}</h3>
-                <p className="text-muted-foreground">{t("clean_design_description")}</p>
+                <h3 className="text-xl font-semibold mb-2">
+                  {t("clean_design")}
+                </h3>
+                <p className="text-muted-foreground">
+                  {t("clean_design_description")}
+                </p>
               </div>
             </div>
           </div>
@@ -215,9 +243,13 @@ export default function HomePage({ params }: { params: { lang: string } }) {
           <div className="max-w-6xl mx-auto">
             <div className="mt-16 p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 text-center space-y-6">
               <CheckCircle2 className="w-12 h-12 mx-auto text-primary" />
-              <h3 className="text-2xl font-bold">{t("ready_to_get_started")}</h3>
-              <p className="text-muted-foreground max-w-xl mx-auto">{t("join_thousands")}</p>
-              <Link href={`/${lang}/dashboard`}>
+              <h3 className="text-2xl font-bold">
+                {t("ready_to_get_started")}
+              </h3>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                {t("join_thousands")}
+              </p>
+              <Link href={`/${currentLang}/dashboard`}>
                 <Button size="lg" className="gap-2">
                   {t("get_started_now")}
                   <ArrowRight className="w-5 h-5" />
@@ -229,7 +261,10 @@ export default function HomePage({ params }: { params: { lang: string } }) {
 
         <footer className="py-12 px-4 border-t border-border">
           <div className="max-w-6xl mx-auto text-center text-sm text-muted-foreground">
-            <p>©2025 {process.env.NEXT_PUBLIC_APP_NAME}. {t("all_rights_reserved")}</p>
+            <p>
+              ©2025 {process.env.NEXT_PUBLIC_APP_NAME}.{" "}
+              {t("all_rights_reserved")}
+            </p>
           </div>
         </footer>
       </div>

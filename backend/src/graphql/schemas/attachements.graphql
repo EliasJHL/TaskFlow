@@ -1,0 +1,9 @@
+type FileResponse {
+  success: Boolean!
+  url: String
+  message: String
+}
+
+type Mutation {
+  uploadFile(file: Upload!): FileResponse!
+}

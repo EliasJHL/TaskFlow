@@ -1,9 +1,9 @@
 /*
-** EPITECH PROJECT, 2025
-** TaskFlow
-** File description:
-** auth
-*/
+ ** EPITECH PROJECT, 2025
+ ** TaskFlow
+ ** File description:
+ ** auth
+ */
 
 import fp from "fastify-plugin";
 import fastifyAuth from "@fastify/auth";

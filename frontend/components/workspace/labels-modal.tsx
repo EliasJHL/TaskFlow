@@ -1,12 +1,19 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { X, Plus } from "lucide-react"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { useTranslation } from "react-i18next"
+import type React from "react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { X, Plus } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useTranslation } from "react-i18next";
+import { useStore } from "@/lib/store";
 
 const COLORS = [
   { name: "Gray", value: "#6B7280" },
@@ -25,43 +32,67 @@ const COLORS = [
   { name: "Violet", value: "#8B5CF6" },
   { name: "Purple", value: "#A855F7" },
   { name: "Fuchsia", value: "#D946EF" },
-  { name: "Pink", value: "#EC4899" },   
+  { name: "Pink", value: "#EC4899" },
   { name: "Rose", value: "#F43F5E" },
-]
+];
 
 interface Label {
-  name: string
-  color: string
+  name: string;
+  color: string;
 }
 
 interface LabelsModalProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 export function LabelsModal({ open, onOpenChange }: LabelsModalProps) {
-  const { t } = useTranslation("common")
-  const [labels, setLabels] = useState<Label[]>([])
-  const [newLabel, setNewLabel] = useState("")
-  const [selectedColor, setSelectedColor] = useState(COLORS[0].value)
+  const { t } = useTranslation("common");
+  const [newLabel, setNewLabel] = useState("");
+  const [selectedColor, setSelectedColor] = useState(COLORS[0].value);
+  const getLabels = useStore((state) => state.getLabels);
+  const createLabel = useStore((state) => state.createLabel);
+  const deleteLabel = useStore((state) => state.deleteLabel);
+  const labels = useStore((state) => state.labels);
+  const currentWorkspace = useStore((state) => state.currentWorkspace);
 
-  const addLabel = () => {
-    if (newLabel.trim() && !labels.find((l) => l.name === newLabel.trim())) {
-      setLabels([...labels, { name: newLabel.trim(), color: selectedColor }])
-      setNewLabel("")
-      setSelectedColor(COLORS[0].value)
+  useEffect(() => {
+    if (open && currentWorkspace) {
+      // get labels when modal opens
+      //getLabels(currentWorkspace.workspaceId);
     }
-  }
+  }, [open, currentWorkspace?.workspaceId, getLabels]);
 
-  const removeLabel = (labelToRemove: string) => {
-    setLabels(labels.filter((label) => label.name !== labelToRemove))
-  }
+  const addLabel = async () => {  
+    if (!currentWorkspace) return;
+    if (!newLabel.trim()) return;
+    try {
+      await createLabel({ 
+        name: newLabel.trim(), 
+        color: selectedColor, 
+        workspace_id: currentWorkspace.workspaceId 
+      });
+      console.log("Label created:", newLabel.trim(), selectedColor);
+      setNewLabel("");
+      setSelectedColor(COLORS[0].value);
+    } catch (error) {
+      console.error("Error creating label:", error);
+    }
+  };
+
+  const removeLabel = async (labelId: string) => {
+    try {
+      await deleteLabel(labelId);
+    } catch (error) {
+      console.error("Error deleting label:", error);
+    }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      addLabel()
+      addLabel();
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -102,7 +133,9 @@ export function LabelsModal({ open, onOpenChange }: LabelsModalProps) {
                     key={color.value}
                     onClick={() => setSelectedColor(color.value)}
                     className={`w-8 h-8 rounded-lg border-2 transition-all hover:scale-110 ${
-                      selectedColor === color.value ? "border-foreground scale-110" : "border-transparent"
+                      selectedColor === color.value
+                        ? "border-foreground scale-110"
+                        : "border-transparent"
                     }`}
                     style={{ backgroundColor: color.value }}
                     title={color.name}
@@ -116,20 +149,26 @@ export function LabelsModal({ open, onOpenChange }: LabelsModalProps) {
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">{t("labels")}</h3>
               <span className="text-sm text-muted-foreground">
-                {labels.length} {labels.length > 1 ? t("labels_plural") : t("labels_singular")}
+                {labels.length}{" "}
+                {labels.length > 1 ? t("labels_plural") : t("labels_singular")}
               </span>
             </div>
 
             <div className="flex flex-wrap gap-3">
               {labels.length === 0 ? (
-                <p className="text-muted-foreground text-sm">{t("no_labels_yet")}</p>
+                <p className="text-muted-foreground text-sm">
+                  {t("no_labels_yet")}
+                </p>
               ) : (
                 labels.map((label) => (
                   <div
                     key={label.name}
                     className="group flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-background hover:shadow-md transition-all"
                   >
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: label.color }} />
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: label.color }}
+                    />
                     <span className="text-sm font-medium">{label.name}</span>
                     <button
                       onClick={() => removeLabel(label.name)}
@@ -146,5 +185,5 @@ export function LabelsModal({ open, onOpenChange }: LabelsModalProps) {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

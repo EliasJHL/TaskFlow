@@ -1,39 +1,47 @@
-"use client"
+"use client";
 
-import { useAuth } from "@/lib/auth"
-import { useStore } from "@/lib/store"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, CheckCircle2, Clock, FolderKanban, Mail, TrendingUp, ArrowLeft } from "lucide-react"
-import Link from "next/link"
-import { useTranslation } from "react-i18next"
+import { useAuth } from "@/lib/auth";
+import { useStore } from "@/lib/store";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Calendar,
+  CheckCircle2,
+  Clock,
+  FolderKanban,
+  Mail,
+  TrendingUp,
+  ArrowLeft,
+} from "lucide-react";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 export default function ProfilePage() {
-  const user = useAuth((state) => state.user)
-  const { workspaces, cards } = useStore()
-  const router = useRouter()
-  const { i18n, t } = useTranslation("common")
-  const currentLang = i18n.language
+  const user = useAuth((state) => state.user);
+  const { workspaces, cards } = useStore();
+  const router = useRouter();
+  const { i18n, t } = useTranslation("common");
+  const currentLang = i18n.language;
 
   useEffect(() => {
     if (!user) {
-      router.push(`/${currentLang}`)
+      router.push(`/${currentLang}`);
     }
-  }, [user, router, currentLang])
+  }, [user, router, currentLang]);
 
-  if (!user) return null
+  if (!user) return null;
 
-  const recentTasks = [...cards].slice(0, 5)
+  const recentTasks = [...cards].slice(0, 5);
 
   const getInitials = (name: string) =>
     name
       .split(" ")
       .map((n) => n[0])
       .join("")
-      .toUpperCase()
+      .toUpperCase();
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,8 +53,12 @@ export default function ProfilePage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-balance text-3xl font-bold tracking-tight">{t("profile_title")}</h1>
-            <p className="mt-2 text-muted-foreground">{t("profile_subtitle")}</p>
+            <h1 className="text-balance text-3xl font-bold tracking-tight">
+              {t("profile_title")}
+            </h1>
+            <p className="mt-2 text-muted-foreground">
+              {t("profile_subtitle")}
+            </p>
           </div>
         </div>
 
@@ -55,8 +67,13 @@ export default function ProfilePage() {
             <Card className="p-6">
               <div className="flex flex-col items-center text-center">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={user.picture || "/placeholder.svg"} alt={user.username} />
-                  <AvatarFallback className="text-2xl">{getInitials(user.username)}</AvatarFallback>
+                  <AvatarImage
+                    src={user.picture || "/placeholder.svg"}
+                    alt={user.username}
+                  />
+                  <AvatarFallback className="text-2xl">
+                    {getInitials(user.username)}
+                  </AvatarFallback>
                 </Avatar>
                 <h2 className="mt-4 text-2xl font-bold">{user.username}</h2>
                 <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
@@ -75,7 +92,9 @@ export default function ProfilePage() {
                       <FolderKanban className="h-5 w-5 text-blue-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">{t("profile_workspaces")}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {t("profile_workspaces")}
+                      </p>
                       <p className="text-2xl font-bold">{workspaces.length}</p>
                     </div>
                   </div>
@@ -87,7 +106,9 @@ export default function ProfilePage() {
                       <CheckCircle2 className="h-5 w-5 text-green-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">{t("profile_finished_tasks")}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {t("profile_finished_tasks")}
+                      </p>
                       <p className="text-2xl font-bold">N/A</p>
                     </div>
                   </div>
@@ -99,7 +120,9 @@ export default function ProfilePage() {
                       <Clock className="h-5 w-5 text-orange-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">{t("profile_in_progress")}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {t("profile_in_progress")}
+                      </p>
                       <p className="text-2xl font-bold">N/A</p>
                     </div>
                   </div>
@@ -108,7 +131,9 @@ export default function ProfilePage() {
                 <div className="pt-4 border-t">
                   <div className="flex items-center gap-2 text-sm">
                     <TrendingUp className="h-4 w-4 text-green-500" />
-                    <span className="text-muted-foreground">{t("profile_progress")}</span>
+                    <span className="text-muted-foreground">
+                      {t("profile_progress")}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -117,12 +142,14 @@ export default function ProfilePage() {
 
           <div className="space-y-6 lg:col-span-2">
             <Card className="p-6">
-              <h3 className="mb-4 font-semibold">{t("profile_recent_activity")}</h3>
+              <h3 className="mb-4 font-semibold">
+                {t("profile_recent_activity")}
+              </h3>
               {/* TODO: Display recentTasks */}
             </Card>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
