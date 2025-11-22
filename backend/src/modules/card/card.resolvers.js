@@ -32,8 +32,12 @@ const cardResolvers = {
   },
 
   Mutation: {
-    createCard: async (_, { input }, context) => {
-      if (!context.user) throw new Error("Not authenticated");
+    createCard: async (_, { input }, { user }) => {
+      if (!user) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
 
       const { title, description, list_id, due_date } = input;
 
@@ -44,16 +48,9 @@ const cardResolvers = {
 
       if (!list) throw new Error("List not found");
 
-      const isMember = await prisma.workspaceMembers.findFirst({
-        where: {
-          workspace_id: list.board.workspace_id,
-          user_id: context.user.id,
-        },
-      });
+      console.log("Checking membership for board:", list.board_id, "and user:", user.user_id);
 
-      if (!isMember) {
-        throw new Error("Access denied");
-      }
+      await checkBoardMembership(list.board_id, user.id);
 
       const maxPosition = await prisma.card.aggregate({
         where: { list_id },
@@ -74,11 +71,13 @@ const cardResolvers = {
       return card;
     },
 
-    updateCard: async (_, args, context) => {
-      if (!context.user) {
-        throw new Error("Not authenticated");
+    updateCard: async (_, args, { user }) => {
+      if (!user) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
       }
-      await checkBoardMembership(args.board_id, context.user.user_id);
+      await checkBoardMembership(args.board_id, user.id);
       return await prisma.card.update({
         where: { id: args.card_id },
         data: {
@@ -90,11 +89,13 @@ const cardResolvers = {
       });
     },
 
-    deleteCard: async (_, args, context) => {
-      if (!context.user) {
-        throw new Error("Not authenticated");
+    deleteCard: async (_, args, { user }) => {
+      if (!user) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
       }
-      await checkBoardMembership(args.board_id, context.user.user_id);
+      await checkBoardMembership(args.board_id, user.id);
       return await prisma.card.delete({
         where: { id: args.card_id },
       });

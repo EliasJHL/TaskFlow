@@ -15,14 +15,15 @@ export default function DashboardPage() {
   const getWorkspaces = useStore((state) => state.getWorkspaces);
   const isLoading = useStore((state) => state.isLoading);
   const user = useAuth((state) => state.user);
-  const { t } = useTranslation("common");
+  const { i18n, t } = useTranslation("common");
+  const currentLang = i18n.language;
 
   useEffect(() => {
     if (!user) {
-      redirect("/");
+      redirect(`/${currentLang}/login`);
     }
     getWorkspaces();
-  }, []);
+  }, [user, currentLang, getWorkspaces]);
 
   const myWorkspaces = workspaces.filter(
     (w) => w.owner.user_id === user?.user_id

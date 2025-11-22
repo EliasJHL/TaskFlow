@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, Plus } from "lucide-react";
@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useTranslation } from "react-i18next";
+import { useStore } from "@/lib/store";
 
 const COLORS = [
   { name: "Gray", value: "#6B7280" },
@@ -47,20 +48,44 @@ interface LabelsModalProps {
 
 export function LabelsModal({ open, onOpenChange }: LabelsModalProps) {
   const { t } = useTranslation("common");
-  const [labels, setLabels] = useState<Label[]>([]);
   const [newLabel, setNewLabel] = useState("");
   const [selectedColor, setSelectedColor] = useState(COLORS[0].value);
+  const getLabels = useStore((state) => state.getLabels);
+  const createLabel = useStore((state) => state.createLabel);
+  const deleteLabel = useStore((state) => state.deleteLabel);
+  const labels = useStore((state) => state.labels);
+  const currentWorkspace = useStore((state) => state.currentWorkspace);
 
-  const addLabel = () => {
-    if (newLabel.trim() && !labels.find((l) => l.name === newLabel.trim())) {
-      setLabels([...labels, { name: newLabel.trim(), color: selectedColor }]);
+  useEffect(() => {
+    if (open && currentWorkspace) {
+      // get labels when modal opens
+      //getLabels(currentWorkspace.workspaceId);
+    }
+  }, [open, currentWorkspace?.workspaceId, getLabels]);
+
+  const addLabel = async () => {  
+    if (!currentWorkspace) return;
+    if (!newLabel.trim()) return;
+    try {
+      await createLabel({ 
+        name: newLabel.trim(), 
+        color: selectedColor, 
+        workspace_id: currentWorkspace.workspaceId 
+      });
+      console.log("Label created:", newLabel.trim(), selectedColor);
       setNewLabel("");
       setSelectedColor(COLORS[0].value);
+    } catch (error) {
+      console.error("Error creating label:", error);
     }
   };
 
-  const removeLabel = (labelToRemove: string) => {
-    setLabels(labels.filter((label) => label.name !== labelToRemove));
+  const removeLabel = async (labelId: string) => {
+    try {
+      await deleteLabel(labelId);
+    } catch (error) {
+      console.error("Error deleting label:", error);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

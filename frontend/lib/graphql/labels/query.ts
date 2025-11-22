@@ -8,11 +8,12 @@
 import { gql } from "@apollo/client";
 
 export const LABELS_QUERY = gql`
-  query Labels {
-    labels {
-      id
+  query Labels($workspace_id: ID!) {
+    labels(workspace_id: $workspace_id) {
+      label_id
       name
       color
+      workspace_id
     }
   }
 `;

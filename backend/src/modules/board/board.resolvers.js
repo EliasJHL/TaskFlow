@@ -24,14 +24,12 @@ const boardResolvers = {
               },
             },
           },
-          labels: true,
         },
       });
 
       const transformedBoards = boards.map((board) => ({
         ...board,
         lists: board.lists || [],
-        labels: board.labels || [],
       }));
 
       return transformedBoards;
@@ -108,9 +106,6 @@ const boardResolvers = {
       await prisma.$transaction(async (tx) => {
         for (const list of board.lists) {
           for (const card of list.cards) {
-            await tx.cardLabel.deleteMany({
-              where: { card_id: card.card_id },
-            });
             await tx.cardMember.deleteMany({
               where: { card_id: card.card_id },
             });

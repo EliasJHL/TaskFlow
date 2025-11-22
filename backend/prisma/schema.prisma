@@ -121,7 +121,7 @@ model Label {
   name      String
   color     String
   workspace_id  String
-  workspace     Workspace    @relation(fields: [board_id], references: [board_id])
+  workspace     Workspace    @relation(fields: [workspace_id], references: [workspace_id])
   card_labels CardLabel[]
 }
 

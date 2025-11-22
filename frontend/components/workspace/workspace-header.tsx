@@ -85,6 +85,7 @@ export function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
               <Button
                 variant="outline"
                 size="sm"
+                type="button"
                 onClick={() => setIsLabelsModalOpen(true)}
               >
                 <Settings className="h-4 w-4 mr-2" />

@@ -57,12 +57,12 @@ export default function LoginPage({ params }: { params: { lang: string } }) {
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
               {t("login_no_account")}{" "}
-              <Link
-                href="/register"
+                <Link
+                href={`/${lang}/register`}
                 className="text-primary font-medium hover:underline"
-              >
+                >
                 {t("login_sign_up")}
-              </Link>
+                </Link>
             </p>
           </div>
         </div>

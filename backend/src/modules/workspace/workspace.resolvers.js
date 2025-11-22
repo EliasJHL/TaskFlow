@@ -24,6 +24,7 @@ const workspaceResolvers = {
         },
         include: {
           owner: true,
+          labels: true,
           members: {
             include: {
               user: {
@@ -64,6 +65,7 @@ const workspaceResolvers = {
         },
         include: {
           owner: true,
+          labels: true,
           members: {
             include: {
               user: {
@@ -114,7 +116,7 @@ const workspaceResolvers = {
       }
 
       const isOwner = workspace.owner_id === user.user_id;
-      const isMember = workspace.members.length > 0;
+      const isMember = workspace.members.length > 0; // To update
 
       if (!isOwner && !isMember) {
         throw new GraphQLError("Not authorized", {
@@ -240,8 +242,9 @@ const workspaceResolvers = {
       const boardIds = boards.map((b) => b.board_id);
 
       await prisma.$transaction([
-        prisma.list.deleteMany({ where: { board_id: { in: boardIds } } }), // Suppression des listes liées aux boards
-        prisma.board.deleteMany({ where: { workspace_id } }), // Suppression des boards
+        prisma.label.deleteMany({ where: { workspace_id } }),
+        prisma.list.deleteMany({ where: { board_id: { in: boardIds } } }),
+        prisma.board.deleteMany({ where: { workspace_id } }),
         prisma.workspaceMembers.deleteMany({ where: { workspace_id } }),
         prisma.pinnedWorkspace.deleteMany({ where: { workspace_id } }),
         prisma.workspace.delete({ where: { workspace_id } }),

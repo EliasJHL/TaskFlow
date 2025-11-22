@@ -23,8 +23,8 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 export default function HomePage({ params }: { params: { lang: string } }) {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
-  const { t } = useTranslation("common");
-  const { lang } = params;
+  const { i18n, t } = useTranslation("common");
+  const currentLang = i18n.language;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,7 +86,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                 <LanguageSwitcher />
                 <GithubButton />
                 <ThemeToggle />
-                <Link href={user ? `/${lang}/dashboard` : `/${lang}/login`}>
+                <Link href={user ? `/${currentLang}/dashboard` : `/${currentLang}/login`}>
                   <Button size={scrolled ? "sm" : "default"} id="login-button">
                     {user ? t("dashboard") : t("login")}
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -131,7 +131,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link href={`/${lang}/dashboard`} className="w-full sm:w-auto">
+              <Link href={`/${currentLang}/dashboard`} className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   className="gap-2 w-full sm:w-auto border-1 border-primary rounded-2xl backdrop-blur-md bg-gradient-to-r from-[#007757FF] to-[#00D4C3FF] text-white hover:brightness-110 transition-transform duration-200 hover:scale-105"
@@ -249,7 +249,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               <p className="text-muted-foreground max-w-xl mx-auto">
                 {t("join_thousands")}
               </p>
-              <Link href={`/${lang}/dashboard`}>
+              <Link href={`/${currentLang}/dashboard`}>
                 <Button size="lg" className="gap-2">
                   {t("get_started_now")}
                   <ArrowRight className="w-5 h-5" />

@@ -25,7 +25,11 @@ import {
 import { BOARDS_QUERY } from "./graphql/boards/query";
 //====================== Labels =====================//
 import { LABELS_QUERY } from "./graphql/labels/query";
-import { th } from "date-fns/locale";
+import { CREATE_LABEL_MUTATION } from "./graphql/labels/mutations";
+//====================== Cards =====================//
+import { CREATE_CARD_MUTATION } from "./graphql/cards/query";
+//====================== Tests =====================//
+import { UPLOAD_FILE_MUTATION } from "@/lib/graphql/upload/mutations";
 
 export interface Workspace {
   workspaceId: string;
@@ -101,7 +105,7 @@ export interface Label {
   labelId: string;
   name: string;
   color: string;
-  boardId: string;
+  workspace_id: string;
 }
 
 export interface Attachment {
@@ -153,6 +157,8 @@ interface AppState {
   createCard: (card: Omit<Card, "cardId">) => void;
   updateCard: (id: string, updates: Partial<Card>) => void;
   deleteCard: (id: string) => void;
+
+  uploadFile: (file: File) => Promise<string>;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -346,6 +352,7 @@ export const useStore = create<AppState>((set, get) => ({
               title: c.title,
               description: c.description || "",
               position: c.position ?? 0,
+              dueDate: c.due_date || undefined,
               labels: c.labels?.map((l: any) => l.label_id) || [],
             })) || [],
         }));
@@ -596,13 +603,12 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
-  getLabels: async (boardId: string) => {
+  getLabels: async (workspaceId: string) => {
     try {
       set({ isLoading: true });
-      // Assume we have a LABELS_QUERY to fetch labels
       const { data } = await apolloClient.query<{ labels: any[] }>({
         query: LABELS_QUERY,
-        variables: { board_id: boardId },
+        variables: { workspace_id: workspaceId },
         fetchPolicy: "network-only",
       });
 
@@ -611,7 +617,7 @@ export const useStore = create<AppState>((set, get) => ({
           labelId: l.label_id,
           name: l.name,
           color: l.color,
-          boardId: l.board_id,
+          workspace_id: l.workspace_id,
         }));
         set({ labels: transformedLabels, isLoading: false });
       }
@@ -621,20 +627,66 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
-  createLabel: (label) =>
-    set((state) => ({
-      labels: [...state.labels, { ...label } as Label],
-    })),
+  createLabel: async (label) => {
+    try {
+      const { data } = await apolloClient.mutate<{ label: Label }>({
+        mutation: CREATE_LABEL_MUTATION,
+        variables: { input: label },
+      });
+
+      if (data?.label) {
+        set((state) => ({
+          labels: [...state.labels, data.label],
+        }));
+      }
+    } catch (error) {
+      console.error("Error creating label:", error);
+    }
+  },
 
   deleteLabel: (labelId) =>
     set((state) => ({
       labels: state.labels.filter((l) => l.labelId !== labelId),
     })),
 
-  createCard: (card) =>
-    set((state) => ({
-      cards: [...state.cards, { ...card } as Card],
-    })),
+  createCard: async (card) => {
+    try {
+      const { data } = await apolloClient.mutate<{ card: Card }>({
+        mutation: CREATE_CARD_MUTATION,
+        variables: { input: {
+            title: card.title,
+            description: card.description,
+            position: card.position,
+            list_id: card.listId,
+            due_date: card.dueDate,
+          },
+        },
+      });
+
+      if (data?.card) {
+        const created = data.card;
+        const newCard: Card = {
+          cardId: created.cardId,
+          title: created.title,
+          description: created.description,
+          position: created.position,
+          listId: created.listId,
+          labels: created.labels,
+          dueDate: created.dueDate,
+          comments: [],
+          members: [],
+          attachments: [],
+        };
+        set((state) => ({
+          cards: [...state.cards, newCard],
+        }));
+      }
+      set({ isLoading: false });
+    } catch (error) {
+      console.error(error);
+      set({ isLoading: false });
+    }
+  },
 
   updateCard: (id, updates) =>
     set((state) => ({
@@ -647,4 +699,32 @@ export const useStore = create<AppState>((set, get) => ({
     set((state) => ({
       cards: state.cards.filter((c) => c.cardId !== id),
     })),
+
+  uploadFile: async (file: File) => {
+    try {
+      const { data } = await apolloClient.mutate<{
+        uploadFile: { url: string } | string;
+      }>({
+        mutation: UPLOAD_FILE_MUTATION,
+        variables: { file },
+        context: {
+          hasUpload: true,
+        },
+      });
+
+      if (typeof data?.uploadFile === 'object' && data.uploadFile?.url) {
+        return data.uploadFile.url;
+      }
+      
+      if (typeof data?.uploadFile === 'string') {
+        return data.uploadFile;
+      }
+
+      throw new Error("L'upload a réussi mais aucune URL n'a été retournée.");
+
+    } catch (error) {
+      console.error("Erreur lors de l'upload dans le store:", error);
+      throw error;
+    }
+  },
 }));

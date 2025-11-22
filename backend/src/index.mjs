@@ -4,22 +4,24 @@
  ** index
  */
 
-import { readFileSync } from "fs";
 import { join } from "path";
 import Fastify from "fastify";
 import cookie from "@fastify/cookie";
 import jwt from "@fastify/jwt";
 import mercurius from "mercurius";
 import dotenv from "dotenv";
-import resolvers from "./graphql/resolvers.js";
 import cors from "@fastify/cors";
+import { loadSchemaSync } from '@graphql-tools/load';
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
+import resolvers from "./graphql/resolvers.js";
 import "./s3/minio.mjs";
+
 dotenv.config();
 
-const schema = readFileSync(
-  join(process.cwd(), "src/graphql/schema.graphql"),
-  "utf8"
-);
+const schema = loadSchemaSync(join(process.cwd(), "src/graphql/schemas/*.graphql"), {
+  loaders: [new GraphQLFileLoader()],
+});
+
 const app = Fastify({ logger: true, trustProxy: true });
 
 await app.register(cors, {
@@ -45,6 +47,7 @@ await app.register(cookie, {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   },
 });
+
 await app.register(jwt, {
   secret: process.env.JWT_SECRET,
   cookie: {
@@ -57,8 +60,8 @@ await app.register(jwt, {
 });
 
 app.register(mercurius, {
-  schema,
-  resolvers,
+  schema,     
+  resolvers,  
   graphiql: true,
   context: async (request, reply) => {
     let user = null;

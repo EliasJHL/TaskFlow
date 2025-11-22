@@ -44,7 +44,7 @@ export function CardDetailDialog({
   const workspace = useStore((state) => state.currentWorkspace);
   const { createCard, updateCard, deleteCard } = useStore();
 
-  const usersOnWorkspace = workspace?.members || [];
+  const usersOnWorkspace = [...(workspace?.members || []), ...(workspace?.owner ? [workspace.owner] : [])];
   const workspaceLabels = currentBoard?.labels || [];
 
   const [title, setTitle] = useState(card.title);
@@ -88,7 +88,7 @@ export function CardDetailDialog({
       listId: card.listId,
       title: title.trim(),
       description: description.trim(),
-      dueDate: dueDate || undefined,
+      dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
       members: assignedMembers,
       labels: selectedLabels,
       comments,
@@ -100,10 +100,9 @@ export function CardDetailDialog({
       await updateCard(card.cardId, cardData);
     }
 
-    // Redirection dynamique
-    if (currentBoard && workspace) {
-      window.location.href = `/${currentLang}/workspace/${workspace.workspaceId}/board/${currentBoard.boardId}`;
-    }
+    // if (currentBoard && workspace) {
+    //   window.location.href = `/${currentLang}/workspace/${workspace.workspaceId}/board/${currentBoard.boardId}`;
+    // }
 
     onOpenChange(false);
   };
@@ -188,7 +187,6 @@ export function CardDetailDialog({
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Titre */}
           <div className="space-y-2">
             <LabelUI htmlFor="task-title">
               {t("title")}
@@ -203,7 +201,6 @@ export function CardDetailDialog({
             />
           </div>
 
-          {/* Description */}
           <div className="space-y-2">
             <LabelUI htmlFor="task-description">{t("description")}</LabelUI>
             <Textarea
@@ -216,7 +213,6 @@ export function CardDetailDialog({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Date limite */}
             <div className="space-y-2">
               <LabelUI
                 htmlFor="task-due-date"
@@ -240,7 +236,6 @@ export function CardDetailDialog({
               )}
             </div>
 
-            {/* Priorité */}
             <div className="space-y-2">
               <LabelUI>{t("labels")}</LabelUI>
               <MultiSelectLabels
@@ -257,7 +252,6 @@ export function CardDetailDialog({
 
           <Separator />
 
-          {/* Membres assignés */}
           <div className="space-y-2">
             <LabelUI className="flex items-center gap-2">
               <User className="h-4 w-4" />
@@ -277,7 +271,6 @@ export function CardDetailDialog({
 
           <Separator />
 
-          {/* Dialog Footer */}
           <DialogFooter className="flex justify-between sm:justify-between">
             <div>
               {!isNewCard && (
