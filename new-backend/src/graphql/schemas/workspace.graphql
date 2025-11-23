@@ -13,12 +13,6 @@ type Workspace {
 
 type WorkspaceMembers {
   workspace_id: ID!
-  user: User!
-  role: Role!
-}
-
-type WorkspaceMember {
-  workspace_id: ID!
   user_id: ID!
   role: String!
   user: User!
@@ -29,10 +23,6 @@ input CreateWorkspaceInput {
   name: String!
   description: String
   color: String
-}
-
-type CreateWorkspacePayload {
-  workspace: Workspace
 }
 
 input UpdateWorkspaceInput {
@@ -60,16 +50,16 @@ type PinWorkspacePayload {
 type Query {
   workspaces: [Workspace]
   workspace(workspace_id: ID!): Workspace
-  workspaceMembers(workspace_id: ID!): [WorkspaceMember!]!
+  workspaceMembers(workspace_id: ID!): [WorkspaceMembers!]!
 }
 
 type Mutation {
-  createWorkspace(input: CreateWorkspaceInput!): CreateWorkspacePayload!
-  updateWorkspace(workspace_id: ID!, input: UpdateWorkspaceInput!): Workspace! @auth(role: Admin)
-  deleteWorkspace(workspace_id: ID!): Status! @auth(role: Admin)
+  createWorkspace(input: CreateWorkspaceInput!): Workspace!
+  updateWorkspace(workspace_id: ID!, input: UpdateWorkspaceInput!): Workspace! 
+  deleteWorkspace(workspace_id: ID!): Status! 
   pinWorkspace(workspace_id: ID!): PinWorkspacePayload!
   unpinWorkspace(workspace_id: ID!): PinWorkspacePayload!
-  addWorkspaceMember(input: AddWorkspaceMemberInput!): WorkspaceMembers! @auth(role: Admin)
-  removeWorkspaceMember(workspace_id: ID!, user_id: ID!): Status! @auth(role: Admin)
-  updateMemberRole(input: UpdateMemberRoleInput!): WorkspaceMembers! @auth(role: Admin)
+  addWorkspaceMember(input: AddWorkspaceMemberInput!): WorkspaceMembers! 
+  removeWorkspaceMember(workspace_id: ID!, user_id: ID!): Status! 
+  updateMemberRole(input: UpdateMemberRoleInput!): WorkspaceMembers! 
 }

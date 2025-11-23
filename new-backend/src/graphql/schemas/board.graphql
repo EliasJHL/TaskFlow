@@ -134,26 +134,26 @@ input UpdateLabelInput {
 
 type Mutation {
   #Boards
-  createBoard(input: CreateBoardInput!): CreateBoardPayload! @auth(role: Admin)
-  updateBoard(input: UpdateBoardInput!): Board! @auth(role: Admin)
-  deleteBoard(board_id: ID!): Status! @auth(role: Admin)
+  createBoard(input: CreateBoardInput!): CreateBoardPayload! 
+  updateBoard(input: UpdateBoardInput!): Board! 
+  deleteBoard(board_id: ID!): Status! 
 
   #Lists
-  createList(input: CreateListInput!): List! @auth(role: Member)
-  updateList(input: UpdateListInput!): List! @auth(role: Member)
-  deleteList(list_id: ID!): Status! @auth(role: Member)
-  reorderLists(board_id: ID!, list_ids: [ID!]!): [List!]! @auth(role: Member)
+  createList(input: CreateListInput!): List! 
+  updateList(input: UpdateListInput!): List! 
+  deleteList(list_id: ID!): Status! 
+  reorderLists(board_id: ID!, list_ids: [ID!]!): [List!]! 
 
   #Cards
-  createCard(input: CreateCardInput!): Card! @auth(role: Member)
-  updateCard(input: UpdateCardInput!): Card! @auth(role: Member)
-  deleteCard(card_id: ID!): Status! @auth(role: Member)
-  moveCard(card_id: ID!, list_id: ID!, position: Int!): Card! @auth(role: Member)
+  createCard(input: CreateCardInput!): Card! 
+  updateCard(input: UpdateCardInput!): Card! 
+  deleteCard(card_id: ID!): Status! 
+  moveCard(card_id: ID!, list_id: ID!, position: Int!): Card! 
 
   #Labels
-  createLabel(input: CreateLabelInput!): Label! @auth(role: Member)
-  updateLabel(input: UpdateLabelInput!): Label! @auth(role: Member)
-  deleteLabel(label_id: ID!): Status! @auth(role: Member)
+  createLabel(input: CreateLabelInput!): Label!
+  updateLabel(input: UpdateLabelInput!): Label! 
+  deleteLabel(label_id: ID!): Status! 
   # addLabelToCard(card_id: ID!, label_id: ID!): Card!
   # removeLabelFromCard(card_id: ID!, label_id: ID!): Card!
 

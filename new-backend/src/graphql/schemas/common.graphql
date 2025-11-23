@@ -19,5 +19,5 @@ type FileResponse {
 }
 
 type Mutation {
-  uploadFile(file: Upload!): FileResponse! @auth(role: Member)
+  uploadFile(file: Upload!): FileResponse!
 }
