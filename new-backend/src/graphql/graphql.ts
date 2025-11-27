@@ -252,9 +252,9 @@ export abstract class IMutation {
 
     abstract deleteUser(user_id: string): Nullable<User> | Promise<Nullable<User>>;
 
-    abstract login(input: LoginInput): Nullable<AuthPayload> | Promise<Nullable<AuthPayload>>;
+    abstract login(input: LoginInput): Nullable<AuthResult> | Promise<Nullable<AuthResult>>;
 
-    abstract register(input: RegisterInput): Nullable<AuthPayload> | Promise<Nullable<AuthPayload>>;
+    abstract register(input: RegisterInput): Nullable<AuthResult> | Promise<Nullable<AuthResult>>;
 
     abstract logout(): Status | Promise<Status>;
 
@@ -275,9 +275,13 @@ export abstract class IMutation {
     abstract updateMemberRole(input: UpdateMemberRoleInput): WorkspaceMembers | Promise<WorkspaceMembers>;
 }
 
-export class Status {
-    success: boolean;
-    message?: Nullable<string>;
+export class Success {
+    successMessage?: Nullable<string>;
+}
+
+export class Error {
+    errorMessage: string;
+    code?: Nullable<string>;
 }
 
 export class FileResponse {
@@ -294,9 +298,15 @@ export class User {
     created_at: DateTime;
 }
 
-export class AuthPayload {
+export class AuthSuccess {
     token: string;
     user: User;
+}
+
+export class AuthError {
+    message: string;
+    code?: Nullable<string>;
+    field?: Nullable<string>;
 }
 
 export class Workspace {
@@ -326,4 +336,6 @@ export class PinWorkspacePayload {
 
 export type DateTime = any;
 export type Upload = any;
+export type Status = Success | Error;
+export type AuthResult = AuthSuccess | AuthError;
 type Nullable<T> = T | null;

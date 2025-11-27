@@ -7,10 +7,16 @@ enum Role {
   Viewer
 }
 
-type Status {
-  success: Boolean!
-  message: String
+type Success {
+  successMessage: String
 }
+
+type Error {
+  errorMessage: String!
+  code: String
+}
+
+union Status = Success | Error
 
 type FileResponse {
   success: Boolean!

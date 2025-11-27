@@ -7,6 +7,24 @@ import { Role } from '@prisma/client';
 export class WorkspaceService {
     constructor(private prisma: PrismaService) {}
 
+    /**
+     * Creates a new workspace with the specified user as owner and admin member.
+     * 
+     * @param user_id - The ID of the user who will own the workspace
+     * @param input - The workspace creation input containing name, description, and optional color
+     * @returns A promise that resolves to the created workspace object
+     * @throws {PrismaClientKnownRequestError} When workspace creation fails due to database constraints
+     * @throws {PrismaClientValidationError} When input validation fails
+     * 
+     * @example
+     * ```typescript
+     * const workspace = await createWorkspace('user-123', {
+     *   name: 'My Workspace',
+     *   description: 'A workspace for my project',
+     *   color: '#ff5733'
+     * });
+     * ```
+     */
     async createWorkspace(user_id: string, input: CreateWorkspaceInput) {
         return this.prisma.workspace.create({
             data: {

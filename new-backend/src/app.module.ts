@@ -17,10 +17,18 @@ import { PrismaModule } from './prisma/prisma.module';
 import { WorkspaceResolver } from './workspace/workspace.resolver';
 import { WorkspaceService } from './workspace/workspace.service';
 import { join } from 'path';
+import { AuthGuard } from './common/guards/auth.guard';
 import { WorkspaceModule } from './workspace/workspace.module';
+import { JwtModule } from '@nestjs/jwt';
+import { WorkspaceGuard } from './common/guards/workspace.guard';
+import { ConfigService } from '@nestjs/config/dist/config.service';
+import { ConfigModule } from '@nestjs/config/dist/config.module';
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            isGlobal: true, 
+        }),
         GraphQLModule.forRoot<MercuriusDriverConfig>({
             driver: MercuriusDriver,
             typePaths: [join(process.cwd(), 'src/graphql/schemas/*.graphql')],

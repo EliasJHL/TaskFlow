@@ -53,9 +53,21 @@ export class WorkspaceResolver {
         @Args('workspace_id') workspace_id: string,
         @Context() context: any,
     ) {
-        return this.workspaceService.delete(
-            workspace_id,
-            context.user.user_id,
-        );
+        try {
+            await this.workspaceService.delete(
+                workspace_id,
+                context.user.user_id,
+            );
+            return {
+                __typename: 'Success',
+                successMessage: 'Workspace deleted successfully',
+            };
+        } catch (error) {
+            return {
+                __typename: 'Error',
+                errorMessage: 'Workspace deletion failed',
+                code: 'WORKSPACE_DELETION_FAILED',
+            };
+        }
     }
 }

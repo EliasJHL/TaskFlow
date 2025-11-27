@@ -8,16 +8,28 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
-// import { AuthResolver } from './auth.resolver';
+import { AuthResolver } from './auth.resolver';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuthResultResolver } from './auth.resolver';
+import { ConfigModule } from '@nestjs/config/dist/config.module';
+import { ConfigService } from '@nestjs/config/dist/config.service';
 
 @Module({
     imports: [
-        JwtModule.register({
-            secret: process.env.JWT_SECRET,
-            signOptions: { expiresIn: '7d' },
+        ConfigModule.forRoot({
+            isGlobal: true, 
+        }),
+        JwtModule.registerAsync({
+            global: true,
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                secret: configService.get<string>('JWT_SECRET'),
+                signOptions: { expiresIn: '7d' },
+            }),
         }),
     ],
-    providers: [AuthService, PrismaService],
+    providers: [AuthService, PrismaService, AuthResolver, AuthResultResolver],
+    exports: [AuthService],
 })
 export class AuthModule {}
