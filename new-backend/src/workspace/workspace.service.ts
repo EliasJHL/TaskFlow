@@ -9,13 +9,13 @@ export class WorkspaceService {
 
     /**
      * Creates a new workspace with the specified user as owner and admin member.
-     * 
+     *
      * @param user_id - The ID of the user who will own the workspace
      * @param input - The workspace creation input containing name, description, and optional color
      * @returns A promise that resolves to the created workspace object
      * @throws {PrismaClientKnownRequestError} When workspace creation fails due to database constraints
      * @throws {PrismaClientValidationError} When input validation fails
-     * 
+     *
      * @example
      * ```typescript
      * const workspace = await createWorkspace('user-123', {
@@ -39,11 +39,19 @@ export class WorkspaceService {
                     },
                 },
             },
+            include: {
+                members: {
+                    include: {
+                        user: true,
+                    },
+                },
+                owner: true,
+            },
         });
     }
 
     async findAllUserWorkspaces(user_id: string) {
-        return this.prisma.workspace.findMany({
+        const workspaces = await this.prisma.workspace.findMany({
             where: {
                 members: {
                     some: {
@@ -51,15 +59,35 @@ export class WorkspaceService {
                     },
                 },
             },
+            include: {
+                owner: true,
+                pinned_by: {
+                    where: { user_id: user_id },
+                },
+            },
             orderBy: {
                 name: 'asc',
             },
         });
+        return workspaces.map((workspace) => ({
+            ...workspace,
+            is_pinned: workspace.pinned_by.length > 0,
+        }));
     }
 
     async findWorkspace(workspace_id: string) {
         return this.prisma.workspace.findUniqueOrThrow({
             where: { workspace_id },
+            include: {
+                owner: true,
+                members: {
+                    include: {
+                        user: true,
+                    },
+                },
+                boards: true,
+                labels: true,
+            },
         });
     }
 
