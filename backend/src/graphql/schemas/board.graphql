@@ -1,123 +1,80 @@
 type Board {
-  board_id: ID!
-  title: String!
-  description: String
-  color: String!
-  lists: [List!]!
-  workspace_id: ID!
+    board_id: ID!
+    title: String!
+    description: String
+    color: String!
+    workspace_id: ID!
+    created_by: User!
+
+    lists: [List!]!
+    members: [User!]!
+    labels: [Label!]!
 }
 
 type List {
-  list_id: ID!
-  title: String!
-  position: Int!
-  color: String!
-  board_id: ID!
-  cards: [Card]
+    list_id: ID!
+    title: String!
+    position: Int!
+    color: String
+    board_id: ID!
+    cards: [Card!]!
 }
 
 type Card {
-  card_id: ID!
-  title: String!
-  description: String
-  position: Int!
-  list_id: ID!
-  labels: [Label]
-  due_date: DateTime
-  comments: [Comment]
-  attachments: [Attachment]
-  members: [CardMember]
+    card_id: ID!
+    title: String!
+    description: String
+    position: Int!
+    list_id: ID!
+    due_date: DateTime
+
+    labels: [Label!]!
+    comments: [Comment!]!
+    attachments: [Attachment!]!
+    assignees: [User!]!
 }
 
 type Comment {
-  comment_id: ID!
-  content: String!
-  created_at: DateTime!
-  card_id: ID!
-  user_id: ID!
+    comment_id: ID!
+    content: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+    card_id: ID!
+    author: User!
 }
 
 type Label {
-  label_id: ID!
-  name: String!
-  color: String!
-  workspace_id: ID!
+    label_id: ID!
+    name: String!
+    color: String!
+    board_id: ID!
 }
 
 type Attachment {
-  attachment_id: ID!
-  card_id: ID!
-  url: String!
-  filename: String!
+    attachment_id: ID!
+    url: String!
+    filename: String!
+    mime_type: String
 }
 
-type CardLabel {
-  card_id: ID!
-  label_id: ID!
-}
-
-type CardMember {
-  card_id: ID!
-  user_id: ID!
-}
-
-type Query {
-  boards(workspace_id: ID!): [Board]
-  board(board_id: ID!): Board
-  lists(board_id: ID!): [List]
-  list(list_id: ID!): List
-  cards(list_id: ID!): [Card]
-  card(card_id: ID!): Card
-  labels(workspace_id: ID!): [Label]
-  comments(card_id: ID!): [Comment]
-}
-
+# --- INPUTS ---
 input CreateBoardInput {
-  title: String!
-  description: String
-  color: String!
-  workspace_id: ID!
-}
-
-type CreateBoardPayload {
-  board: Board
+    title: String!
+    description: String
+    color: String!
+    workspace_id: ID!
 }
 
 input UpdateBoardInput {
-  board_id: ID!
-  title: String
-  description: String
-  color: String
+    title: String
+    description: String
+    color: String
 }
 
 input CreateListInput {
-  title: String!
-  board_id: ID!
-  position: Int!
-  color: String
-}
-
-input UpdateListInput {
-  list_id: ID!
-  title: String
-  position: Int
-  color: String
-}
-
-input CreateCardInput {
-  title: String!
-  list_id: ID!
-  description: String
-  position: Int!
-  due_date: DateTime
-}
-
-input UpdateCardInput {
-  card_id: ID!
-  title: String
-  description: String
-  position: Int
-  due_date: DateTime
+    title: String!
+    board_id: ID!
+    color: String
 }
 
 input CreateLabelInput {
@@ -126,39 +83,58 @@ input CreateLabelInput {
   board_id: ID!
 }
 
-input UpdateLabelInput {
-  label_id: ID!
-  name: String
-  color: String
+input UpdateListInput {
+    title: String
+    color: String
+}
+
+input CreateCardInput {
+    title: String!
+    list_id: ID!
+    description: String
+    due_date: DateTime
+    color: String
+}
+
+input UpdateCardInput {
+    title: String
+    description: String
+    due_date: DateTime
+}
+
+type Query {
+    board(board_id: ID!): Board
+    boards(workspace_id: ID!): [Board!]!
 }
 
 type Mutation {
-  #Boards
-  createBoard(input: CreateBoardInput!): CreateBoardPayload!
-  updateBoard(input: UpdateBoardInput!): Board!
-  deleteBoard(board_id: ID!): Status!
+    # --- BOARD ---
+    createBoard(input: CreateBoardInput!): Board!
+    updateBoard(board_id: ID!, input: UpdateBoardInput!): Board!
+    deleteBoard(board_id: ID!): Status!
 
-  #Lists
-  createList(input: CreateListInput!): List!
-  updateList(input: UpdateListInput!): List!
-  deleteList(list_id: ID!): Status!
-  reorderLists(board_id: ID!, list_ids: [ID!]!): [List!]!
+    # --- LISTS ---
+    createList(input: CreateListInput!): List!
+    updateList(list_id: ID!, input: UpdateListInput!): List!
+    deleteList(list_id: ID!): Status!
 
-  #Cards
-  createCard(input: CreateCardInput!): Card!
-  updateCard(input: UpdateCardInput!): Card!
-  deleteCard(card_id: ID!): Status!
-  moveCard(card_id: ID!, list_id: ID!, position: Int!): Card!
+    moveList(list_id: ID!, new_position: Int!): List!
 
-  #Labels
-  createLabel(input: CreateLabelInput!): Label!
-  updateLabel(input: UpdateLabelInput!): Label!
-  deleteLabel(label_id: ID!): Status!
-  # addLabelToCard(card_id: ID!, label_id: ID!): Card!
-  # removeLabelFromCard(card_id: ID!, label_id: ID!): Card!
+    # --- CARDS ---
+    createCard(input: CreateCardInput!): Card!
+    deleteCard(card_id: ID!): Status!
 
-  # Comments
-  # createComment(input: CreateCommentInput!): Comment!
-  # updateComment(input: UpdateCommentInput!): Comment!
-  # deleteComment(comment_id: ID!): Status!
+    updateCardContent(card_id: ID!, input: UpdateCardInput!): Card!
+
+    moveCard(card_id: ID!, list_id: ID!, new_position: Int!): Card!
+
+    # --- LABELS & ASSIGNEES ---
+    addLabelToCard(card_id: ID!, label_id: ID!): Card!
+    removeLabelFromCard(card_id: ID!, label_id: ID!): Card!
+
+    addAssigneeToCard(card_id: ID!, user_id: ID!): Card!
+    removeAssigneeFromCard(card_id: ID!, user_id: ID!): Card!
+
+    createLabel(input: CreateLabelInput!): Label!
+    deleteLabel(label_id: ID!): Status!
 }
