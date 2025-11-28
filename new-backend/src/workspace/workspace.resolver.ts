@@ -5,17 +5,18 @@
  ** workspace.resolver
  */
 
-import { Args, Mutation, Resolver, Context, Query } from '@nestjs/graphql';
+import { Args, Mutation, Resolver, Context, Query, ResolveField, Parent } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { WorkspaceService } from './workspace.service';
 import { AuthGuard } from '../common/guards/auth.guard';
 import { WorkspaceAuth } from '../common/decorators/workspace-auth.decorator';
-import { CreateWorkspaceInput, UpdateWorkspaceInput } from '../graphql/graphql';
+import { CreateWorkspaceInput, UpdateWorkspaceInput, Workspace } from '../graphql/graphql';
 import { Role } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Resolver('Workspace')
 export class WorkspaceResolver {
-    constructor(private workspaceService: WorkspaceService) {}
+    constructor(private workspaceService: WorkspaceService, private prisma: PrismaService) {}
 
     @Mutation()
     @UseGuards(AuthGuard)
@@ -69,5 +70,30 @@ export class WorkspaceResolver {
                 code: 'WORKSPACE_DELETION_FAILED',
             };
         }
+    }
+
+    /*====== Resolve Fields ======*/
+    @ResolveField('boards')
+    async getBoards(@Parent() workspace: Workspace) {
+        return this.prisma.board.findMany({
+            where: { workspace_id: workspace.workspace_id },
+            orderBy: { title: 'asc' }
+        });
+    }
+
+    @ResolveField('labels')
+    async getLabels(@Parent() workspace: Workspace) {
+        return this.prisma.label.findMany({
+            where: { workspace_id: workspace.workspace_id },
+            orderBy: { name: 'asc' }
+        });
+    }
+
+    @ResolveField('members')
+    async getMembers(@Parent() workspace: Workspace) {
+        return this.prisma.workspaceMembers.findMany({
+            where: { workspace_id: workspace.workspace_id },
+            include: { user: true }
+        });
     }
 }

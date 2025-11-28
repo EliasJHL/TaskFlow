@@ -2,28 +2,28 @@ scalar DateTime
 scalar Upload
 
 enum Role {
-  Admin
-  Member
-  Viewer
+    Admin
+    Member
+    Viewer
 }
 
 type Success {
-  successMessage: String
+    successMessage: String
 }
 
 type Error {
-  errorMessage: String!
-  code: String
+    errorMessage: String!
+    code: String
 }
 
 union Status = Success | Error
 
 type FileResponse {
-  success: Boolean!
-  url: String
-  message: String
+    success: Boolean!
+    url: String
+    message: String
 }
 
 type Mutation {
-  uploadFile(file: Upload!): FileResponse!
+    uploadFile(file: Upload!): FileResponse!
 }

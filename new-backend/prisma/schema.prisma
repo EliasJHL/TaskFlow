@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
@@ -21,34 +21,36 @@ enum Role {
 }
 
 model User {
-  user_id         String   @id @default(uuid())
-  username        String   @unique
-  email           String   @unique
-  picture         String?
-  created_at      DateTime @default(now())
+  user_id    String   @id @default(uuid())
+  username   String   @unique
+  email      String   @unique
+  picture    String?
+  created_at DateTime @default(now())
 
   hashed_password String
 
-  workspaces      WorkspaceMembers[]
-  workspacesOwned Workspace[]
-  comments        Comment[]
-  card_members    CardMember[]
+  workspaces        WorkspaceMembers[]
+  workspacesOwned   Workspace[]
+  comments          Comment[]
+  card_members      CardMember[]
   pinned_workspaces PinnedWorkspace[]
+
+  boards_created Board[] @relation("BoardCreator")
 }
 
 model Workspace {
-  workspace_id  String   @id @default(uuid())
-  name          String
-  description   String?
-  owner_id      String
-  color         String
+  workspace_id String  @id @default(uuid())
+  name         String
+  description  String?
+  owner_id     String
+  color        String
 
-  owner         User     @relation(fields: [owner_id], references: [user_id], onDelete: Cascade)
+  owner User @relation(fields: [owner_id], references: [user_id], onDelete: Cascade)
 
-  members       WorkspaceMembers[]
-  boards        Board[]
-  pinned_by     PinnedWorkspace[]
-  labels        Label[]
+  members   WorkspaceMembers[]
+  boards    Board[]
+  pinned_by PinnedWorkspace[]
+  labels    Label[]
 }
 
 model WorkspaceMembers {
@@ -63,42 +65,46 @@ model WorkspaceMembers {
 }
 
 model PinnedWorkspace {
-  id           String   @id @default(uuid())
+  id           String @id @default(uuid())
   user_id      String
   workspace_id String
-  
-  user         User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  workspace    Workspace @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade)
+
+  user      User      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade)
 
   @@unique([user_id, workspace_id])
 }
 
 model Board {
-  board_id     String   @id @default(uuid())
+  board_id     String  @id @default(uuid())
   title        String
   description  String?
   color        String
   workspace_id String
-  workspace    Workspace @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade)
-  lists        List[]
+
+  workspace Workspace @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade)
+  lists     List[]
+
+  creator_id String
+  created_by User   @relation("BoardCreator", fields: [creator_id], references: [user_id])
 
   @@index([workspace_id])
 }
 
 model List {
-  list_id  String  @id @default(uuid())
+  list_id  String @id @default(uuid())
   title    String
   position Int
   color    String
   board_id String
-  board    Board   @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
+  board    Board  @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
   cards    Card[]
 
   @@index([board_id])
 }
 
 model Card {
-  card_id      String   @id @default(uuid())
+  card_id      String       @id @default(uuid())
   title        String
   description  String?
   position     Int
@@ -109,7 +115,8 @@ model Card {
   card_members CardMember[]
   attachments  Attachment[]
 
-  list         List     @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
+  list List @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
+
   @@index([list_id])
 }
 
@@ -125,12 +132,12 @@ model Comment {
 }
 
 model Label {
-  label_id  String   @id @default(uuid())
-  name      String
-  color     String
-  workspace_id  String
-  workspace     Workspace    @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade)
-  card_labels CardLabel[]
+  label_id     String      @id @default(uuid())
+  name         String
+  color        String
+  workspace_id String
+  workspace    Workspace   @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade)
+  card_labels  CardLabel[]
 }
 
 model Attachment {

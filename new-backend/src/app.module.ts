@@ -23,6 +23,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { WorkspaceGuard } from './common/guards/workspace.guard';
 import { ConfigService } from '@nestjs/config/dist/config.service';
 import { ConfigModule } from '@nestjs/config/dist/config.module';
+import { BoardModule } from './board/board.module';
 
 @Module({
     imports: [
@@ -43,6 +44,7 @@ import { ConfigModule } from '@nestjs/config/dist/config.module';
         CommonModule,
         PrismaModule,
         WorkspaceModule,
+        BoardModule,
     ],
     controllers: [AppController],
     providers: [AppService],

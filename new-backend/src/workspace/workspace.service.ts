@@ -23,7 +23,6 @@ export class WorkspaceService {
      *   description: 'A workspace for my project',
      *   color: '#ff5733'
      * });
-     * ```
      */
     async createWorkspace(user_id: string, input: CreateWorkspaceInput) {
         return this.prisma.workspace.create({
@@ -80,13 +79,6 @@ export class WorkspaceService {
             where: { workspace_id },
             include: {
                 owner: true,
-                members: {
-                    include: {
-                        user: true,
-                    },
-                },
-                boards: true,
-                labels: true,
             },
         });
     }

@@ -22,7 +22,6 @@ export class CreateBoardInput {
 }
 
 export class UpdateBoardInput {
-    board_id: string;
     title?: Nullable<string>;
     description?: Nullable<string>;
     color?: Nullable<string>;
@@ -31,31 +30,6 @@ export class UpdateBoardInput {
 export class CreateListInput {
     title: string;
     board_id: string;
-    position: number;
-    color?: Nullable<string>;
-}
-
-export class UpdateListInput {
-    list_id: string;
-    title?: Nullable<string>;
-    position?: Nullable<number>;
-    color?: Nullable<string>;
-}
-
-export class CreateCardInput {
-    title: string;
-    list_id: string;
-    description?: Nullable<string>;
-    position: number;
-    due_date?: Nullable<DateTime>;
-}
-
-export class UpdateCardInput {
-    card_id: string;
-    title?: Nullable<string>;
-    description?: Nullable<string>;
-    position?: Nullable<number>;
-    due_date?: Nullable<DateTime>;
 }
 
 export class CreateLabelInput {
@@ -64,10 +38,22 @@ export class CreateLabelInput {
     board_id: string;
 }
 
-export class UpdateLabelInput {
-    label_id: string;
-    name?: Nullable<string>;
+export class UpdateListInput {
+    title?: Nullable<string>;
     color?: Nullable<string>;
+}
+
+export class CreateCardInput {
+    title: string;
+    list_id: string;
+    description?: Nullable<string>;
+    due_date?: Nullable<DateTime>;
+}
+
+export class UpdateCardInput {
+    title?: Nullable<string>;
+    description?: Nullable<string>;
+    due_date?: Nullable<DateTime>;
 }
 
 export class LoginInput {
@@ -123,17 +109,20 @@ export class Board {
     title: string;
     description?: Nullable<string>;
     color: string;
-    lists: List[];
     workspace_id: string;
+    created_by: User;
+    lists: List[];
+    members: User[];
+    labels: Label[];
 }
 
 export class List {
     list_id: string;
     title: string;
     position: number;
-    color: string;
+    color?: Nullable<string>;
     board_id: string;
-    cards?: Nullable<Nullable<Card>[]>;
+    cards: Card[];
 }
 
 export class Card {
@@ -142,61 +131,40 @@ export class Card {
     description?: Nullable<string>;
     position: number;
     list_id: string;
-    labels?: Nullable<Nullable<Label>[]>;
     due_date?: Nullable<DateTime>;
-    comments?: Nullable<Nullable<Comment>[]>;
-    attachments?: Nullable<Nullable<Attachment>[]>;
-    members?: Nullable<Nullable<CardMember>[]>;
+    labels: Label[];
+    comments: Comment[];
+    attachments: Attachment[];
+    assignees: User[];
 }
 
 export class Comment {
     comment_id: string;
     content: string;
     created_at: DateTime;
+    updated_at: DateTime;
     card_id: string;
-    user_id: string;
+    author: User;
 }
 
 export class Label {
     label_id: string;
     name: string;
     color: string;
-    workspace_id: string;
+    board_id: string;
 }
 
 export class Attachment {
     attachment_id: string;
-    card_id: string;
     url: string;
     filename: string;
-}
-
-export class CardLabel {
-    card_id: string;
-    label_id: string;
-}
-
-export class CardMember {
-    card_id: string;
-    user_id: string;
+    mime_type?: Nullable<string>;
 }
 
 export abstract class IQuery {
-    abstract boards(workspace_id: string): Nullable<Nullable<Board>[]> | Promise<Nullable<Nullable<Board>[]>>;
-
     abstract board(board_id: string): Nullable<Board> | Promise<Nullable<Board>>;
 
-    abstract lists(board_id: string): Nullable<Nullable<List>[]> | Promise<Nullable<Nullable<List>[]>>;
-
-    abstract list(list_id: string): Nullable<List> | Promise<Nullable<List>>;
-
-    abstract cards(list_id: string): Nullable<Nullable<Card>[]> | Promise<Nullable<Nullable<Card>[]>>;
-
-    abstract card(card_id: string): Nullable<Card> | Promise<Nullable<Card>>;
-
-    abstract labels(workspace_id: string): Nullable<Nullable<Label>[]> | Promise<Nullable<Nullable<Label>[]>>;
-
-    abstract comments(card_id: string): Nullable<Nullable<Comment>[]> | Promise<Nullable<Nullable<Comment>[]>>;
+    abstract boards(workspace_id: string): Board[] | Promise<Board[]>;
 
     abstract users(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
 
@@ -211,36 +179,38 @@ export abstract class IQuery {
     abstract workspaceMembers(workspace_id: string): WorkspaceMembers[] | Promise<WorkspaceMembers[]>;
 }
 
-export class CreateBoardPayload {
-    board?: Nullable<Board>;
-}
-
 export abstract class IMutation {
-    abstract createBoard(input: CreateBoardInput): CreateBoardPayload | Promise<CreateBoardPayload>;
+    abstract createBoard(input: CreateBoardInput): Board | Promise<Board>;
 
-    abstract updateBoard(input: UpdateBoardInput): Board | Promise<Board>;
+    abstract updateBoard(board_id: string, input: UpdateBoardInput): Board | Promise<Board>;
 
     abstract deleteBoard(board_id: string): Status | Promise<Status>;
 
     abstract createList(input: CreateListInput): List | Promise<List>;
 
-    abstract updateList(input: UpdateListInput): List | Promise<List>;
+    abstract updateList(list_id: string, input: UpdateListInput): List | Promise<List>;
 
     abstract deleteList(list_id: string): Status | Promise<Status>;
 
-    abstract reorderLists(board_id: string, list_ids: string[]): List[] | Promise<List[]>;
+    abstract moveList(list_id: string, new_position: number): List | Promise<List>;
 
     abstract createCard(input: CreateCardInput): Card | Promise<Card>;
 
-    abstract updateCard(input: UpdateCardInput): Card | Promise<Card>;
-
     abstract deleteCard(card_id: string): Status | Promise<Status>;
 
-    abstract moveCard(card_id: string, list_id: string, position: number): Card | Promise<Card>;
+    abstract updateCardContent(card_id: string, input: UpdateCardInput): Card | Promise<Card>;
+
+    abstract moveCard(card_id: string, list_id: string, new_position: number): Card | Promise<Card>;
+
+    abstract addLabelToCard(card_id: string, label_id: string): Card | Promise<Card>;
+
+    abstract removeLabelFromCard(card_id: string, label_id: string): Card | Promise<Card>;
+
+    abstract addAssigneeToCard(card_id: string, user_id: string): Card | Promise<Card>;
+
+    abstract removeAssigneeFromCard(card_id: string, user_id: string): Card | Promise<Card>;
 
     abstract createLabel(input: CreateLabelInput): Label | Promise<Label>;
-
-    abstract updateLabel(input: UpdateLabelInput): Label | Promise<Label>;
 
     abstract deleteLabel(label_id: string): Status | Promise<Status>;
 
@@ -264,11 +234,11 @@ export abstract class IMutation {
 
     abstract deleteWorkspace(workspace_id: string): Status | Promise<Status>;
 
-    abstract pinWorkspace(workspace_id: string): PinWorkspacePayload | Promise<PinWorkspacePayload>;
+    abstract pinWorkspace(workspace_id: string): Workspace | Promise<Workspace>;
 
-    abstract unpinWorkspace(workspace_id: string): PinWorkspacePayload | Promise<PinWorkspacePayload>;
+    abstract unpinWorkspace(workspace_id: string): Workspace | Promise<Workspace>;
 
-    abstract addWorkspaceMember(input: AddWorkspaceMemberInput): WorkspaceMembers | Promise<WorkspaceMembers>;
+    abstract inviteMemberToWorkspace(workspace_id: string, email: string, role: Role): WorkspaceMembers | Promise<WorkspaceMembers>;
 
     abstract removeWorkspaceMember(workspace_id: string, user_id: string): Status | Promise<Status>;
 
@@ -317,15 +287,15 @@ export class Workspace {
     owner_id: string;
     owner: User;
     members: WorkspaceMembers[];
-    boards?: Nullable<Nullable<Board>[]>;
-    labels?: Nullable<Nullable<Label>[]>;
+    boards: Board[];
+    labels: Label[];
     is_pinned: boolean;
 }
 
 export class WorkspaceMembers {
     workspace_id: string;
     user_id: string;
-    role: string;
+    role: Role;
     user: User;
     workspace: Workspace;
 }
