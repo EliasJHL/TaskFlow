@@ -39,26 +39,14 @@ export class BoardService {
     }
 
     async update(boardId: string, input: UpdateBoardInput) {
-        try {
-            await this.prisma.board.update({
-                where: { board_id: boardId },
-                data: {
-                    title: input.title ?? undefined,
-                    description: input.description ?? undefined,
-                    color: input.color ?? undefined,
-                },
-            });
-            return {
-                __typename: 'Success',
-                successMessage: 'Board updated successfully',
-            };
-        } catch (error) {
-            return {
-                __typename: 'Error',
-                errorMessage: 'Board update failed',
-                code: 'BOARD_UPDATE_FAILED',
-            };
-        }
+        return this.prisma.board.update({
+            where: { board_id: boardId },
+            data: {
+                title: input.title ?? undefined,
+                description: input.description ?? undefined,
+                color: input.color ?? undefined,
+            },
+        });
     }
 
     async delete(boardId: string) {
