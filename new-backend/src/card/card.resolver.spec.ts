@@ -1,27 +1,27 @@
 /*
-** EPITECH PROJECT, 2025
-** TaskFlow
-** File description:
-** workspace.resolver.spec
-*/
+ ** EPITECH PROJECT, 2025
+ ** TaskFlow
+ ** File description:
+ ** card.resolver.spec
+ */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { WorkspaceResolver } from './workspace.resolver';
-import { WorkspaceService } from './workspace.service';
+import { CardResolver } from './card.resolver';
+import { CardService } from './card.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthGuard } from '../common/guards/auth.guard';
 
-describe('WorkspaceResolver', () => {
-    let resolver: WorkspaceResolver;
+describe('CardResolver', () => {
+    let resolver: CardResolver;
 
-    const mockWorkspaceService = {};
+    const mockCardService = {};
     const mockPrismaService = {};
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
-                WorkspaceResolver,
-                { provide: WorkspaceService, useValue: mockWorkspaceService },
+                CardResolver,
+                { provide: CardService, useValue: mockCardService },
                 { provide: PrismaService, useValue: mockPrismaService },
             ],
         })
@@ -29,7 +29,7 @@ describe('WorkspaceResolver', () => {
             .useValue({ canActivate: () => true })
             .compile();
 
-        resolver = module.get<WorkspaceResolver>(WorkspaceResolver);
+        resolver = module.get<CardResolver>(CardResolver);
     });
 
     it('should be defined', () => {

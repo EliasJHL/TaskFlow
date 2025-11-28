@@ -24,6 +24,9 @@ import { WorkspaceGuard } from './common/guards/workspace.guard';
 import { ConfigService } from '@nestjs/config/dist/config.service';
 import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { BoardModule } from './board/board.module';
+import { ListModule } from './list/list.module';
+import { CardModule } from './card/card.module';
+import { LabelModule } from './label/label.module';
 
 @Module({
     imports: [
@@ -45,6 +48,9 @@ import { BoardModule } from './board/board.module';
         PrismaModule,
         WorkspaceModule,
         BoardModule,
+        ListModule,
+        CardModule,
+        LabelModule,
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -55,7 +55,9 @@ describe('AuthService', () => {
         };
 
         it('should return AuthError if email is taken', async () => {
-            mockPrismaService.user.findUnique.mockResolvedValueOnce({ user_id: '1' });
+            mockPrismaService.user.findUnique.mockResolvedValueOnce({
+                user_id: '1',
+            });
 
             const result = await service.registerUser(registerInput);
 
@@ -69,7 +71,9 @@ describe('AuthService', () => {
 
         it('should return AuthError if username is taken', async () => {
             mockPrismaService.user.findUnique.mockResolvedValueOnce(null);
-            mockPrismaService.user.findUnique.mockResolvedValueOnce({ user_id: '1' });
+            mockPrismaService.user.findUnique.mockResolvedValueOnce({
+                user_id: '1',
+            });
 
             const result = await service.registerUser(registerInput);
 
@@ -98,14 +102,21 @@ describe('AuthService', () => {
             });
         });
 
-        it('should throw InternalServerErrorException on unexpected crash', async () => {
+        it('should return AuthError on unexpected crash', async () => {
             mockPrismaService.user.findUnique.mockResolvedValue(null);
             (bcrypt.hash as jest.Mock).mockResolvedValue('hash');
-            mockPrismaService.user.create.mockRejectedValue(new Error('DB Dead'));
 
-            await expect(service.registerUser(registerInput)).rejects.toThrow(
-                InternalServerErrorException,
+            mockPrismaService.user.create.mockRejectedValue(
+                new Error('DB Dead'),
             );
+
+            const result = await service.registerUser(registerInput);
+
+            expect(result).toEqual({
+                __typename: 'AuthError',
+                message: 'Registration failed',
+                code: 'REGISTRATION_FAILED',
+            });
         });
     });
 
@@ -113,9 +124,15 @@ describe('AuthService', () => {
         const loginInput = { email: 'test@test.com', password: 'password123' };
 
         it('should return AuthSuccess on valid credentials', async () => {
-            const mockUser = { user_id: '1', email: 'test@test.com', hashed_password: 'hash' };
-            
-            mockPrismaService.user.findUniqueOrThrow.mockResolvedValue(mockUser);
+            const mockUser = {
+                user_id: '1',
+                email: 'test@test.com',
+                hashed_password: 'hash',
+            };
+
+            mockPrismaService.user.findUniqueOrThrow.mockResolvedValue(
+                mockUser,
+            );
             (bcrypt.compare as jest.Mock).mockResolvedValue(true); // Password OK
             mockJwtService.sign.mockReturnValue('token_xyz');
 
@@ -129,7 +146,9 @@ describe('AuthService', () => {
         });
 
         it('should return AuthError on invalid password', async () => {
-            mockPrismaService.user.findUniqueOrThrow.mockResolvedValue({ hashed_password: 'hash' });
+            mockPrismaService.user.findUniqueOrThrow.mockResolvedValue({
+                hashed_password: 'hash',
+            });
             (bcrypt.compare as jest.Mock).mockResolvedValue(false); // Password KO
 
             const result = await service.loginUser(loginInput);
@@ -139,7 +158,9 @@ describe('AuthService', () => {
         });
 
         it('should return AuthError if user not found (Prisma throws)', async () => {
-            mockPrismaService.user.findUniqueOrThrow.mockRejectedValue(new Error('Not found'));
+            mockPrismaService.user.findUniqueOrThrow.mockRejectedValue(
+                new Error('Not found'),
+            );
 
             const result = await service.loginUser(loginInput);
 

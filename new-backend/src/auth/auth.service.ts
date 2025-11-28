@@ -93,7 +93,7 @@ export class AuthService {
             });
 
             return {
-                __typename: 'RegisterSuccess',
+                __typename: 'AuthSuccess',
                 user: newUser,
                 token: token,
             };

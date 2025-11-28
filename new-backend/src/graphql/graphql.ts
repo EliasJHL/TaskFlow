@@ -30,6 +30,7 @@ export class UpdateBoardInput {
 export class CreateListInput {
     title: string;
     board_id: string;
+    color?: Nullable<string>;
 }
 
 export class CreateLabelInput {
@@ -48,6 +49,7 @@ export class CreateCardInput {
     list_id: string;
     description?: Nullable<string>;
     due_date?: Nullable<DateTime>;
+    color?: Nullable<string>;
 }
 
 export class UpdateCardInput {

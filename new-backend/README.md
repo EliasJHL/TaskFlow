@@ -1,98 +1,195 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+<p align="center"> <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a> </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<h1 align="center">TaskFlow API</h1>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<p align="center"> The robust, high-performance backend powering the TaskFlow platform. <br /> Built with <strong>NestJS</strong>, <strong>Fastify</strong>, and <strong>GraphQL</strong>. </p>
 
-## Description
+<p align="center"> <img src="https://img.shields.io/badge/NestJS-10.x-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" /> <img src="https://img.shields.io/badge/GraphQL-Mercurius-E10098?style=for-the-badge&logo=graphql&logoColor=white" alt="GraphQL" /> <img src="https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" /> <img src="https://img.shields.io/badge/Coverage-55%25-brightgreen?style=for-the-badge" alt="Coverage" /> </p>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+<p align="center"> <a href="#architecture">Architecture</a> • <a href="#getting-started">Getting Started</a> • <a href="#testing">Testing</a> • <a href="#documentation">Documentation</a> </p>
 
-## Project setup
+### Architecture
 
-```bash
-$ npm install
+TaskFlow API follows a **Modular Monolith architecture** designed for scalability and maintainability.
+
+It leverages the "Platform Agnostic" capability of NestJS by using the **Fastify Adapter** for maximum performance (up to 2x faster than Express).
+
+### Request Lifecycle
+
+```mermaid
+graph TD
+    Client[("Client")]
+    
+    subgraph "Backend Core - NestJS"
+        Gateway["Fastify Adapter"]
+        Guard["Auth & Workspace Guards"]
+        Interceptor["DTO Validation Pipe"]
+        
+        subgraph "GraphQL Layer"
+            Resolver["Resolvers"]
+            FieldResolver["Field Resolvers"]
+        end
+        
+        Service["Services - Business Logic"]
+        Prisma["Prisma Client"]
+    end
+    
+    DB[("PostgresQL")]
+
+    Client --> Gateway
+    Gateway --> Guard
+    Guard --> Interceptor
+    Interceptor --> Resolver
+    
+    Resolver -- "Main Data" --> Service
+    Resolver -. "Nested Data" .-> FieldResolver
+    
+    Service --> Prisma
+    FieldResolver --> Prisma
+    Prisma --> DB
 ```
 
-## Compile and run the project
+### Key Design Patterns
+
+- **Schema First GraphQL**: Type definitions (.graphql files) are the single source of truth. TypeScript definitions are auto-generated.
+
+- **Hybrid Loading Strategy**: We optimize performance by avoiding massive SQL joins. The Main Resolver fetches the core entity, while Field Resolvers (@ResolveField) lazily fetch related data (Boards, Lists, Cards) only when requested by the client.
+
+- **Errors as Data**: Mutations do not throw generic exceptions. They return Union Types (e.g., RegisterSuccess | RegisterError) allowing the frontend to handle business errors (like "Email taken") as strongly-typed data.
+
+- **Secure Authentication**: Implementation of HttpOnly Cookies preventing XSS attacks on JWT tokens.
+
+## 🛠️ Tech Stack
+
+| Component | Technology | Benefit |
+| :--- | :--- | :--- |
+| **Framework** | **NestJS** | Strict architecture, Dependency Injection, Decorators. |
+| **Engine** | **Fastify** | High performance, low overhead (up to 2x faster than Express). |
+| **API** | **GraphQL (Mercurius)** | Efficient Data Fetching, Type Safety, Playground. |
+| **Database** | **PostgreSQL + Prisma** | Reliability, Type-safe queries, Migrations. |
+| **Testing** | **Jest** | Unit and Integration testing with mocking. |
+| **Doc** | **Compodoc** | Visual documentation of the modules graph. |
+
+### Getting Started
+
+#### Prerequisites
+
+- **Node.js** (v18 or later)
+
+- **Docker** (for the local Database)
+
+- **npm or pnpm**
+
+### Installation
+
+#### Clone the repository
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone git@github.com:EliasJHL/TaskFlow.git
+cd taskflow/backend
 ```
 
-## Run tests
+#### Install dependencies 
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
+#### Environment Setup
+Create a .env file in the root directory: 
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+```properties
+DATABASE_URL="postgresql://user:password@localhost:5432/taskflow_db?schema=public" 
+JWT_SECRET="your_super_secret_key_change_me" 
+COOKIE_SECRET="another_secret_for_cookies"
+NODE_ENV="development"
+PORT=3000
+```
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+#### Database Setup
+
+Start the database container and apply migrations:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# 1. Start Docker container
+docker-compose up -d db
+
+# 2. Push schema to DB (Dev mode)
+npx prisma db push
+
+# 3. Generate Prisma Client (Vital for TypeScript)
+npx prisma generate 
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### Running the App
 
-## Resources
+```bash
+npm run start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+Once started, the GraphQL Playground is available at: 👉 http://localhost:3000/graphiql
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Testing
+We maintain a high standard of **code quality** with 100% coverage on critical paths (Services & Resolvers).
 
-## Support
+#### Unit Tests
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Tests are located next to the files they test (*.spec.ts).
 
-## Stay in touch
+```bash
+# Run all unit tests
+npm run test
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Run tests in watch mode (TDD)
+npm run test:watch
+```
 
-## License
+#### Coverage Report
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+To generate the coverage report and verify system integrity:
+
+```bash
+npm run test:cov
+```
+
+### Documentation
+#### Code Architecture (Compodoc)
+
+Generate a static website exploring the modules, services, and dependency graph.
+
+```bash
+npm run doc
+```
+Then open http://localhost:8080 in your browser.
+
+#### API Documentation
+
+The API is self-documented via the GraphQL Schema. You can inspect the schema and test queries directly in the **Playground at /graphiql**.
+
+**Example Query:**
+```graphql
+query GetMyDashboard {
+    workspaces {
+        name
+        is_pinned
+        boards {
+            title
+            color
+        }
+    }
+}
+```
+
+#### Project Structure
+```text
+src/ 
+├── auth/ # Authentication (Login, Register, Guards) 
+├── board/ # Board management (Kanban logic) 
+├── list/ # List management (Ordering, Creation) 
+├── card/ # Card management (Content, Moving) 
+├── label/ # Label management 
+├── workspace/ # Workspace logic (The root entity) 
+├── common/ # Shared Guards, Decorators, and Utilities 
+├── prisma/ # Prisma Module & Service 
+└── graphql/ # Generated TypeScript definitions
+```

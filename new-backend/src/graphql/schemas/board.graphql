@@ -74,6 +74,7 @@ input UpdateBoardInput {
 input CreateListInput {
     title: String!
     board_id: ID!
+    color: String
 }
 
 input CreateLabelInput {
@@ -92,6 +93,7 @@ input CreateCardInput {
     list_id: ID!
     description: String
     due_date: DateTime
+    color: String
 }
 
 input UpdateCardInput {
