@@ -29,31 +29,19 @@ export class ListService {
         });
     }
 
-    async update(listId: string, input: UpdateListInput) {
-        try {
-            await this.prisma.list.update({
-                where: { list_id: listId },
-                data: {
-                    title: input.title ?? undefined,
-                    color: input.color ?? undefined,
-                },
-            });
-            return {
-                __typename: 'Success',
-                successMessage: 'List updated successfully',
-            };
-        } catch (error) {
-            return {
-                __typename: 'Error',
-                errorMessage: 'List update failed',
-                code: 'LIST_UPDATE_FAILED',
-            };
-        }
+    async update(list_id: string, input: UpdateListInput) {
+        return this.prisma.list.update({
+            where: { list_id },
+            data: {
+                title: input.title ?? undefined,
+                color: input.color ?? undefined,
+            },
+        });
     }
 
-    async delete(listId: string) {
+    async delete(list_id: string) {
         try {
-            await this.prisma.list.delete({ where: { list_id: listId } });
+            await this.prisma.list.delete({ where: { list_id } });
             return {
                 __typename: 'Success',
                 successMessage: 'List deleted successfully',
@@ -67,22 +55,10 @@ export class ListService {
         }
     }
 
-    async move(listId: string, newPosition: number) {
-        try {
-            await this.prisma.list.update({
-                where: { list_id: listId },
-                data: { position: newPosition },
-            });
-            return {
-                __typename: 'Success',
-                successMessage: 'List moved successfully',
-            };
-        } catch (error) {
-            return {
-                __typename: 'Error',
-                errorMessage: 'List move failed',
-                code: 'LIST_MOVE_FAILED',
-            };
-        }
+    async move(list_id: string, newPosition: number) {
+        return this.prisma.list.update({
+            where: { list_id },
+            data: { position: newPosition },
+        });
     }
 }

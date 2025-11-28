@@ -35,25 +35,25 @@ export class ListResolver {
     @Mutation('updateList')
     @UseGuards(AuthGuard)
     async updateList(
-        @Args('list_id') id: string,
+        @Args('list_id') list_id: string,
         @Args('input') input: UpdateListInput,
     ) {
-        return this.listService.update(id, input);
+        return this.listService.update(list_id, input);
     }
 
     @Mutation('deleteList')
     @UseGuards(AuthGuard)
-    async deleteList(@Args('list_id') id: string) {
-        return this.listService.delete(id);
+    async deleteList(@Args('list_id') list_id: string) {
+        return this.listService.delete(list_id);
     }
 
     @Mutation('moveList')
     @UseGuards(AuthGuard)
     async moveList(
-        @Args('list_id') id: string,
-        @Args('new_position') pos: number,
+        @Args('list_id') list_id: string,
+        @Args('new_position') new_position: number,
     ) {
-        return this.listService.move(id, pos);
+        return this.listService.move(list_id, new_position);
     }
 
     // --- FIELD RESOLVERS ---
