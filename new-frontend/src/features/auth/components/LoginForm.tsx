@@ -12,10 +12,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
+  const { t } = useTranslation();
 
   const [loginMutation, { loading, error }] = useMutation(LoginDocument);
 
@@ -34,7 +36,6 @@ export const LoginForm = () => {
 
       if (result?.__typename === 'AuthSuccess') {
         console.log("Succès !", result.user);
-        // Redirection vers le dashboard
         navigate('/dashboard'); 
       } else if (result?.__typename === 'AuthError') {
         alert("Erreur : " + result.message);

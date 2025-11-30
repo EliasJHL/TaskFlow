@@ -1,9 +1,9 @@
 /*
-** EPITECH PROJECT, 2025
-** TaskFlow
-** File description:
-** vite.config
-*/
+ ** EPITECH PROJECT, 2025
+ ** TaskFlow
+ ** File description:
+ ** vite.config
+ */
 
 import path from 'path';
 import react from '@vitejs/plugin-react';
@@ -15,5 +15,8 @@ export default defineConfig({
         alias: {
             '@': path.resolve(__dirname, './src')
         }
+    },
+    optimizeDeps: {
+        exclude: ['framer-motion']
     }
 });
