@@ -7,7 +7,7 @@ type Board {
     created_by: User!
 
     lists: [List!]!
-    members: [User!]!
+    members: [WorkspaceMembers!]!
     labels: [Label!]!
 }
 
@@ -78,9 +78,9 @@ input CreateListInput {
 }
 
 input CreateLabelInput {
-  name: String!
-  color: String!
-  board_id: ID!
+    name: String!
+    color: String!
+    board_id: ID!
 }
 
 input UpdateListInput {
@@ -105,6 +105,7 @@ input UpdateCardInput {
 type Query {
     board(board_id: ID!): Board
     boards(workspace_id: ID!): [Board!]!
+    card(card_id: ID!): Card
 }
 
 type Mutation {

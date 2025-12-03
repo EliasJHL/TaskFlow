@@ -11,10 +11,13 @@ import {
     Args,
     Context,
     ResolveField,
+    Query,
 } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { FastifyReply } from 'fastify';
 import { RegisterInput, LoginInput } from '../graphql/graphql';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
 
 @Resolver('AuthResult')
 export class AuthResultResolver {
@@ -27,6 +30,12 @@ export class AuthResultResolver {
 @Resolver()
 export class AuthResolver {
     constructor(private authService: AuthService) {}
+
+    @Query('me')
+    @UseGuards(AuthGuard)
+    async me(@Context() context: any) {
+        return context.user;
+    }
 
     /**
      * User authentication.

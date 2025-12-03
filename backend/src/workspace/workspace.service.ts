@@ -63,6 +63,10 @@ export class WorkspaceService {
                 pinned_by: {
                     where: { user_id: user_id },
                 },
+                members: {
+                    where: { user_id: user_id },
+                    select: { role: true },
+                },
             },
             orderBy: {
                 name: 'asc',
@@ -71,6 +75,7 @@ export class WorkspaceService {
         return workspaces.map((workspace) => ({
             ...workspace,
             is_pinned: workspace.pinned_by.length > 0,
+            role: workspace.members[0]?.role
         }));
     }
 

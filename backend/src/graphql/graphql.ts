@@ -114,7 +114,7 @@ export class Board {
     workspace_id: string;
     created_by: User;
     lists: List[];
-    members: User[];
+    members: WorkspaceMembers[];
     labels: Label[];
 }
 
@@ -167,6 +167,8 @@ export abstract class IQuery {
     abstract board(board_id: string): Nullable<Board> | Promise<Nullable<Board>>;
 
     abstract boards(workspace_id: string): Board[] | Promise<Board[]>;
+
+    abstract card(card_id: string): Nullable<Card> | Promise<Nullable<Card>>;
 
     abstract users(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
 
@@ -292,6 +294,7 @@ export class Workspace {
     boards: Board[];
     labels: Label[];
     is_pinned: boolean;
+    role?: Nullable<Role>;
 }
 
 export class WorkspaceMembers {

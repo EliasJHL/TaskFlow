@@ -9,6 +9,7 @@ type Workspace {
     boards: [Board!]!
     labels: [Label!]!
     is_pinned: Boolean!
+    role: Role
 }
 
 type WorkspaceMembers {

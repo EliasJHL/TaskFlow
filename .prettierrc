@@ -1,13 +1,23 @@
 {
-    "singleQuote": true,
-    "printWidth": 80,
-    "editor.formatOnSave": true,
-    "proseWrap": "always",
-    "tabWidth": 4,
-    "requireConfig": false,
-    "useTabs": false,
-    "trailingComma": "none",
-    "bracketSpacing": true,
-    "jsxBracketSameLine": false,
-    "semi": true
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "printWidth": 80,
+  "trailingComma": "all",
+  "endOfLine": "lf",
+  "arrowParens": "always",
+  "importOrder": [
+    "^(react/(.*)$)|^(react$)",
+    "^(react-router-dom/(.*)$)|^(react-router-dom$)",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^@/graphql/(.*)$",
+    "^@/lib/(.*)$",
+    "^@/hooks/(.*)$",
+    "^@/components/ui/(.*)$",
+    "^@/components/(.*)$",
+    "^@/features/(.*)$",
+    "",
+    "^[./]"
+  ]
 }

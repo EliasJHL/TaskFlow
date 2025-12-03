@@ -88,4 +88,12 @@ export class BoardResolver {
             where: { workspace_id: board.workspace_id },
         });
     }
+
+    @ResolveField('members')
+    async getMembers(@Parent() board: Board) {
+        return this.prisma.workspaceMembers.findMany({
+            where: { workspace_id: board.workspace_id },
+            include: { user: true },
+        });
+    }
 }

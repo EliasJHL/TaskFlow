@@ -1,25 +1,25 @@
 /*
-** EPITECH PROJECT, 2025
-** TaskFlow
-** File description:
-** LoginForm
-*/
+ ** EPITECH PROJECT, 2025
+ ** TaskFlow
+ ** File description:
+ ** LoginForm
+ */
 
-import { useForm } from "react-hook-form"
+import { useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 import { LoginDocument } from '@/graphql/generated';
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useNavigate } from "react-router-dom"
-import { useTranslation } from "react-i18next";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const { t } = useTranslation();
 
-  const [loginMutation, { loading, error }] = useMutation(LoginDocument);
+  const [loginMutation, { loading }] = useMutation(LoginDocument);
 
   const onSubmit = async (data: any) => {
     try {
@@ -27,22 +27,21 @@ export const LoginForm = () => {
         variables: {
           input: {
             email: data.email,
-            password: data.password
-          }
-        }
+            password: data.password,
+          },
+        },
       });
 
       const result = response.data?.login;
 
       if (result?.__typename === 'AuthSuccess') {
-        console.log("Succès !", result.user);
-        navigate('/dashboard'); 
+        console.log('Succès !', result.user);
+        navigate('/app');
       } else if (result?.__typename === 'AuthError') {
-        alert("Erreur : " + result.message);
+        alert('Erreur : ' + result.message);
       }
-
     } catch (e) {
-      console.error("Erreur système", e);
+      console.error('Erreur système', e);
     }
   };
 
@@ -60,7 +59,7 @@ export const LoginForm = () => {
               autoComplete="email"
               autoCorrect="off"
               disabled={loading}
-              {...register("email")}
+              {...register('email')}
             />
           </div>
           <div className="grid gap-2">
@@ -69,17 +68,14 @@ export const LoginForm = () => {
               id="password"
               type="password"
               disabled={loading}
-              {...register("password")}
+              {...register('password')}
             />
           </div>
           <Button disabled={loading}>
-            {loading ? "Connexion..." : "Se connecter avec Email"}
+            {loading ? 'Connexion...' : 'Se connecter avec Email'}
           </Button>
         </div>
       </form>
-      
-      {/* Affichage basique des erreurs GraphQL (réseau) */}
-      {error && <p className="text-red-500 text-sm">{error.message}</p>}
     </div>
-  )
-}
+  );
+};
