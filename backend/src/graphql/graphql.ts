@@ -58,6 +58,11 @@ export class UpdateCardInput {
     due_date?: Nullable<DateTime>;
 }
 
+export class CreateChecklistInput {
+    content: string;
+    card_id: string;
+}
+
 export class LoginInput {
     email: string;
     password: string;
@@ -138,6 +143,14 @@ export class Card {
     comments: Comment[];
     attachments: Attachment[];
     assignees: User[];
+    checklists: Checklist[];
+}
+
+export class Checklist {
+    checklist_id: string;
+    content: string;
+    is_completed: boolean;
+    card_id: string;
 }
 
 export class Comment {
@@ -205,6 +218,10 @@ export abstract class IMutation {
     abstract updateCardContent(card_id: string, input: UpdateCardInput): Card | Promise<Card>;
 
     abstract moveCard(card_id: string, list_id: string, new_position: number): Card | Promise<Card>;
+
+    abstract createChecklist(input: CreateChecklistInput): Checklist | Promise<Checklist>;
+
+    abstract deleteChecklist(checklist_id: string): Status | Promise<Status>;
 
     abstract addLabelToCard(card_id: string, label_id: string): Card | Promise<Card>;
 

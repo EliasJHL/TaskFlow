@@ -114,10 +114,20 @@ model Card {
   card_labels  CardLabel[]
   card_members CardMember[]
   attachments  Attachment[]
+  checklists Checklist[]
 
   list List @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
 
   @@index([list_id])
+}
+
+model Checklist {
+  checklist_id String       @id @default(uuid())
+  content      String
+  is_completed Boolean      @default(false)
+  card_id      String
+
+  card Card @relation(fields: [card_id], references: [card_id], onDelete: Cascade)
 }
 
 model Comment {

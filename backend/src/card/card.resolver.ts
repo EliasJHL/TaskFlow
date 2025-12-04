@@ -93,4 +93,27 @@ export class CardResolver {
         });
         return members.map((m) => m.user);
     }
+
+    // @ResolveField('comments')
+    // async getComments(@Parent() card: Card) {
+    //     return this.prisma.comment.findMany({
+    //         where: { card_id: card.card_id },
+    //         orderBy: { created_at: 'asc' },
+    //     });
+    // }
+
+    // @ResolveField('attachments')
+    // async getAttachments(@Parent() card: Card) {
+    //     return this.prisma.attachment.findMany({
+    //         where: { card_id: card.card_id },
+    //         orderBy: { created_at: 'asc' },
+    //     });
+    // }
+    
+    @ResolveField('checklists')
+    async getChecklists(@Parent() card: Card) {
+        return this.prisma.checklist.findMany({
+            where: { card_id: card.card_id }
+        });
+    }
 }
