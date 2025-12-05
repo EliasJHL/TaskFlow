@@ -17,6 +17,20 @@ TaskFlow is a collaborative project management tool built with TypeScript, React
 - Dark and light mode support
 - Self-hosted or cloud deployment
 
+## 🛠️ Tech Stack & Credits
+
+This project stands on the shoulders of giants. Special thanks to the open-source community.
+
+**Core Stack:**
+- [NestJS](https://nestjs.com/) (MIT) - Backend Framework
+- [React](https://react.dev/) (MIT) - Frontend Library
+- [Prisma](https://www.prisma.io/) (Apache 2.0) - ORM
+
+**Key Libraries:**
+- **[tldraw](https://github.com/tldraw/tldraw)** (Apache 2.0) - The amazing whiteboard engine used for the infinite canvas.
+- **[shadcn/ui](https://ui.shadcn.com/)** (MIT) - UI Components.
+- **[dnd-kit](https://dndkit.com/)** (MIT) - Drag and Drop primitives.
+
 ## Demo
 
 Try the hosted version at [Not ready yet] or deploy your own instance in under 5 minutes.
