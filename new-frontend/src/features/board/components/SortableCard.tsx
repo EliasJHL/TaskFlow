@@ -35,7 +35,7 @@ export const SortableCard = ({ card, onClick }: SortableCardProps) => {
         title={card.title}
         labels={card.labels}
         dueDate={card.due_date}
-        assignees={card.assignees}
+        card_members={card.card_members}
         commentsCount={card.comments?.length}
         attachmentsCount={card.attachments?.length}
       />

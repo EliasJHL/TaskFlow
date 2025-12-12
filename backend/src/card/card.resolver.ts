@@ -8,6 +8,7 @@
 import {
     Resolver,
     Mutation,
+    Query,
     Args,
     ResolveField,
     Parent,
@@ -17,6 +18,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateCardInput, UpdateCardInput, Card } from '../graphql/graphql';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../common/guards/auth.guard';
+import { Role } from '@prisma/client';
+import { WorkspaceAuth } from '../common/decorators/workspace-auth.decorator';
 
 @Resolver('Card')
 export class CardResolver {
@@ -24,6 +27,16 @@ export class CardResolver {
         private cardService: CardService,
         private prisma: PrismaService,
     ) {}
+
+    @Query('card')
+    @UseGuards(AuthGuard)
+    @WorkspaceAuth(Role.Viewer)
+    async getCard(
+        @Args('card_id') id: string,
+        @Args('workspace_id') workspaceId: string
+    ) {
+        return this.cardService.findById(id, workspaceId);
+    }
 
     @Mutation('createCard')
     @UseGuards(AuthGuard)
@@ -74,7 +87,23 @@ export class CardResolver {
         return this.cardService.removeLabel(cId, lId);
     }
 
-    // --- FIELD RESOLVERS ---
+    @Mutation('addAssigneeToCard')
+    @UseGuards(AuthGuard)
+    async addAssignee(
+        @Args('card_id') cId: string,
+        @Args('user_id') uId: string,
+    ) {
+        return this.cardService.addAssignee(cId, uId);
+    }
+
+    @Mutation('removeAssigneeFromCard')
+    @UseGuards(AuthGuard)
+    async removeAssignee(
+        @Args('card_id') cId: string,
+        @Args('user_id') uId: string,
+    ) {
+        return this.cardService.removeAssignee(cId, uId);
+    }
 
     @ResolveField('labels')
     async getLabels(@Parent() card: Card) {
@@ -83,15 +112,6 @@ export class CardResolver {
             include: { label: true },
         });
         return cardLabels.map((cl) => cl.label);
-    }
-
-    @ResolveField('assignees')
-    async getAssignees(@Parent() card: Card) {
-        const members = await this.prisma.cardMember.findMany({
-            where: { card_id: card.card_id },
-            include: { user: true },
-        });
-        return members.map((m) => m.user);
     }
 
     // @ResolveField('comments')
@@ -115,5 +135,14 @@ export class CardResolver {
         return this.prisma.checklist.findMany({
             where: { card_id: card.card_id }
         });
+    }
+
+    @ResolveField('card_members')
+    async getCardMembers(@Parent() card: Card) {
+        const cardMembers = await this.prisma.cardMember.findMany({
+            where: { card_id: card.card_id },
+            include: { user: true },
+        });
+        return cardMembers.map((cm) => cm.user);
     }
 }

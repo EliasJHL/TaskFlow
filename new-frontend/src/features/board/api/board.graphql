@@ -26,25 +26,28 @@ query GetBoardFull($board_id: ID!) {
         due_date
         
         labels {
+          label_id
           name
           color
         }
         
-        assignees {
+        card_members {
+          user_id
           username
+          picture
         }
       }
     }
     
     members {
       user {
+        user_id
         username
         picture
       }
     }
   }
 }
-
 
 mutation CreateList($input: CreateListInput!) {
   createList(input: $input) {

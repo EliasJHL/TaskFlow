@@ -21,9 +21,7 @@
     "doc": "npx compodoc -p tsconfig.json -s"
   },
   "dependencies": {
-    "@angular/core": "^21.0.1",
     "@angular/forms": "^21.0.1",
-    "@angular/platform-browser-dynamic": "^21.0.1",
     "@fastify/cookie": "^11.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",

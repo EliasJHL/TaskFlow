@@ -28,6 +28,15 @@ export const LanguageSwitcher = () => {
         <DropdownMenuItem onClick={() => changeLanguage('fr')}>
           🇫🇷 Français
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => changeLanguage('es')}>
+          🇪🇸 Español
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => changeLanguage('de')}>
+          🇩🇪 Deutsch
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => changeLanguage('ru')}>
+          🇷🇺 Russian
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

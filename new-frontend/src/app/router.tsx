@@ -7,14 +7,15 @@
 
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
-// Pages
-import { HomePage } from '@/features/home/pages/HomePage';
-import { LoginPage } from '@/features/auth/pages/LoginPage';
-import { RegisterPage } from '@/features/auth/pages/RegisterPage';
+import { HomePage } from '@/app/HomePage';
+import { LoginPage } from '@/app/LoginPage';
+import { RegisterPage } from '@/app/RegisterPage';
 import { DashboardLayout } from '@/features/dashboard/layouts/DashboardLayout';
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
 import { WorkspacePage } from '@/features/workspace/pages/WorkspacePage';
 import { BoardPage } from '@/features/board/pages/BoardPage';
+
+import { Test } from '@/app/test';
 
 import { RequireAuth } from '@/components/layouts/RequireAuth';
 
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
   {
     path: '/register',
     element: <RegisterPage />,
+  },
+  {
+    path: '/test',
+    element: <Test />,
   },
 
   {

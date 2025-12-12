@@ -12,7 +12,6 @@ export const DashboardPage = () => {
   const { data, loading, error } = useQuery(GetUserWorkspacesDocument);
   const [search, setSearch] = useState("");
 
-  // Filtrage local simple
   const filteredWorkspaces = data?.workspaces?.filter(ws => 
     ws?.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -25,7 +24,6 @@ export const DashboardPage = () => {
   return (
     <div className="space-y-8">
       
-      {/* Header de la page */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
             <h2 className="text-3xl font-bold tracking-tight">Mes Espaces</h2>
@@ -41,15 +39,12 @@ export const DashboardPage = () => {
                     onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
-            {/* <CreateWorkspaceDialog> */}
                 <Button>
                     <Plus className="w-4 h-4 mr-2" /> Créer
                 </Button>
-            {/* </CreateWorkspaceDialog> */}
         </div>
       </div>
 
-      {/* --- LOADING STATE --- */}
       {loading && (
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {[1, 2, 3].map(i => (
@@ -58,10 +53,8 @@ export const DashboardPage = () => {
          </div>
       )}
 
-      {/* --- CONTENT --- */}
       {!loading && (
         <>
-            {/* Section Épinglés (Si existants) */}
             {pinnedWorkspaces && pinnedWorkspaces.length > 0 && (
                 <div className="space-y-4">
                     <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Favoris</h3>
@@ -81,7 +74,6 @@ export const DashboardPage = () => {
                 </div>
             )}
 
-            {/* Section Tous les autres */}
             <div className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Tous les espaces</h3>
                 

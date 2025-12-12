@@ -13,6 +13,31 @@ import { CreateCardInput, UpdateCardInput } from '../graphql/graphql';
 export class CardService {
     constructor(private prisma: PrismaService) {}
 
+    async findById(cardId: string, workspaceId: string) {
+        const card = await this.prisma.card.findUniqueOrThrow({
+            where: { card_id: cardId },
+            include: {
+                checklists: true,
+                comments: true,
+                card_labels: {
+                    include: {
+                        label: true, 
+                    },
+                },
+                card_members: {
+                    include: {
+                        user: true,
+                    },
+                },
+            },
+        });
+        return {
+            ...card,
+            labels: card.card_labels.map((cl) => cl.label), 
+            card_members: card.card_members.map((cm) => cm.user),
+        };
+    }
+
     async create(input: CreateCardInput) {
         const lastCard = await this.prisma.card.findFirst({
             where: { list_id: input.list_id },
@@ -72,6 +97,26 @@ export class CardService {
         await this.prisma.cardLabel.delete({
             where: {
                 card_id_label_id: { card_id: cardId, label_id: labelId },
+            },
+        });
+        return this.prisma.card.findUniqueOrThrow({
+            where: { card_id: cardId },
+        });
+    }
+
+    async addAssignee(cardId: string, userId: string) {
+        return this.prisma.card.update({
+            where: { card_id: cardId },
+            data: {
+                card_members: { create: { user_id: userId } },
+            },
+        });
+    }
+
+    async removeAssignee(cardId: string, userId: string) {
+        await this.prisma.cardMember.delete({
+            where: {
+                card_id_user_id: { card_id: cardId, user_id: userId },
             },
         });
         return this.prisma.card.findUniqueOrThrow({

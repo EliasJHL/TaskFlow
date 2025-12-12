@@ -234,7 +234,7 @@ export function TeamManagementDialog({
                       <div className="flex items-center gap-3 flex-1">
                         <Avatar className="h-8 w-8">
                           <AvatarImage
-                            src={member.user.picture}
+                            src={member.user.picture || "/placeholder.svg"}
                             alt={member.user.username}
                           />
                           <AvatarFallback className="text-xs">

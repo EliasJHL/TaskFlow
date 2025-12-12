@@ -1,0 +1,123 @@
+{
+  "common": {
+    "start_free": "Comenzar gratis",
+    "documentation": "Documentación",
+    "create_account": "Crear cuenta",
+    "join_discord": "Unirse a Discord"
+  },
+  "home": {
+    "hero": {
+      "badge": "v1.0 Lanzamiento Beta Público",
+      "title_prefix": "Gestiona proyectos",
+      "title_suffix": "a la velocidad de la luz.",
+      "subtitle_highlight1": "La alternativa de código abierto a Trello.",
+      "subtitle_text": "Diseñado para desarrolladores,",
+      "subtitle_highlight2": "impulsado por IA.",
+      "social_proof": "Usado por +500 desarrolladores",
+      "task_completed": "Tarea completada",
+      "task_overdue": "Tarea atrasada",
+      "deploy_prod": "Despliegue en prod"
+    },
+    "notifications": {
+      "item1": {
+        "name": "Emily actualizó el espacio",
+        "desc": "Se ha creado un nuevo tablero",
+        "time": "Hace 1m"
+      },
+      "item2": {
+        "name": "Elias se unió al equipo",
+        "desc": "Ha sido invitado al espacio de trabajo",
+        "time": "Hace 10m"
+      },
+      "item3": {
+        "name": "¡Llegas tarde!",
+        "desc": "Una tarea venció hace 2 días",
+        "time": "Hace 5m"
+      },
+      "item4": {
+        "name": "Nuevo evento",
+        "desc": "Se ha creado un nuevo evento",
+        "time": "Hace 2m"
+      }
+    },
+    "files": {
+      "presentation": "El archivo de presentación para la reunión con el cliente el lunes.",
+      "finances": "Aquí está el desglose del presupuesto para Q2 y Q3.",
+      "logo": "El logo para poner en nuestro nuevo diseño web.",
+      "clients": "Información de contacto del cliente y detalles del proyecto.",
+      "meeting_notes": "Notas de la última llamada con el cliente."
+    },
+    "features": {
+        "files": {
+            "name": "Guarda tus archivos",
+            "desc": "Guardamos automáticamente tus archivos mientras escribes.",
+            "cta": "Saber más"
+        },
+        "notifications": {
+            "name": "Notificaciones",
+            "desc": "Recibe notificaciones cuando algo suceda.",
+            "cta": "Saber más"
+        },
+        "integrations": {
+            "name": "Integraciones",
+            "desc": "Soporta más de 100 integraciones y contando.",
+            "cta": "Saber más"
+        },
+        "calendar": {
+            "name": "Calendario",
+            "desc": "Usa el calendario para filtrar tus archivos por fecha.",
+            "cta": "Saber más"
+        }
+    },
+    "features_grid": {
+        "title": "Todo lo que necesitas."
+    },
+    "github": {
+      "title": "Sincronización GitHub",
+      "subtitle": "Bidireccional.",
+      "description": "Deja de perder tiempo copiando y pegando. Tus Issues de GitHub se convierten en tarjetas TaskFlow. Tus Pull Requests mueven tarjetas automáticamente.",
+      "item1": "Importar Issues existentes",
+      "item2": "Enlace automático PR ↔ Tarjeta",
+      "item3": "Actualizaciones en tiempo real vía Webhooks",
+      "cta": "Conectar Repositorio",
+      "webhooks": "Webhooks y Eventos"
+    },
+    "bento": {
+      "title": "El poder de una herramienta unificada.",
+      "description": "Deja de dispersarte. TaskFlow centraliza la gestión de proyectos tecnológicos con una arquitectura robusta y características pensadas para desarrolladores.",
+      "kanban": {
+        "name": "Kanban Fluido",
+        "desc": "Experiencia Trello, poder de base de datos relacional SQL.",
+        "cta": "Ver tablero"
+      },
+      "ai": {
+        "name": "IA Nativa",
+        "desc": "Generación de subtareas, resúmenes de tarjetas y sugerencias automáticas vía OpenAI.",
+        "cta": "Probar IA"
+      },
+      "realtime": {
+        "name": "Tiempo Real",
+        "desc": "WebSockets de alto rendimiento. Ve cursores y actualizaciones al instante.",
+        "cta": "Invitar equipo"
+      },
+      "whiteboard": {
+        "name": "Pizarra (Pronto)",
+        "desc": "Lienzo infinito para dibujar tus arquitecturas.",
+        "cta": "Saber más"
+      }
+    },
+    "docker": {
+      "title": "Despliega localmente",
+      "subtitle": "en 30 segundos.",
+      "description": "¿Quieres mantener tus datos? TaskFlow está diseñado para auto-alojamiento. Un simple archivo Docker Compose inicia toda la pila.",
+      "step1_title": "Clonar repo",
+      "step1_desc": "Obtén el código fuente completo.",
+      "step2_title": "Ejecutar Docker",
+      "step2_desc": "Un comando para iniciar todo."
+    },
+    "cta": {
+      "title": "¿Listo para enviar más rápido?",
+      "description": "Únete a la comunidad de código abierto TaskFlow."
+    }
+  }
+}

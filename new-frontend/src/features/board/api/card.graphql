@@ -1,5 +1,5 @@
-query GetCardDetails($card_id: ID!) {
-  card(card_id: $card_id) {
+query GetCardDetails($card_id: ID!, $workspace_id: ID!) {
+  card(card_id: $card_id, workspace_id: $workspace_id) {
     card_id
     title
     description
@@ -13,7 +13,7 @@ query GetCardDetails($card_id: ID!) {
       color
     }
     
-    assignees {
+    card_members {
       user_id
       username
       picture
@@ -27,6 +27,11 @@ query GetCardDetails($card_id: ID!) {
         username
         picture
       }
+    }
+    checklists {
+      checklist_id
+      content
+      is_completed
     }
   }
 }
@@ -58,9 +63,9 @@ mutation RemoveLabelFromCard($card_id: ID!, $label_id: ID!) {
 }
 
 mutation AddAssigneeToCard($card_id: ID!, $user_id: ID!) {
-  addAssigneeToCard(card_id: $card_id, user_id: $user_id) { card_id assignees { user_id } }
+  addAssigneeToCard(card_id: $card_id, user_id: $user_id) { card_id card_members { user_id } }
 }
 
 mutation RemoveAssigneeFromCard($card_id: ID!, $user_id: ID!) {
-  removeAssigneeFromCard(card_id: $card_id, user_id: $user_id) { card_id assignees { user_id } }
+  removeAssigneeFromCard(card_id: $card_id, user_id: $user_id) { card_id card_members { user_id } }
 }

@@ -27,11 +27,11 @@ type Card {
     position: Int!
     list_id: ID!
     due_date: DateTime
-
+    
     labels: [Label!]!
     comments: [Comment!]!
     attachments: [Attachment!]!
-    assignees: [User!]!
+    card_members: [User!]!
     checklists: [Checklist!]!
 }
 
@@ -118,7 +118,7 @@ input CreateChecklistInput {
 type Query {
     board(board_id: ID!): Board
     boards(workspace_id: ID!): [Board!]!
-    card(card_id: ID!): Card
+    card(card_id: ID!, workspace_id: ID!): Card
 }
 
 type Mutation {
@@ -146,7 +146,7 @@ type Mutation {
     createChecklist(input: CreateChecklistInput!): Checklist!
     deleteChecklist(checklist_id: ID!): Status!
 
-    # --- LABELS & ASSIGNEES ---
+    # --- LABELS & card_members ---
     addLabelToCard(card_id: ID!, label_id: ID!): Card!
     removeLabelFromCard(card_id: ID!, label_id: ID!): Card!
 

@@ -142,7 +142,7 @@ export class Card {
     labels: Label[];
     comments: Comment[];
     attachments: Attachment[];
-    assignees: User[];
+    card_members: User[];
     checklists: Checklist[];
 }
 
@@ -181,7 +181,7 @@ export abstract class IQuery {
 
     abstract boards(workspace_id: string): Board[] | Promise<Board[]>;
 
-    abstract card(card_id: string): Nullable<Card> | Promise<Nullable<Card>>;
+    abstract card(card_id: string, workspace_id: string): Nullable<Card> | Promise<Nullable<Card>>;
 
     abstract users(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
 

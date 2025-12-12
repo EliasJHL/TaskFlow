@@ -29,7 +29,6 @@ export class BoardResolver {
         private prisma: PrismaService,
     ) {}
 
-    // ===== QUERIES & MUTATIONS =====
     @Query('board')
     @UseGuards(AuthGuard)
     async getBoard(@Args('board_id') id: string) {

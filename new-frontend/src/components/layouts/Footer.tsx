@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { Github, Disc as DiscordIcon, Twitter } from 'lucide-react';
 import React from 'react';
 
-const Footer: React.FC = () => {
+export const Footer: React.FC = () => {
   return (
     <footer className="border-t border-border/50 bg-background/50 backdrop-blur-lg pt-16 pb-8">
       <div className="container px-4">
