@@ -1,0 +1,24 @@
+query GetUserWorkspaces {
+  workspaces {
+    workspace_id
+    name
+    description
+    color
+    is_pinned
+    owner {
+      username
+      picture
+    }
+    members {
+      role
+    }
+  }
+}
+
+mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+  createWorkspace(input: $input) {
+    workspace_id
+    name
+    color
+  }
+}

@@ -58,6 +58,11 @@ export class UpdateCardInput {
     due_date?: Nullable<DateTime>;
 }
 
+export class CreateChecklistInput {
+    content: string;
+    card_id: string;
+}
+
 export class LoginInput {
     email: string;
     password: string;
@@ -114,7 +119,7 @@ export class Board {
     workspace_id: string;
     created_by: User;
     lists: List[];
-    members: User[];
+    members: WorkspaceMembers[];
     labels: Label[];
 }
 
@@ -138,6 +143,14 @@ export class Card {
     comments: Comment[];
     attachments: Attachment[];
     assignees: User[];
+    checklists: Checklist[];
+}
+
+export class Checklist {
+    checklist_id: string;
+    content: string;
+    is_completed: boolean;
+    card_id: string;
 }
 
 export class Comment {
@@ -167,6 +180,8 @@ export abstract class IQuery {
     abstract board(board_id: string): Nullable<Board> | Promise<Nullable<Board>>;
 
     abstract boards(workspace_id: string): Board[] | Promise<Board[]>;
+
+    abstract card(card_id: string): Nullable<Card> | Promise<Nullable<Card>>;
 
     abstract users(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
 
@@ -203,6 +218,10 @@ export abstract class IMutation {
     abstract updateCardContent(card_id: string, input: UpdateCardInput): Card | Promise<Card>;
 
     abstract moveCard(card_id: string, list_id: string, new_position: number): Card | Promise<Card>;
+
+    abstract createChecklist(input: CreateChecklistInput): Checklist | Promise<Checklist>;
+
+    abstract deleteChecklist(checklist_id: string): Status | Promise<Status>;
 
     abstract addLabelToCard(card_id: string, label_id: string): Card | Promise<Card>;
 
@@ -292,6 +311,7 @@ export class Workspace {
     boards: Board[];
     labels: Label[];
     is_pinned: boolean;
+    role?: Nullable<Role>;
 }
 
 export class WorkspaceMembers {

@@ -27,6 +27,7 @@ import { BoardModule } from './board/board.module';
 import { ListModule } from './list/list.module';
 import { CardModule } from './card/card.module';
 import { LabelModule } from './label/label.module';
+import { ChecklistModule } from './checklist/checklist.module';
 
 @Module({
     imports: [
@@ -51,6 +52,7 @@ import { LabelModule } from './label/label.module';
         ListModule,
         CardModule,
         LabelModule,
+        ChecklistModule,
     ],
     controllers: [AppController],
     providers: [AppService],

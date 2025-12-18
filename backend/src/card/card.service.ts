@@ -37,8 +37,19 @@ export class CardService {
     }
 
     async delete(cardId: string) {
-        await this.prisma.card.delete({ where: { card_id: cardId } });
-        return { success: true, message: 'Card deleted' };
+        try {
+            await this.prisma.card.delete({ where: { card_id: cardId } });
+            return {
+                __typename: 'Success',
+                successMessage: 'Card deleted successfully',
+            };
+        } catch {
+            return {
+                __typename: 'Error',
+                errorMessage: 'Failed to delete card',
+                code: 'CARD_DELETE_FAILED',
+            };
+        }
     }
 
     async move(cardId: string, listId: string, position: number) {

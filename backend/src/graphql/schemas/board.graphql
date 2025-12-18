@@ -7,7 +7,7 @@ type Board {
     created_by: User!
 
     lists: [List!]!
-    members: [User!]!
+    members: [WorkspaceMembers!]!
     labels: [Label!]!
 }
 
@@ -32,6 +32,14 @@ type Card {
     comments: [Comment!]!
     attachments: [Attachment!]!
     assignees: [User!]!
+    checklists: [Checklist!]!
+}
+
+type Checklist {
+    checklist_id: ID!
+    content: String!
+    is_completed: Boolean!
+    card_id: ID!
 }
 
 type Comment {
@@ -78,9 +86,9 @@ input CreateListInput {
 }
 
 input CreateLabelInput {
-  name: String!
-  color: String!
-  board_id: ID!
+    name: String!
+    color: String!
+    board_id: ID!
 }
 
 input UpdateListInput {
@@ -102,9 +110,15 @@ input UpdateCardInput {
     due_date: DateTime
 }
 
+input CreateChecklistInput {
+    content: String!
+    card_id: ID!
+}
+
 type Query {
     board(board_id: ID!): Board
     boards(workspace_id: ID!): [Board!]!
+    card(card_id: ID!): Card
 }
 
 type Mutation {
@@ -127,6 +141,10 @@ type Mutation {
     updateCardContent(card_id: ID!, input: UpdateCardInput!): Card!
 
     moveCard(card_id: ID!, list_id: ID!, new_position: Int!): Card!
+
+    # --- CHECKLISTS ---
+    createChecklist(input: CreateChecklistInput!): Checklist!
+    deleteChecklist(checklist_id: ID!): Status!
 
     # --- LABELS & ASSIGNEES ---
     addLabelToCard(card_id: ID!, label_id: ID!): Card!
