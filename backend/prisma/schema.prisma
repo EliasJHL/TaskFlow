@@ -50,7 +50,6 @@ model Workspace {
   members   WorkspaceMembers[]
   boards    Board[]
   pinned_by PinnedWorkspace[]
-  labels    Label[]
 }
 
 model WorkspaceMembers {
@@ -84,6 +83,7 @@ model Board {
 
   workspace Workspace @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade)
   lists     List[]
+  labels    Label[]
 
   creator_id String
   created_by User   @relation("BoardCreator", fields: [creator_id], references: [user_id])
@@ -145,8 +145,8 @@ model Label {
   label_id     String      @id @default(uuid())
   name         String
   color        String
-  workspace_id String
-  workspace    Workspace   @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade)
+  board_id     String
+  board        Board   @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
   card_labels  CardLabel[]
 }
 

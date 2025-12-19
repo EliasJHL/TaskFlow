@@ -81,14 +81,6 @@ export class WorkspaceResolver {
         });
     }
 
-    @ResolveField('labels')
-    async getLabels(@Parent() workspace: Workspace) {
-        return this.prisma.label.findMany({
-            where: { workspace_id: workspace.workspace_id },
-            orderBy: { name: 'asc' }
-        });
-    }
-
     @ResolveField('members')
     async getMembers(@Parent() workspace: Workspace) {
         return this.prisma.workspaceMembers.findMany({

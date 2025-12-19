@@ -30,7 +30,7 @@ export class LabelService {
                 data: {
                     name: input.name,
                     color: input.color,
-                    workspace_id: board.workspace_id,
+                    board_id: input.board_id,
                 },
             });
         } catch (error) {

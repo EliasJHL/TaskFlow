@@ -13,6 +13,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AuthResultResolver } from './auth.resolver';
 import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { ConfigService } from '@nestjs/config/dist/config.service';
+import { WsAuthService } from 'src/ws-auth/ws-auth.service';
 
 @Module({
     imports: [
@@ -29,7 +30,7 @@ import { ConfigService } from '@nestjs/config/dist/config.service';
             }),
         }),
     ],
-    providers: [AuthService, PrismaService, AuthResolver, AuthResultResolver],
-    exports: [AuthService],
+    providers: [AuthService, PrismaService, AuthResolver, AuthResultResolver, WsAuthService],
+    exports: [AuthService, WsAuthService],
 })
 export class AuthModule {}

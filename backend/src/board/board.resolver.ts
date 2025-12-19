@@ -13,6 +13,7 @@ import {
     ResolveField,
     Parent,
     Context,
+    Subscription,
 } from '@nestjs/graphql';
 import { BoardService } from './board.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -28,6 +29,17 @@ export class BoardResolver {
         private boardService: BoardService,
         private prisma: PrismaService,
     ) {}
+
+    @Subscription('boardEvent', {
+        filter: (payload, vars) =>
+            payload.boardEvent.board_id === vars.board_id,
+    })
+    boardEvent(
+        @Args('board_id') boardId: string,
+        @Context('pubsub') pubsub: any,
+    ) {
+        return pubsub.subscribe('BOARD_EVENT');
+    }
 
     @Query('board')
     @UseGuards(AuthGuard)
@@ -84,7 +96,7 @@ export class BoardResolver {
     @ResolveField('labels')
     async getLabels(@Parent() board: Board) {
         return this.prisma.label.findMany({
-            where: { workspace_id: board.workspace_id },
+            where: { label_id: board.board_id },
         });
     }
 

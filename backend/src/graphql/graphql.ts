@@ -111,6 +111,16 @@ export class UpdateMemberRoleInput {
     role: Role;
 }
 
+export abstract class ISubscription {
+    abstract boardEvent(board_id: string): BoardEventPayload | Promise<BoardEventPayload>;
+}
+
+export class LabelCreatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    label: Label;
+}
+
 export class Board {
     board_id: string;
     title: string;
@@ -328,6 +338,7 @@ export class PinWorkspacePayload {
 
 export type DateTime = any;
 export type Upload = any;
+export type BoardEventPayload = LabelCreatedEvent;
 export type Status = Success | Error;
 export type AuthResult = AuthSuccess | AuthError;
 type Nullable<T> = T | null;

@@ -1,3 +1,17 @@
+type Subscription {
+  boardEvent(board_id: ID!): BoardEventPayload!
+}
+
+union BoardEventPayload = LabelCreatedEvent
+
+# --- EVENT TYPES ---
+type LabelCreatedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  label: Label!
+}
+
+# --- TYPES ---
 type Board {
     board_id: ID!
     title: String!
