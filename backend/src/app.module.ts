@@ -23,6 +23,7 @@ import { LabelModule } from './label/label.module';
 import { ChecklistModule } from './checklist/checklist.module';
 import { WsAuthService } from './ws-auth/ws-auth.service';
 import { WsAuthModule } from './ws-auth/ws-auth.module';
+import { BoardEventPayloadResolver } from './board-event-payload/board-event-payload.resolver';
 
 @Module({
     imports: [
@@ -67,6 +68,6 @@ import { WsAuthModule } from './ws-auth/ws-auth.module';
         WsAuthModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, BoardEventPayloadResolver],
 })
 export class AppModule {}

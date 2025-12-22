@@ -10,6 +10,7 @@ import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateCard } from "../hooks/useBoardActions";
+import { BoardRealtime } from "@/components/realtime/BoardRealtime";
 
 interface CreateCardFormProps {
   listId: string;
@@ -48,6 +49,7 @@ export const CreateCardForm = ({ listId, boardId, onCardCreated }: CreateCardFor
 
   return (
     <form onSubmit={handleSubmit} className="px-2 pb-2">
+      {<BoardRealtime boardId={boardId} />}
       <Textarea
         autoFocus
         placeholder="Titre..."

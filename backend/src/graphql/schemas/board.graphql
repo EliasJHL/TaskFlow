@@ -2,13 +2,67 @@ type Subscription {
   boardEvent(board_id: ID!): BoardEventPayload!
 }
 
-union BoardEventPayload = LabelCreatedEvent
+union BoardEventPayload =
+    ListCreatedEvent
+  | ListDeletedEvent
+  | ListMovedEvent
+  | CardCreatedEvent
+  | CardDeletedEvent
+  | CardMovedEvent
+  | LabelCreatedEvent
+  | LabelDeletedEvent
 
-# --- EVENT TYPES ---
+type ListCreatedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  list: List!
+}
+
+type ListDeletedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  list_id: ID!
+}
+
+type ListMovedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  list_id: ID!
+  position: Int!
+}
+
+type CardCreatedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card: Card!
+}
+
+type CardDeletedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  list_id: ID!
+}
+
+type CardMovedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  from_list_id: ID!
+  to_list_id: ID!
+  position: Int!
+}
+
 type LabelCreatedEvent {
   board_id: ID!
   actor_user_id: ID!
   label: Label!
+}
+
+type LabelDeletedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  label_id: ID!
 }
 
 # --- TYPES ---

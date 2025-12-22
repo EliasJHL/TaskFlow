@@ -5,26 +5,51 @@
  ** apollo
  */
 
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
+import {
+  ApolloClient,
+  InMemoryCache,
+  createHttpLink,
+  split,
+} from '@apollo/client';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+import { getMainDefinition } from '@apollo/client/utilities';
 
 const httpLink = createHttpLink({
-    uri: 'http://localhost:3000/graphql',
-    credentials: 'include'
+  uri: 'http://localhost:3000/graphql',
+  credentials: 'include',
 });
 
-const authLink = setContext((_, { headers }) => {
-    return {
-        headers: {
-            ...headers
-        }
-    };
-});
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: 'ws://localhost:3000/graphql',
+    connectionParams: () => ({
+      Authorization: `Bearer ${localStorage.getItem('token') ?? ''}`,
+    }),
+    keepAlive: 12000,
+    on: {
+      connected: () => console.log('[WS client] connected'),
+      closed: (e) => console.log('[WS client] closed', e.code, e.reason),
+      error: (e) => console.log('[WS client] error', e),
+    },
+  }),
+);
+
+const link = split(
+  ({ query }) => {
+    const def = getMainDefinition(query);
+    return (
+      def.kind === 'OperationDefinition' && def.operation === 'subscription'
+    );
+  },
+  wsLink,
+  httpLink,
+);
 
 export const client = new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
-    defaultOptions: {
-        watchQuery: { fetchPolicy: 'cache-and-network' }
-    }
+  link: link,
+  cache: new InMemoryCache(),
+  defaultOptions: {
+    watchQuery: { fetchPolicy: 'cache-and-network' },
+  },
 });

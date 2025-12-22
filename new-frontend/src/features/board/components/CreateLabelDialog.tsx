@@ -32,6 +32,8 @@ const COLORS = [
   '#8B5CF6',
   '#EC4899',
   '#64748B',
+  '#374151',
+  '#1F2937',
 ];
 
 interface CreateLabelDialogProps {

@@ -1,4 +1,3 @@
-# --- QUERIES (LECTURE) ---
 
 query GetBoardFull($board_id: ID!) {
   board(board_id: $board_id) {

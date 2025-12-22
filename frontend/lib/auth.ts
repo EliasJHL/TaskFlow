@@ -80,7 +80,7 @@ export const useAuth = create<AuthState>((set, get) => ({
       set({ isLoading: true });
       const { data } = await apolloClient.query<{ me: User }>({
         query: ME_QUERY,
-        fetchPolicy: "network-only",
+        fetchPolicy: 'cache-first',
       });
 
       if (data?.me) {
@@ -147,7 +147,7 @@ export const useAuth = create<AuthState>((set, get) => ({
       }>({
         query: WORKSPACE_MEMBERS_QUERY,
         variables: { workspace_id },
-        fetchPolicy: "network-only",
+        fetchPolicy: 'cache-first',
       });
 
       set({ members: data?.workspaceMembers || [] });

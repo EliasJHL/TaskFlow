@@ -115,10 +115,57 @@ export abstract class ISubscription {
     abstract boardEvent(board_id: string): BoardEventPayload | Promise<BoardEventPayload>;
 }
 
+export class ListCreatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    list: List;
+}
+
+export class ListDeletedEvent {
+    board_id: string;
+    actor_user_id: string;
+    list_id: string;
+}
+
+export class ListMovedEvent {
+    board_id: string;
+    actor_user_id: string;
+    list_id: string;
+    position: number;
+}
+
+export class CardCreatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    card: Card;
+}
+
+export class CardDeletedEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    list_id: string;
+}
+
+export class CardMovedEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    from_list_id: string;
+    to_list_id: string;
+    position: number;
+}
+
 export class LabelCreatedEvent {
     board_id: string;
     actor_user_id: string;
     label: Label;
+}
+
+export class LabelDeletedEvent {
+    board_id: string;
+    actor_user_id: string;
+    label_id: string;
 }
 
 export class Board {
@@ -338,7 +385,7 @@ export class PinWorkspacePayload {
 
 export type DateTime = any;
 export type Upload = any;
-export type BoardEventPayload = LabelCreatedEvent;
+export type BoardEventPayload = ListCreatedEvent | ListDeletedEvent | ListMovedEvent | CardCreatedEvent | CardDeletedEvent | CardMovedEvent | LabelCreatedEvent | LabelDeletedEvent;
 export type Status = Success | Error;
 export type AuthResult = AuthSuccess | AuthError;
 type Nullable<T> = T | null;

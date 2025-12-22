@@ -96,7 +96,7 @@ export class BoardResolver {
     @ResolveField('labels')
     async getLabels(@Parent() board: Board) {
         return this.prisma.label.findMany({
-            where: { label_id: board.board_id },
+            where: { board_id: board.board_id },
         });
     }
 

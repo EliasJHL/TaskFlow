@@ -1,9 +1,9 @@
 /*
-** EPITECH PROJECT, 2025
-** TaskFlow
-** File description:
-** BoardPage
-*/
+ ** EPITECH PROJECT, 2025
+ ** TaskFlow
+ ** File description:
+ ** BoardPage
+ */
 
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
@@ -17,10 +17,7 @@ import {
   SortableContext,
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {
-  Loader2,
-  ChevronLeft,
-} from 'lucide-react';
+import { Loader2, ChevronLeft } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
@@ -38,6 +35,8 @@ import { GetBoardFullDocument } from '@/graphql/generated';
 import { useBoardDragAndDrop } from '../hooks/useBoardDragAndDrop';
 import { useState } from 'react';
 
+import { BoardRealtime } from '@/components/realtime/BoardRealtime';
+
 export const BoardPage = () => {
   const { boardId } = useParams<{ boardId: string }>();
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -45,7 +44,7 @@ export const BoardPage = () => {
   const { data, loading, error } = useQuery(GetBoardFullDocument, {
     variables: { board_id: boardId! },
     skip: !boardId,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-first',
   });
 
   const board = data?.board;
@@ -63,6 +62,7 @@ export const BoardPage = () => {
 
   return (
     <div className="flex h-screen flex-col bg-background relative overflow-hidden">
+      {boardId && <BoardRealtime boardId={board.board_id} />}
       <DotPattern
         className={cn(
           '[mask-image:radial-gradient(white,transparent)]',

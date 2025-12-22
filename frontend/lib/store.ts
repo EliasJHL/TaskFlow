@@ -180,7 +180,7 @@ export const useStore = create<AppState>((set, get) => ({
       set({ isLoading: true });
       const { data } = await apolloClient.query<{ workspaces: any[] }>({
         query: WORKSPACES_QUERY,
-        fetchPolicy: "network-only",
+        fetchPolicy: 'cache-first',
       });
 
       if (data?.workspaces) {
@@ -225,7 +225,7 @@ export const useStore = create<AppState>((set, get) => ({
       const { data } = await apolloClient.query<{ workspace: any }>({
         query: WORKSPACE_QUERY,
         variables: { workspace_id: workspaceId },
-        fetchPolicy: "network-only",
+        fetchPolicy: 'cache-first',
       });
 
       if (data?.workspace) {
@@ -267,7 +267,7 @@ export const useStore = create<AppState>((set, get) => ({
       const { data } = await apolloClient.query<{ boards: any[] }>({
         query: BOARDS_QUERY,
         variables: { workspaceId },
-        fetchPolicy: "network-only",
+        fetchPolicy: 'cache-first',
       });
 
       if (data?.boards) {

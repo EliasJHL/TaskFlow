@@ -12,8 +12,10 @@ import {
     Args,
     ResolveField,
     Parent,
+    Context,
 } from '@nestjs/graphql';
 import { CardService } from './card.service';
+import { ListService } from '../list/list.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCardInput, UpdateCardInput, Card } from '../graphql/graphql';
 import { UseGuards } from '@nestjs/common';
@@ -26,6 +28,7 @@ export class CardResolver {
     constructor(
         private cardService: CardService,
         private prisma: PrismaService,
+        private listService: ListService,
     ) {}
 
     @Query('card')
@@ -33,15 +36,45 @@ export class CardResolver {
     @WorkspaceAuth(Role.Viewer)
     async getCard(
         @Args('card_id') id: string,
-        @Args('workspace_id') workspaceId: string
+        @Args('workspace_id') workspaceId: string,
     ) {
-        return this.cardService.findById(id, workspaceId);
+        return await this.cardService.findById(id, workspaceId);
     }
 
     @Mutation('createCard')
     @UseGuards(AuthGuard)
-    async createCard(@Args('input') input: CreateCardInput) {
-        return this.cardService.create(input);
+    async createCard(
+        @Args('input') input: CreateCardInput,
+        @Context() ctx: any,
+        @Context('pubsub') pubsub: any,
+    ) {
+        const card = await this.cardService.create(input);
+
+        const boardId = this.listService
+            .findOne(card.list_id)
+            .then((list) => list?.board_id);
+        const actorUserId = ctx.req?.user?.user_id ?? ctx.userId;
+
+        if (!card || '__typename' in card) {
+            throw new Error('CARD_INVALID');
+        }
+
+        try {
+            await pubsub.publish({
+                topic: 'BOARD_EVENT',
+                payload: {
+                    boardEvent: {
+                        __typename: 'CardCreatedEvent',
+                        board_id: await boardId,
+                        actor_user_id: actorUserId,
+                        card,
+                    },
+                },
+            });
+        } catch (e) {
+            console.error('[PUBSUB] publish failed', e);
+        }
+        return card;
     }
 
     @Mutation('updateCardContent')
@@ -129,11 +162,11 @@ export class CardResolver {
     //         orderBy: { created_at: 'asc' },
     //     });
     // }
-    
+
     @ResolveField('checklists')
     async getChecklists(@Parent() card: Card) {
         return this.prisma.checklist.findMany({
-            where: { card_id: card.card_id }
+            where: { card_id: card.card_id },
         });
     }
 

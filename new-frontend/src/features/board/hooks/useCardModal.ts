@@ -20,7 +20,7 @@ export const useCardModal = (cardId: string | null, workspaceId: string) => {
   const { data, loading } = useQuery(GetCardDetailsDocument, {
     variables: { card_id: cardId!, workspace_id: workspaceId },
     skip: !cardId || !workspaceId,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-first',
   });
 
   const [updateCard] = useMutation(UpdateCardContentDocument);

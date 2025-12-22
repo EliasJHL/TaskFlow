@@ -57,7 +57,33 @@ export class LabelResolver {
 
     @Mutation('deleteLabel')
     @UseGuards(AuthGuard)
-    async deleteLabel(@Args('label_id') id: string) {
-        return this.labelService.delete(id);
+    async deleteLabel(
+        @Args('label_id') id: string,
+        @Context() ctx: any,
+        @Context('pubsub') pubsub: any,
+    ) {
+        const res = await this.labelService.delete(id);
+
+        const label = await this.labelService.findOne(id);
+        const actorUserId = ctx.req?.user?.user_id ?? ctx.userId;
+    
+        if (res.__typename === 'Error') return res;
+        
+        try {
+            await pubsub.publish({
+                topic: 'BOARD_EVENT',
+                payload: {
+                    boardEvent: {
+                        __typename: 'LabelDeletedEvent',
+                        board_id: label?.board_id,
+                        actor_user_id: actorUserId,
+                        label_id: id,
+                    },
+                },
+            });
+        } catch (e) {
+            console.error('[PUBSUB] publish failed', e);
+        }
+        return res;
     }
 }

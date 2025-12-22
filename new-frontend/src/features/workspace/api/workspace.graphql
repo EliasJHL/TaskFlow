@@ -24,12 +24,6 @@ query GetWorkspaceDetails($workspace_id: ID!) {
       color
       description
     }
-    
-    labels {
-      label_id
-      name
-      color
-    }
   }
 }
 
@@ -42,5 +36,16 @@ mutation CreateBoard($input: CreateBoardInput!) {
     created_by {
       username
     }
+  }
+}
+
+mutation inviteMemberToWorkspace($workspace_id: ID!, $email: String!, $role: Role!) {
+  inviteMemberToWorkspace(workspace_id: $workspace_id, email: $email, role: $role) {
+    user {
+      user_id
+      username
+      picture
+    }
+    role
   }
 }

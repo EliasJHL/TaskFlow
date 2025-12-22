@@ -36,7 +36,7 @@ export const WorkspacePage = () => {
   if (error || !data?.workspace)
     return (
       <div className="p-10 text-red-500">
-        Impossible de charger le workspace.
+        Impossible de charger le workspace. Erreur : {error?.message}
       </div>
     );
 
