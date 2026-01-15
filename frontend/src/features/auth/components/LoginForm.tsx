@@ -17,6 +17,8 @@ export const LoginForm = () => {
   const { t } = useTranslation();
   const { login, isLoading: loading } = useLogin();
 
+  if (!t) return null;
+
   return (
     <div className="grid gap-6">
       <form onSubmit={handleSubmit(login)}>

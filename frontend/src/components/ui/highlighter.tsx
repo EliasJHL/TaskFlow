@@ -22,7 +22,6 @@ interface HighlighterProps {
   iterations?: number;
   padding?: number;
   multiline?: boolean;
-  isView?: boolean;
   className?: string;
 }
 
@@ -35,7 +34,6 @@ export function Highlighter({
   iterations = 2,
   padding = 2,
   multiline = true,
-  isView = false,
   className,
 }: HighlighterProps) {
   const elementRef = useRef<HTMLSpanElement>(null);

@@ -61,7 +61,6 @@ export const HeroSection = () => {
               action="underline"
               color="#FF9800"
               className="inline-block align-bottom"
-              isView={true}
             >
               {t('home.hero.subtitle_highlight1')}
             </Highlighter>
@@ -72,7 +71,6 @@ export const HeroSection = () => {
               action="highlight"
               color="var(--highlighter-color)"
               className="inline-block align-bottom rounded px-1"
-              isView={true}
             >
               {t('home.hero.subtitle_highlight2')}
             </Highlighter>

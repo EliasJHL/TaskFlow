@@ -1,4 +1,4 @@
-import { GetUserWorkspacesDocument, type Workspace } from '@/graphql/generated';
+import { GetUserWorkspacesDocument } from '@/graphql/generated';
 import { WorkspaceCard } from '../components/WorkspaceCard';
 import { Button } from '@/components/ui/button';
 import { Plus, Search } from 'lucide-react';

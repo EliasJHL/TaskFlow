@@ -11,6 +11,8 @@ export const Header = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   
+  if (!t) return null;
+  
   const isAuthenticated = false; 
 
   return (

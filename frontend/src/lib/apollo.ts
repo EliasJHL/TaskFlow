@@ -29,8 +29,8 @@ const wsLink = new GraphQLWsLink(
     keepAlive: 12000,
     on: {
       connected: () => console.log('[WS client] connected'),
-      closed: (e) => console.log('[WS client] closed', e.code, e.reason),
-      error: (e) => console.log('[WS client] error', e),
+      closed: () => console.log('[WS client] closed'),
+      error: () => console.log('[WS client] error'),
     },
   }),
 );

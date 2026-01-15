@@ -23,6 +23,10 @@ export const useBoardDragAndDrop = (initialLists: any[], boardId: string) => {
   const [moveCard] = useMutation(MoveCardDocument);
   const [moveList] = useMutation(MoveListDocument);
 
+  if (!boardId) {
+    throw new Error("boardId is required for useBoardDragAndDrop");
+  }
+
   useEffect(() => {
     if (initialLists) {
       setLists(JSON.parse(JSON.stringify(initialLists)));
