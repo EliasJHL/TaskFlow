@@ -105,7 +105,15 @@ export class CardService {
     }
 
     async addAssignee(cardId: string, userId: string) {
-        return this.prisma.card.update({
+        const exists = await this.prisma.cardMember.findUnique({
+            where: {
+                card_id_user_id: { card_id: cardId, user_id: userId },
+            }
+        });
+
+        if (exists) return exists;
+
+        return await this.prisma.card.update({
             where: { card_id: cardId },
             data: {
                 card_members: { create: { user_id: userId } },

@@ -1,68 +1,100 @@
 type Subscription {
-  boardEvent(board_id: ID!): BoardEventPayload!
+    boardEvent(board_id: ID!): BoardEventPayload!
 }
 
 union BoardEventPayload =
-    ListCreatedEvent
-  | ListDeletedEvent
-  | ListMovedEvent
-  | CardCreatedEvent
-  | CardDeletedEvent
-  | CardMovedEvent
-  | LabelCreatedEvent
-  | LabelDeletedEvent
+    | ListCreatedEvent
+    | ListDeletedEvent
+    | ListMovedEvent
+    | CardCreatedEvent
+    | CardDeletedEvent
+    | CardMovedEvent
+    | LabelCreatedEvent
+    | LabelDeletedEvent
+    | LabelAddedToCardEvent
+    | LabelRemovedFromCardEvent
+    | AssigneeAddedToCardEvent
+    | AssigneeRemovedFromCardEvent
 
 type ListCreatedEvent {
-  board_id: ID!
-  actor_user_id: ID!
-  list: List!
+    board_id: ID!
+    actor_user_id: ID!
+    list: List!
 }
 
 type ListDeletedEvent {
-  board_id: ID!
-  actor_user_id: ID!
-  list_id: ID!
+    board_id: ID!
+    actor_user_id: ID!
+    list_id: ID!
 }
 
 type ListMovedEvent {
-  board_id: ID!
-  actor_user_id: ID!
-  list_id: ID!
-  position: Int!
+    board_id: ID!
+    actor_user_id: ID!
+    list_id: ID!
+    position: Int!
 }
 
 type CardCreatedEvent {
-  board_id: ID!
-  actor_user_id: ID!
-  card: Card!
+    board_id: ID!
+    actor_user_id: ID!
+    card: Card!
 }
 
 type CardDeletedEvent {
-  board_id: ID!
-  actor_user_id: ID!
-  card_id: ID!
-  list_id: ID!
+    board_id: ID!
+    actor_user_id: ID!
+    card_id: ID!
+    list_id: ID!
 }
 
 type CardMovedEvent {
-  board_id: ID!
-  actor_user_id: ID!
-  card_id: ID!
-  from_list_id: ID!
-  to_list_id: ID!
-  position: Int!
+    board_id: ID!
+    actor_user_id: ID!
+    card_id: ID!
+    from_list_id: ID!
+    to_list_id: ID!
+    position: Int!
 }
 
 type LabelCreatedEvent {
-  board_id: ID!
-  actor_user_id: ID!
-  label: Label!
+    board_id: ID!
+    actor_user_id: ID!
+    label: Label!
 }
 
 type LabelDeletedEvent {
-  board_id: ID!
-  actor_user_id: ID!
-  label_id: ID!
+    board_id: ID!
+    actor_user_id: ID!
+    label_id: ID!
+}
+
+type LabelAddedToCardEvent {
+    board_id: ID!
+    actor_user_id: ID!
+    card_id: ID!
+    label_id: ID!
+}
+
+type LabelRemovedFromCardEvent {
+    board_id: ID!
+    actor_user_id: ID!
+    card_id: ID!
+    label_id: ID!
+}
+
+type AssigneeAddedToCardEvent {
+    board_id: ID!
+    actor_user_id: ID!
+    card_id: ID!
+    user_id: ID!
+}
+
+type AssigneeRemovedFromCardEvent {
+    board_id: ID!
+    actor_user_id: ID!
+    card_id: ID!
+    user_id: ID!
 }
 
 # --- TYPES ---
@@ -95,7 +127,7 @@ type Card {
     position: Int!
     list_id: ID!
     due_date: DateTime
-    
+
     labels: [Label!]!
     comments: [Comment!]!
     attachments: [Attachment!]!

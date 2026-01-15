@@ -130,7 +130,6 @@ export function BoardRealtime({ boardId }: { boardId: string }) {
 
             let movedCard: any = null;
 
-            // remove from old list
             let lists = (board.lists ?? []).map((list: any) => {
               if (list.list_id !== fromId) return list;
 
@@ -155,6 +154,91 @@ export function BoardRealtime({ boardId }: { boardId: string }) {
               const cards = [...(list.cards ?? []), movedCard].sort(
                 (a: any, b: any) => a.position - b.position,
               );
+              return { ...list, cards };
+            });
+
+            return { ...prev, board: { ...board, lists } };
+          }
+
+          if (ev.__typename === 'LabelAddedToCardEvent') {
+            const label = (board.labels ?? []).find(
+              (l: any) => l.label_id === ev.label_id,
+            );
+            if (!label) return prev;
+
+            const lists = (board.lists ?? []).map((list: any) => {
+              const cards = (list.cards ?? []).map((card: any) => {
+                if (card.card_id !== ev.card_id) return card;
+
+                const exists = (card.labels ?? []).some(
+                  (l: any) => l.label_id === ev.label_id,
+                );
+                if (exists) return card;
+
+                return {
+                  ...card,
+                  labels: [...(card.labels ?? []), label],
+                };
+              });
+
+              return { ...list, cards };
+            });
+
+            return { ...prev, board: { ...board, lists } };
+          }
+
+          if (ev.__typename === 'LabelRemovedFromCardEvent') {
+            const lists = (board.lists ?? []).map((list: any) => {
+              const cards = (list.cards ?? []).map((card: any) => {
+                if (card.card_id !== ev.card_id) return card;
+
+                const labels = (card.labels ?? []).filter(
+                  (l: any) => l.label_id !== ev.label_id,
+                );
+
+                return { ...card, labels };
+              });
+
+              return { ...list, cards };
+            });
+
+            return { ...prev, board: { ...board, lists } };
+          }
+
+          if (ev.__typename === 'AssigneeAddedToCardEvent') {
+            const lists = (board.lists ?? []).map((list: any) => {
+              const cards = (list.cards ?? []).map((card: any) => {
+                if (card.card_id !== ev.card_id) return card;
+
+                const exists = (card.assignees ?? []).some(
+                  (u: any) => u.user_id === ev.user_id,
+                );
+                if (exists) return card;
+
+                return {
+                  ...card,
+                  assignees: [...(card.assignees ?? []), { user_id: ev.user_id }],
+                };
+              });
+
+              return { ...list, cards };
+            });
+
+            return { ...prev, board: { ...board, lists } };
+          }
+
+          if (ev.__typename === 'AssigneeRemovedFromCardEvent') {
+            const lists = (board.lists ?? []).map((list: any) => {
+              const cards = (list.cards ?? []).map((card: any) => {
+                if (card.card_id !== ev.card_id) return card;
+
+                const assignees = (card.assignees ?? []).filter(
+                  (u: any) => u.user_id !== ev.user_id,
+                );
+
+                return { ...card, assignees };
+              });
+
               return { ...list, cards };
             });
 

@@ -107,8 +107,33 @@ export class CardResolver {
     async addLabel(
         @Args('card_id') cId: string,
         @Args('label_id') lId: string,
+        @Context() ctx: any,
+        @Context('pubsub') pubsub: any,
     ) {
-        return this.cardService.addLabel(cId, lId);
+        const card = await this.cardService.addLabel(cId, lId);
+
+        const boardId = this.listService
+            .findOne(card.list_id)
+            .then((list) => list?.board_id);
+        const actorUserId = ctx.req?.user?.user_id ?? ctx.userId;
+
+        try {
+            await pubsub.publish({
+                topic: 'BOARD_EVENT',
+                payload: {
+                    boardEvent: {
+                        __typename: 'LabelAddedToCardEvent',
+                        board_id: await boardId,
+                        actor_user_id: actorUserId,
+                        card_id: cId,
+                        label_id: lId,
+                    },
+                },
+            });
+        } catch (e) {
+            console.error('[PUBSUB] publish failed', e);
+        }
+        return card;
     }
 
     @Mutation('removeLabelFromCard')
@@ -116,8 +141,33 @@ export class CardResolver {
     async removeLabel(
         @Args('card_id') cId: string,
         @Args('label_id') lId: string,
+        @Context() ctx: any,
+        @Context('pubsub') pubsub: any,
     ) {
-        return this.cardService.removeLabel(cId, lId);
+        const card = await this.cardService.removeLabel(cId, lId);
+
+        const boardId = this.listService
+            .findOne(card.list_id)
+            .then((list) => list?.board_id);
+        const actorUserId = ctx.req?.user?.user_id ?? ctx.userId;
+
+        try {
+            await pubsub.publish({
+                topic: 'BOARD_EVENT',
+                payload: {
+                    boardEvent: {
+                        __typename: 'LabelRemovedFromCardEvent',
+                        board_id: await boardId,
+                        actor_user_id: actorUserId,
+                        card_id: cId,
+                        label_id: lId,
+                    },
+                },
+            });
+        } catch (e) {
+            console.error('[PUBSUB] publish failed', e);
+        }
+        return card;
     }
 
     @Mutation('addAssigneeToCard')
@@ -125,8 +175,35 @@ export class CardResolver {
     async addAssignee(
         @Args('card_id') cId: string,
         @Args('user_id') uId: string,
+        @Context() ctx: any,
+        @Context('pubsub') pubsub: any,
     ) {
-        return this.cardService.addAssignee(cId, uId);
+        const card = await this.cardService.addAssignee(cId, uId);
+
+        const boardId = this.listService
+            .findOne(card.card_id)
+            .then((list) => list?.board_id);
+        console.log(boardId);
+        const actorUserId = ctx.req?.user?.user_id ?? ctx.userId;
+        console.log(actorUserId);
+
+        try {
+            await pubsub.publish({
+                topic: 'BOARD_EVENT',
+                payload: {
+                    boardEvent: {
+                        __typename: 'AssigneeAddedToCardEvent',
+                        board_id: await boardId,
+                        actor_user_id: actorUserId,
+                        card_id: cId,
+                        user_id: uId,
+                    },
+                },
+            });
+        } catch (e) {
+            console.error('[PUBSUB] publish failed', e);
+        }
+        return card;
     }
 
     @Mutation('removeAssigneeFromCard')
@@ -134,8 +211,33 @@ export class CardResolver {
     async removeAssignee(
         @Args('card_id') cId: string,
         @Args('user_id') uId: string,
+        @Context() ctx: any,
+        @Context('pubsub') pubsub: any,
     ) {
-        return this.cardService.removeAssignee(cId, uId);
+        const card = await this.cardService.removeAssignee(cId, uId);
+
+        const boardId = this.listService
+            .findOne(card.list_id)
+            .then((list) => list?.board_id);
+        const actorUserId = ctx.req?.user?.user_id ?? ctx.userId;
+
+        try {
+            await pubsub.publish({
+                topic: 'BOARD_EVENT',
+                payload: {
+                    boardEvent: {
+                        __typename: 'AssigneeRemovedFromCardEvent',
+                        board_id: await boardId,
+                        actor_user_id: actorUserId,
+                        card_id: cId,
+                        user_id: uId,
+                    },
+                },
+            });
+        } catch (e) {
+            console.error('[PUBSUB] publish failed', e);
+        }
+        return card;
     }
 
     @ResolveField('labels')

@@ -69,7 +69,6 @@ export function MultiSelectLabels({
     setInputValue("");
   };
 
-  // Get the full item objects for selected values
   const selectedItems = selected
     .map((name) => labels.find((label) => label.name === name))
     .filter(Boolean) as Label[];
@@ -104,7 +103,6 @@ export function MultiSelectLabels({
                       /* No remove action for overflow tag */
                     }}
                     color="gray"
-                    // You can customize the overflow tag's appearance here if needed
                   />
                 )}
               </>

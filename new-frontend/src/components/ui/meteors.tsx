@@ -41,7 +41,6 @@ export const Meteors = ({
   return (
     <>
       {[...meteorStyles].map((style, idx) => (
-        // Meteor Head
         <span
           key={idx}
           style={{ ...style }}

@@ -11,6 +11,10 @@ union BoardEventPayload =
   | CardMovedEvent
   | LabelCreatedEvent
   | LabelDeletedEvent
+  | LabelRemovedFromCardEvent
+  | LabelAddedToCardEvent
+  | AssigneeAddedToCardEvent
+  | AssigneeRemovedFromCardEvent
 
 type ListCreatedEvent {
   board_id: ID!
@@ -65,6 +69,34 @@ type LabelDeletedEvent {
   label_id: ID!
 }
 
+type LabelRemovedFromCardEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  label_id: ID!
+}
+
+type LabelAddedToCardEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  label_id: ID!
+}
+
+type AssigneeAddedToCardEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  user_id: ID!
+}
+
+type AssigneeRemovedFromCardEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  user_id: ID!
+}
+
 subscription BoardEvent($board_id: ID!) {
   boardEvent(board_id: $board_id) {
     __typename
@@ -105,7 +137,6 @@ subscription BoardEvent($board_id: ID!) {
       to_list_id
       position
     }
-
     ... on LabelCreatedEvent {
       board_id
       actor_user_id
@@ -115,6 +146,30 @@ subscription BoardEvent($board_id: ID!) {
       board_id
       actor_user_id
       label_id
+    }
+    ... on LabelRemovedFromCardEvent {
+      board_id
+      actor_user_id
+      card_id
+      label_id
+    }
+    ... on LabelAddedToCardEvent {
+      board_id
+      actor_user_id
+      card_id
+      label_id
+    }
+    ... on AssigneeAddedToCardEvent {
+      board_id
+      actor_user_id
+      card_id
+      user_id
+    }
+    ... on AssigneeRemovedFromCardEvent {
+      board_id
+      actor_user_id
+      card_id
+      user_id
     }
   }
 }

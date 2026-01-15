@@ -168,6 +168,34 @@ export class LabelDeletedEvent {
     label_id: string;
 }
 
+export class LabelAddedToCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    label_id: string;
+}
+
+export class LabelRemovedFromCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    label_id: string;
+}
+
+export class AssigneeAddedToCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    user_id: string;
+}
+
+export class AssigneeRemovedFromCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    user_id: string;
+}
+
 export class Board {
     board_id: string;
     title: string;
@@ -385,7 +413,7 @@ export class PinWorkspacePayload {
 
 export type DateTime = any;
 export type Upload = any;
-export type BoardEventPayload = ListCreatedEvent | ListDeletedEvent | ListMovedEvent | CardCreatedEvent | CardDeletedEvent | CardMovedEvent | LabelCreatedEvent | LabelDeletedEvent;
+export type BoardEventPayload = ListCreatedEvent | ListDeletedEvent | ListMovedEvent | CardCreatedEvent | CardDeletedEvent | CardMovedEvent | LabelCreatedEvent | LabelDeletedEvent | LabelAddedToCardEvent | LabelRemovedFromCardEvent | AssigneeAddedToCardEvent | AssigneeRemovedFromCardEvent;
 export type Status = Success | Error;
 export type AuthResult = AuthSuccess | AuthError;
 type Nullable<T> = T | null;

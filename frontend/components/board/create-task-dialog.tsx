@@ -100,10 +100,6 @@ export function CardDetailDialog({
       await updateCard(card.cardId, cardData);
     }
 
-    // if (currentBoard && workspace) {
-    //   window.location.href = `/${currentLang}/workspace/${workspace.workspaceId}/board/${currentBoard.boardId}`;
-    // }
-
     onOpenChange(false);
   };
 
@@ -153,7 +149,6 @@ export function CardDetailDialog({
 
   const handleAddNewItem = () => {
     alert("Add new item action triggered!");
-    // In a real app, you might open a form to add a new item
   };
 
   const customLabelsActions = [
@@ -166,7 +161,6 @@ export function CardDetailDialog({
 
   const handleAddNewMember = () => {
     alert("Add new member action triggered!");
-    // In a real app, you might open a form to add a new member
   };
 
   const customMembersActions = [
