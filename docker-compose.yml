@@ -12,7 +12,7 @@ services:
       - .env
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.back.rule=Host(`ts-api.eliasjhl-projects.com`)"
+      - "traefik.http.routers.back.rule=Host(`ts-api.eliasjhl-projects.fr`)"
       - "traefik.http.routers.back.entrypoints=websecure"
       - "traefik.http.routers.back.tls=true"
       - "traefik.http.routers.back.tls.certresolver=letsencrypt"
