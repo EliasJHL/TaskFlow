@@ -1,57 +1,60 @@
 services:
-    taskflow-backend:
-        build:
-            context: ./backend
-            dockerfile: Dockerfile
-        ports:
-            - "8000:3000"
-        depends_on:
-            - postgres-db
-        volumes:
-            - ./backend:/app
-        env_file:
-            - .env
-    taskflow-frontend:
-        build:
-            context: ./frontend
-            dockerfile: Dockerfile
-        ports:
-            - "3000:3000"
-        depends_on:
-            - taskflow-backend
-        volumes:
-            - ./frontend:/app
-            - /app/node_modules
-    postgres-db:
-        image: postgres:15
-        restart: always
-        environment:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_DB: postgres
-        ports:
-            - "51214:5432"
-        volumes:
-            - pgdata:/var/lib/postgresql/data
+  taskflow-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - proxy
+    expose:
+      - "3000"
+    env_file:
+      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.back.rule=Host(`ts-api.eliasjhl-projects.com`)"
+      - "traefik.http.routers.back.entrypoints=websecure"
+      - "traefik.http.routers.back.tls=true"
+      - "traefik.http.routers.back.tls.certresolver=letsencrypt"
+      - "traefik.http.services.back.loadbalancer.server.port=3000"
+      - "traefik.http.routers.back.middlewares=security-headers@file,rate-limit@file"
 
-    minio:
-        image: minio/minio:latest
-        restart: always
-        ports:
-            - "9000:9000"
-            - "9001:9001"
-        environment:
-            MINIO_ROOT_USER: minioadmin
-            MINIO_ROOT_PASSWORD: minioadmin
-        volumes:
-            - minio_data:/data
-        command: server /data --console-address ":9001"
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-            interval: 30s
-            timeout: 20s
-            retries: 3
+  traefik:
+    image: "traefik:v3.4"
+    container_name: "traefik"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/acme.json:/acme.json"
+      - "./traefik/dynamic.yml:/dynamic.yml:ro"
+    command:
+      - "--log.level=INFO"
 
-volumes:
-    pgdata:
-    minio_data:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=proxy"
+      - "--providers.file.filename=/dynamic.yml"
+      - "--providers.file.watch=true"
+
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+
+      - "--certificatesresolvers.letsencrypt.acme.email=contact@eliasjhl.dev"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+
+networks:
+  proxy:
+    name: proxy
