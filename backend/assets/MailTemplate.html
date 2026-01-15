@@ -1,0 +1,342 @@
+<!--
+---- EPITECH PROJECT, 2025
+---- TaskFlow
+---- File description:
+---- MailTemplate
+--->
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TaskFlow Invitation</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                min-width: 100%;
+                font-family: 'Inter', sans-serif;
+                background-color: #f4f4f5;
+                -webkit-font-smoothing: antialiased;
+            }
+            table {
+                border-spacing: 0;
+                border-collapse: collapse;
+            }
+            td {
+                padding: 0;
+            }
+            img {
+                border: 0;
+            }
+
+            .wrapper {
+                width: 100%;
+                table-layout: fixed;
+                background-color: #f4f4f5;
+                padding-bottom: 40px;
+            }
+            .main-container {
+                background-color: #ffffff;
+                margin: 0 auto;
+                width: 100%;
+                max-width: 600px;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+            }
+
+            .header {
+                background-color: #09090b;
+                padding: 30px 40px;
+            }
+
+            .k-col {
+                width: 6px;
+                background-color: #3f3f46;
+                border-radius: 2px;
+            }
+
+            .gradient-line {
+                height: 4px;
+                width: 100%;
+                background: linear-gradient(90deg, #2563eb 0%, #a855f7 100%);
+            }
+
+            .body-content {
+                padding: 40px;
+                color: #3f3f46;
+                font-size: 16px;
+                line-height: 1.6;
+            }
+
+            .workspace-card {
+                background-color: #fafafa;
+                border: 1px solid #e4e4e7;
+                border-left: 4px solid #09090b; /* Black border left */
+                padding: 20px;
+                border-radius: 8px;
+                margin: 25px 0;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+            }
+
+            .btn-primary {
+                background-color: #09090b;
+                color: #ffffff !important;
+                text-decoration: none;
+                padding: 14px 32px;
+                border-radius: 8px;
+                font-weight: 600;
+                display: inline-block;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                transition: transform 0.2s;
+            }
+
+            .footer {
+                background-color: #fafafa;
+                padding: 30px;
+                text-align: center;
+                font-size: 13px;
+                color: #a1a1aa;
+                border-top: 1px solid #f4f4f5;
+            }
+        </style>
+    </head>
+    <body>
+        <center class="wrapper">
+            <table
+                class="main-container"
+                width="100%"
+                cellpadding="0"
+                cellspacing="0"
+            >
+                <tr>
+                    <td class="header">
+                        <table width="100%">
+                            <tr>
+                                <td align="left" valign="middle">
+                                    <a
+                                        href="#"
+                                        style="
+                                            text-decoration: none;
+                                            color: white;
+                                            display: flex;
+                                            align-items: center;
+                                            gap: 10px;
+                                        "
+                                    >
+                                        <img
+                                            src="https://i.ibb.co/gM7HxkY3/TaskFlow.png"
+                                            alt="TaskFlow"
+                                            height="32"
+                                            style="display: block"
+                                        />
+                                        <span
+                                            style="
+                                                font-family:
+                                                    'Inter', sans-serif;
+                                                color: #ffffff;
+                                                font-weight: 700;
+                                                font-size: 20px;
+                                                letter-spacing: -0.5px;
+                                                margin-left: 10px;
+                                                vertical-align: middle;
+                                            "
+                                            >TaskFlow</span
+                                        >
+                                    </a>
+                                </td>
+                                <td align="right" valign="middle">
+                                    <table cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td style="padding-right: 4px">
+                                                <div
+                                                    style="
+                                                        width: 8px;
+                                                        height: 14px;
+                                                        background-color: #2563eb;
+                                                        border-radius: 2px;
+                                                    "
+                                                ></div>
+                                            </td>
+                                            <td style="padding-right: 4px">
+                                                <div
+                                                    style="
+                                                        width: 8px;
+                                                        height: 22px;
+                                                        background-color: #52525b;
+                                                        border-radius: 2px;
+                                                    "
+                                                ></div>
+                                            </td>
+                                            <td>
+                                                <div
+                                                    style="
+                                                        width: 8px;
+                                                        height: 10px;
+                                                        background-color: #3f3f46;
+                                                        border-radius: 2px;
+                                                    "
+                                                ></div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td
+                        height="4"
+                        style="
+                            background: linear-gradient(
+                                90deg,
+                                #2563eb 0%,
+                                #9333ea 100%
+                            );
+                        "
+                    ></td>
+                </tr>
+
+                <tr>
+                    <td class="body-content">
+                        <h1
+                            style="
+                                margin: 0 0 15px 0;
+                                font-size: 24px;
+                                font-weight: 700;
+                                color: #09090b;
+                                letter-spacing: -0.5px;
+                            "
+                        >
+                            You've been invited
+                        </h1>
+
+                        <p style="margin: 0 0 20px 0">Hello,</p>
+
+                        <p style="margin: 0">
+                            You have been invited to collaborate on
+                            <strong>TaskFlow</strong>. Your team is waiting for
+                            you to start organizing tasks.
+                        </p>
+
+                        <div class="workspace-card">
+                            <table width="100%">
+                                <tr>
+                                    <td width="40" valign="top">
+                                        <div
+                                            style="
+                                                height: 40px;
+                                                width: 40px;
+                                                background-color: #e4e4e7;
+                                                border-radius: 50%;
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                font-weight: bold;
+                                                color: #52525b;
+                                                font-size: 18px;
+                                                line-height: 40px;
+                                                text-align: center;
+                                            "
+                                        >
+                                            {{picture}}
+                                        </div>
+                                    </td>
+                                    <td style="padding-left: 15px">
+                                        <div
+                                            style="
+                                                font-size: 12px;
+                                                color: #71717a;
+                                                text-transform: uppercase;
+                                                font-weight: 600;
+                                                letter-spacing: 0.5px;
+                                                margin-bottom: 4px;
+                                            "
+                                        >
+                                            Workspace
+                                        </div>
+                                        <div
+                                            style="
+                                                font-size: 18px;
+                                                font-weight: 700;
+                                                color: #09090b;
+                                            "
+                                        >
+                                            {{workspaceName}}
+                                        </div>
+                                        <div
+                                            style="
+                                                font-size: 14px;
+                                                color: #52525b;
+                                                margin-top: 4px;
+                                            "
+                                        >
+                                            Invited by
+                                            <span
+                                                style="
+                                                    color: #09090b;
+                                                    font-weight: 600;
+                                                "
+                                                >{{inviterName}}</span
+                                            >
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <p style="margin: 0 0 30px 0">
+                            Access usually expires in 48 hours. Create your
+                            account now to join the board.
+                        </p>
+
+                        <table width="100%">
+                            <tr>
+                                <td align="center">
+                                    <a href="{{actionUrl}}" class="btn-primary"
+                                        >Join Workspace &rarr;</a
+                                    >
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="footer">
+                        <p style="margin: 0 0 10px 0">
+                            You received this email because you were invited to
+                            TaskFlow.
+                        </p>
+                        <div style="opacity: 0.5">
+                            <img
+                                src="https://i.ibb.co/gM7HxkY3/TaskFlow.png"
+                                width="20"
+                                style="
+                                    filter: grayscale(100%);
+                                    vertical-align: middle;
+                                "
+                            />
+                            <span
+                                style="
+                                    vertical-align: middle;
+                                    margin-left: 5px;
+                                    font-weight: 500;
+                                "
+                                >Taskflow · An Open Source project</span
+                            >
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </body>
+</html>

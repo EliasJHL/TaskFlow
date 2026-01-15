@@ -1,0 +1,123 @@
+{
+  "common": {
+    "start_free": "Start for free",
+    "documentation": "Documentation",
+    "create_account": "Create account",
+    "join_discord": "Join Discord"
+  },
+  "home": {
+    "hero": {
+      "badge": "v1.0 Public Beta Launch",
+      "title_prefix": "Manage projects",
+      "title_suffix": "at light speed.",
+      "subtitle_highlight1": "The open-source alternative to Trello.",
+      "subtitle_text": "Designed for developers,",
+      "subtitle_highlight2": "powered by AI.",
+      "social_proof": "Trusted by +500 developers",
+      "task_completed": "Task completed",
+      "task_overdue": "Task overdue",
+      "deploy_prod": "Deploy to prod"
+    },
+    "notifications": {
+      "item1": {
+        "name": "Emily updated the workspace",
+        "desc": "A new board has been created",
+        "time": "1m ago"
+      },
+      "item2": {
+        "name": "Elias joined the team",
+        "desc": "He has been invited to the workspace",
+        "time": "10m ago"
+      },
+      "item3": {
+        "name": "You're late !",
+        "desc": "An issue was due 2 days ago",
+        "time": "5m ago"
+      },
+      "item4": {
+        "name": "New event",
+        "desc": "A new event has been created",
+        "time": "2m ago"
+      }
+    },
+    "files": {
+      "presentation": "The presentation file for the meeting with the client on Monday.",
+      "finances": "There's the budget breakdown for Q2 and Q3.",
+      "logo": "The logo to set into our new website design.",
+      "clients": "Client contact information and project details.",
+      "meeting_notes": "Meeting notes from the last client call."
+    },
+    "features": {
+        "files": {
+            "name": "Save your files",
+            "desc": "We automatically save your files as you type.",
+            "cta": "Learn more"
+        },
+        "notifications": {
+            "name": "Notifications",
+            "desc": "Get notified when something happens.",
+            "cta": "Learn more"
+        },
+        "integrations": {
+            "name": "Integrations",
+            "desc": "Supports 100+ integrations and counting.",
+            "cta": "Learn more"
+        },
+        "calendar": {
+            "name": "Calendar",
+            "desc": "Use the calendar to filter your files by date.",
+            "cta": "Learn more"
+        }
+    },
+    "features_grid": {
+        "title": "Everything you need."
+    },
+    "github": {
+      "title": "GitHub Sync",
+      "subtitle": "Bidirectional.",
+      "description": "Stop wasting time copy-pasting. Your GitHub Issues become TaskFlow cards. Your Pull Requests move cards automatically.",
+      "item1": "Import existing Issues",
+      "item2": "Auto-link PR ↔ Card",
+      "item3": "Real-time updates via Webhooks",
+      "cta": "Connect Repository",
+      "webhooks": "Webhooks & Events"
+    },
+    "bento": {
+      "title": "The power of a unified tool.",
+      "description": "Stop scattering. TaskFlow centralizes tech project management with robust architecture and developer-first features.",
+      "kanban": {
+        "name": "Fluid Kanban",
+        "desc": "Trello experience, SQL relational database power.",
+        "cta": "View board"
+      },
+      "ai": {
+        "name": "Native AI",
+        "desc": "Subtask generation, card summaries, and auto-suggestions via OpenAI.",
+        "cta": "Test AI"
+      },
+      "realtime": {
+        "name": "Real-Time",
+        "desc": "High-performance WebSockets. See cursors and updates instantly.",
+        "cta": "Invite team"
+      },
+      "whiteboard": {
+        "name": "Whiteboard (Soon)",
+        "desc": "Infinite canvas to draw your architectures.",
+        "cta": "Learn more"
+      }
+    },
+    "docker": {
+      "title": "Deploy locally",
+      "subtitle": "in 30 seconds.",
+      "description": "Want to keep your data? TaskFlow is designed to be self-hosted. A simple Docker Compose file starts the entire stack.",
+      "step1_title": "Clone repo",
+      "step1_desc": "Get the full source code.",
+      "step2_title": "Run Docker",
+      "step2_desc": "One command to start everything."
+    },
+    "cta": {
+      "title": "Ready to ship faster?",
+      "description": "Join the TaskFlow open-source community."
+    }
+  }
+}

@@ -10,7 +10,7 @@ import { UseGuards } from '@nestjs/common';
 import { WorkspaceService } from './workspace.service';
 import { AuthGuard } from '../common/guards/auth.guard';
 import { WorkspaceAuth } from '../common/decorators/workspace-auth.decorator';
-import { CreateWorkspaceInput, UpdateWorkspaceInput, Workspace } from '../graphql/graphql';
+import { CreateWorkspaceInput, UpdateWorkspaceInput, Workspace, AddWorkspaceMemberInput } from '../graphql/graphql';
 import { Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -48,6 +48,20 @@ export class WorkspaceResolver {
         return this.workspaceService.updateWorkspace(workspace_id, input);
     }
 
+    @Mutation('inviteMemberToWorkspace')
+    @WorkspaceAuth(Role.Admin)
+    async inviteMemberToWorkspace(
+        @Args('workspace_id') workspace_id: string,
+        @Args('email') email: string,
+        @Args('role') role: Role,
+    ) {
+        return this.workspaceService.addMemberToWorkspace(
+            workspace_id,
+            email,
+            role ?? Role.Viewer,
+        );
+    }
+
     @Mutation()
     @WorkspaceAuth(Role.Admin)
     async deleteWorkspace(
@@ -78,14 +92,6 @@ export class WorkspaceResolver {
         return this.prisma.board.findMany({
             where: { workspace_id: workspace.workspace_id },
             orderBy: { title: 'asc' }
-        });
-    }
-
-    @ResolveField('labels')
-    async getLabels(@Parent() workspace: Workspace) {
-        return this.prisma.label.findMany({
-            where: { workspace_id: workspace.workspace_id },
-            orderBy: { name: 'asc' }
         });
     }
 

@@ -26,11 +26,11 @@ export class LabelService {
                     code: 'BOARD_NOT_FOUND',
                 };
             }
-            return this.prisma.label.create({
+            return await this.prisma.label.create({
                 data: {
                     name: input.name,
                     color: input.color,
-                    workspace_id: board.workspace_id,
+                    board_id: input.board_id,
                 },
             });
         } catch (error) {
@@ -40,6 +40,10 @@ export class LabelService {
                 code: 'LABEL_CREATION_FAILED',
             };
         }
+    }
+
+    async findOne(id: string) {
+        return this.prisma.label.findUnique({ where: { label_id: id } });
     }
 
     async delete(id: string) {

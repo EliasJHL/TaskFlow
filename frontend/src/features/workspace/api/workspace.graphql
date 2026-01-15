@@ -1,0 +1,51 @@
+query GetWorkspaceDetails($workspace_id: ID!) {
+  workspace(workspace_id: $workspace_id) {
+    workspace_id
+    name
+    description
+    color
+    
+    owner {
+      username
+    }
+    
+    members {
+      role
+      user {
+        user_id
+        username
+        picture
+      }
+    }
+
+    boards {
+      board_id
+      title
+      color
+      description
+    }
+  }
+}
+
+mutation CreateBoard($input: CreateBoardInput!) {
+  createBoard(input: $input) {
+    board_id
+    title
+    description
+    color
+    created_by {
+      username
+    }
+  }
+}
+
+mutation inviteMemberToWorkspace($workspace_id: ID!, $email: String!, $role: Role!) {
+  inviteMemberToWorkspace(workspace_id: $workspace_id, email: $email, role: $role) {
+    user {
+      user_id
+      username
+      picture
+    }
+    role
+  }
+}

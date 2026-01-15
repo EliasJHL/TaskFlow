@@ -111,6 +111,91 @@ export class UpdateMemberRoleInput {
     role: Role;
 }
 
+export abstract class ISubscription {
+    abstract boardEvent(board_id: string): BoardEventPayload | Promise<BoardEventPayload>;
+}
+
+export class ListCreatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    list: List;
+}
+
+export class ListDeletedEvent {
+    board_id: string;
+    actor_user_id: string;
+    list_id: string;
+}
+
+export class ListMovedEvent {
+    board_id: string;
+    actor_user_id: string;
+    list_id: string;
+    position: number;
+}
+
+export class CardCreatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    card: Card;
+}
+
+export class CardDeletedEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    list_id: string;
+}
+
+export class CardMovedEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    from_list_id: string;
+    to_list_id: string;
+    position: number;
+}
+
+export class LabelCreatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    label: Label;
+}
+
+export class LabelDeletedEvent {
+    board_id: string;
+    actor_user_id: string;
+    label_id: string;
+}
+
+export class LabelAddedToCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    label_id: string;
+}
+
+export class LabelRemovedFromCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    label_id: string;
+}
+
+export class AssigneeAddedToCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    user_id: string;
+}
+
+export class AssigneeRemovedFromCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    user_id: string;
+}
+
 export class Board {
     board_id: string;
     title: string;
@@ -142,7 +227,7 @@ export class Card {
     labels: Label[];
     comments: Comment[];
     attachments: Attachment[];
-    assignees: User[];
+    card_members: User[];
     checklists: Checklist[];
 }
 
@@ -181,7 +266,7 @@ export abstract class IQuery {
 
     abstract boards(workspace_id: string): Board[] | Promise<Board[]>;
 
-    abstract card(card_id: string): Nullable<Card> | Promise<Nullable<Card>>;
+    abstract card(card_id: string, workspace_id: string): Nullable<Card> | Promise<Nullable<Card>>;
 
     abstract users(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
 
@@ -328,6 +413,7 @@ export class PinWorkspacePayload {
 
 export type DateTime = any;
 export type Upload = any;
+export type BoardEventPayload = ListCreatedEvent | ListDeletedEvent | ListMovedEvent | CardCreatedEvent | CardDeletedEvent | CardMovedEvent | LabelCreatedEvent | LabelDeletedEvent | LabelAddedToCardEvent | LabelRemovedFromCardEvent | AssigneeAddedToCardEvent | AssigneeRemovedFromCardEvent;
 export type Status = Success | Error;
 export type AuthResult = AuthSuccess | AuthError;
 type Nullable<T> = T | null;

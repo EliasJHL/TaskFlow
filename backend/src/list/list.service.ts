@@ -29,6 +29,10 @@ export class ListService {
         });
     }
 
+    async findOne(list_id: string) {
+        return this.prisma.list.findUnique({ where: { list_id } });
+    }
+
     async update(list_id: string, input: UpdateListInput) {
         return this.prisma.list.update({
             where: { list_id },

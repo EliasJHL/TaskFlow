@@ -1,0 +1,89 @@
+
+query GetBoardFull($board_id: ID!) {
+  board(board_id: $board_id) {
+    board_id
+    title
+    color
+    description
+    workspace_id
+
+    labels {
+      label_id
+      name
+      color
+    }
+    
+    lists {
+      list_id
+      title
+      position
+      cards {
+        card_id
+        title
+        position
+        description
+        due_date
+        
+        labels {
+          label_id
+          name
+          color
+        }
+        
+        card_members {
+          user_id
+          username
+          picture
+        }
+      }
+    }
+    
+    members {
+      user {
+        user_id
+        username
+        picture
+      }
+    }
+  }
+}
+
+mutation CreateList($input: CreateListInput!) {
+  createList(input: $input) {
+    list_id
+    title
+    position
+  }
+}
+
+mutation CreateCard($input: CreateCardInput!) {
+  createCard(input: $input) {
+    card_id
+    title
+    position
+    list_id
+  }
+}
+
+mutation CreateLabel($input: CreateLabelInput!) {
+  createLabel(input: $input) {
+    label_id
+    name
+    color
+  }
+}
+
+mutation MoveList($list_id: ID!, $new_position: Int!) {
+  moveList(list_id: $list_id, new_position: $new_position) {
+    list_id
+    position
+  }
+}
+
+mutation MoveCard($card_id: ID!, $list_id: ID!, $new_position: Int!) {
+  moveCard(card_id: $card_id, list_id: $list_id, new_position: $new_position) {
+    card_id
+    list_id
+    position
+  }
+}

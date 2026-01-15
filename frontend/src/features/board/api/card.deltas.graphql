@@ -1,0 +1,52 @@
+
+type Subscription {
+  cardEvent(card_id: ID!, workspace_id: ID!): CardEventPayload!
+}
+
+union CardEventPayload =
+    CardUpdatedEvent
+  | CardLabelAddedEvent
+  | CardLabelRemovedEvent
+  | CardAssigneeAddedEvent
+  | CardAssigneeRemovedEvent
+
+type CardUpdatedEvent {
+  card_id: ID!
+  workspace_id: ID!
+  actor_user_id: ID!
+  changes: CardChanges!
+}
+
+type CardChanges {
+  title: String
+  description: String
+  due_date: DateTime
+}
+
+type CardLabelAddedEvent {
+  card_id: ID!
+  workspace_id: ID!
+  actor_user_id: ID!
+  label_id: ID!
+}
+
+type CardLabelRemovedEvent {
+  card_id: ID!
+  workspace_id: ID!
+  actor_user_id: ID!
+  label_id: ID!
+}
+
+type CardAssigneeAddedEvent {
+  card_id: ID!
+  workspace_id: ID!
+  actor_user_id: ID!
+  user_id: ID!
+}
+
+type CardAssigneeRemovedEvent {
+  card_id: ID!
+  workspace_id: ID!
+  actor_user_id: ID!
+  user_id: ID!
+}

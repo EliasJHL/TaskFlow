@@ -1,0 +1,175 @@
+type Subscription {
+  boardEvent(board_id: ID!): BoardEventPayload!
+}
+
+union BoardEventPayload =
+    ListCreatedEvent
+  | ListDeletedEvent
+  | ListMovedEvent
+  | CardCreatedEvent
+  | CardDeletedEvent
+  | CardMovedEvent
+  | LabelCreatedEvent
+  | LabelDeletedEvent
+  | LabelRemovedFromCardEvent
+  | LabelAddedToCardEvent
+  | AssigneeAddedToCardEvent
+  | AssigneeRemovedFromCardEvent
+
+type ListCreatedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  list: List!
+}
+
+type ListDeletedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  list_id: ID!
+}
+
+type ListMovedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  list_id: ID!
+  position: Int!
+}
+
+type CardCreatedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card: Card!
+}
+
+type CardDeletedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  list_id: ID!
+}
+
+type CardMovedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  from_list_id: ID!
+  to_list_id: ID!
+  position: Int!
+}
+
+type LabelCreatedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  label: Label!
+}
+
+type LabelDeletedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  label_id: ID!
+}
+
+type LabelRemovedFromCardEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  label_id: ID!
+}
+
+type LabelAddedToCardEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  label_id: ID!
+}
+
+type AssigneeAddedToCardEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  user_id: ID!
+}
+
+type AssigneeRemovedFromCardEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  card_id: ID!
+  user_id: ID!
+}
+
+subscription BoardEvent($board_id: ID!) {
+  boardEvent(board_id: $board_id) {
+    __typename
+
+    ... on ListCreatedEvent {
+      board_id
+      actor_user_id
+      list { list_id title position color board_id }
+    }
+    ... on ListDeletedEvent {
+      board_id
+      actor_user_id
+      list_id
+    }
+    ... on ListMovedEvent {
+      board_id
+      actor_user_id
+      list_id
+      position
+    }
+
+    ... on CardCreatedEvent {
+      board_id
+      actor_user_id
+      card { card_id title position list_id description due_date }
+    }
+    ... on CardDeletedEvent {
+      board_id
+      actor_user_id
+      card_id
+      list_id
+    }
+    ... on CardMovedEvent {
+      board_id
+      actor_user_id
+      card_id
+      from_list_id
+      to_list_id
+      position
+    }
+    ... on LabelCreatedEvent {
+      board_id
+      actor_user_id
+      label { label_id name color board_id }
+    }
+    ... on LabelDeletedEvent {
+      board_id
+      actor_user_id
+      label_id
+    }
+    ... on LabelRemovedFromCardEvent {
+      board_id
+      actor_user_id
+      card_id
+      label_id
+    }
+    ... on LabelAddedToCardEvent {
+      board_id
+      actor_user_id
+      card_id
+      label_id
+    }
+    ... on AssigneeAddedToCardEvent {
+      board_id
+      actor_user_id
+      card_id
+      user_id
+    }
+    ... on AssigneeRemovedFromCardEvent {
+      board_id
+      actor_user_id
+      card_id
+      user_id
+    }
+  }
+}

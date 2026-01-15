@@ -11,6 +11,7 @@ import {
     Args,
     ResolveField,
     Parent,
+    Context,
 } from '@nestjs/graphql';
 import { ListService } from './list.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -28,8 +29,36 @@ export class ListResolver {
     // --- MUTATIONS ---
     @Mutation('createList')
     @UseGuards(AuthGuard)
-    async createList(@Args('input') input: CreateListInput) {
-        return this.listService.create(input);
+    async createList(
+        @Args('input') input: CreateListInput,
+        @Context() ctx: any,
+        @Context('pubsub') pubsub: any,
+    ) {
+        const list = await this.listService.create(input);
+
+        const boardId = input.board_id;
+        const actorUserId = ctx.req?.user?.user_id ?? ctx.userId ?? 'unknown';
+
+        if (!list || '__typename' in list || !list.board_id) {
+            throw new Error('LIST_INVALID');
+        }
+
+        try {
+            await pubsub.publish({
+                topic: 'BOARD_EVENT',
+                payload: {
+                    boardEvent: {
+                        __typename: 'ListCreatedEvent',
+                        board_id: boardId,
+                        actor_user_id: actorUserId,
+                        list,
+                    },
+                },
+            });
+        } catch (e) {
+            console.error('[PUBSUB] publish failed', e);
+        }
+        return list;
     }
 
     @Mutation('updateList')
@@ -37,14 +66,70 @@ export class ListResolver {
     async updateList(
         @Args('list_id') list_id: string,
         @Args('input') input: UpdateListInput,
+        @Context() ctx: any,
+        @Context('pubsub') pubsub: any,
     ) {
-        return this.listService.update(list_id, input);
+        const list = await this.listService.update(list_id, input);
+
+        const boardId = await this.listService
+            .findOne(list_id)
+            .then((l) => l?.board_id);
+        const actorUserId = ctx.req?.user?.user_id ?? ctx.userId;
+
+        if (!list || '__typename' in list || !boardId) {
+            throw new Error('LIST_INVALID');
+        }
+
+        try {
+            await pubsub.publish({
+                topic: 'BOARD_EVENT',
+                payload: {
+                    boardEvent: {
+                        __typename: 'ListUpdatedEvent',
+                        board_id: boardId,
+                        actor_user_id: actorUserId,
+                        list,
+                    },
+                },
+            });
+        } catch (e) {
+            console.error('[PUBSUB] publish failed', e);
+        }
+        return list;
     }
 
     @Mutation('deleteList')
     @UseGuards(AuthGuard)
-    async deleteList(@Args('list_id') list_id: string) {
-        return this.listService.delete(list_id);
+    async deleteList(
+        @Args('list_id') list_id: string,
+        @Context() ctx: any,
+        @Context('pubsub') pubsub: any,
+    ) {
+        const res = await this.listService.delete(list_id);
+
+        const board_id = await this.listService
+            .findOne(list_id)
+            .then((l) => l?.board_id);
+        const actorUserId = ctx.req?.user?.user_id ?? ctx.userId;
+
+        if (res.__typename === 'Error') return res;
+        
+        try {
+            await pubsub.publish({
+                topic: 'BOARD_EVENT',
+                payload: {
+                    boardEvent: {
+                        __typename: 'ListDeletedEvent',
+                        board_id: board_id,
+                        actor_user_id: actorUserId,
+                        list_id,
+                    },
+                },
+            });
+        } catch (e) {
+            console.error('[PUBSUB] publish failed', e);
+        }
+        return res;
     }
 
     @Mutation('moveList')

@@ -1,7 +1,17 @@
+/*
+** EPITECH PROJECT, 2025
+** TaskFlow
+** File description:
+** workspace.service
+*/
+
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateWorkspaceInput, UpdateWorkspaceInput } from '../graphql/graphql';
 import { Role } from '@prisma/client';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY!);
 
 @Injectable()
 export class WorkspaceService {
@@ -97,6 +107,35 @@ export class WorkspaceService {
                 color: input.color ?? undefined,
             },
         });
+    }
+
+    async addMemberToWorkspace(
+        workspace_id: string,
+        user_email: string,
+        role: Role,
+    ) {
+        const user = await this.prisma.user.findUniqueOrThrow({
+            where: { email: user_email },
+        });
+
+        const res = await this.prisma.workspaceMembers.create({
+            data: {
+                workspace_id,
+                user_id: user.user_id,
+                role,
+            },
+            include: {
+                user: true
+            }
+        });
+
+        await resend.emails.send({
+            from: 'Acme <onboarding@resend.dev>',
+            to: [user_email],
+            subject: 'TaskFlow Workspace Invitation',
+            html: `<p>Welcome ${user_email} to TaskFlow!</p>`,
+        });
+        return res;
     }
 
     async delete(workspaceId: string, userId: string) {
