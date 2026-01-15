@@ -1,4 +1,5 @@
-import { RefObject, useEffect, useId, useState } from "react"
+import { useEffect, useId, useState } from "react"
+import type { FC, RefObject } from "react"
 import { motion } from "motion/react"
 
 import { cn } from "@/lib/utils"
@@ -23,7 +24,7 @@ export interface AnimatedBeamProps {
   endYOffset?: number
 }
 
-export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
+export const AnimatedBeam: FC<AnimatedBeamProps> = ({
   className,
   containerRef,
   fromRef,

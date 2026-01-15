@@ -6,7 +6,7 @@
  */
 
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutGrid, Settings, LogOut, Plus } from 'lucide-react';
+import { LayoutGrid, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
 import { cn } from '@/lib/utils';

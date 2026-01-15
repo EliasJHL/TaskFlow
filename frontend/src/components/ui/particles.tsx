@@ -1,9 +1,5 @@
-import React, {
-  ComponentPropsWithoutRef,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
+import { useEffect, useRef, useState } from "react"
+import type { ComponentPropsWithoutRef, FC } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -75,7 +71,7 @@ type Circle = {
   magnetism: number
 }
 
-export const Particles: React.FC<ParticlesProps> = ({
+export const Particles: FC<ParticlesProps> = ({
   className = "",
   quantity = 100,
   staticity = 50,
@@ -96,7 +92,7 @@ export const Particles: React.FC<ParticlesProps> = ({
   const canvasSize = useRef<{ w: number; h: number }>({ w: 0, h: 0 })
   const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1
   const rafID = useRef<number | null>(null)
-  const resizeTimeout = useRef<NodeJS.Timeout | null>(null)
+  const resizeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (canvasRef.current) {

@@ -12,6 +12,8 @@ import { RegisterForm } from '../features/auth/components/RegisterForm';
 export const RegisterPage = () => {
   const { t } = useTranslation();
 
+  if (!t) return null;
+
   return (
     <AuthLayout
       title="Créer un compte"

@@ -18,6 +18,8 @@ export const RegisterForm = () => {
   const { t } = useTranslation();
   const { register: registerUser, isLoading: loading } = useRegister();
   
+  if (!t) return null;
+
   return (
     <div>
       <form onSubmit={handleSubmit(registerUser)} className="grid gap-4">
