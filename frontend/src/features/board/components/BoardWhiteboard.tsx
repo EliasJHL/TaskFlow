@@ -84,9 +84,11 @@ export const BoardWhiteboard = ({ boardId, initialData }: BoardWhiteboardProps) 
     }
   }, [initialData]);
 
+  const licenseKey = import.meta.env.VITE_TLDRAW_LICENSE_KEY;
+
   return (
     <div className="absolute inset-0">
-      <Tldraw onMount={handleMount} />
+      <Tldraw onMount={handleMount} licenseKey={licenseKey} />
     </div>
   );
 };
