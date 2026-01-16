@@ -5,6 +5,36 @@
     "create_account": "Crear cuenta",
     "join_discord": "Unirse a Discord"
   },
+  "header": {
+    "features": "Funciones",
+    "pricing": "Precios",
+    "docs": "Docs",
+    "login": "Iniciar sesión",
+    "start": "Empezar",
+    "my_space": "Mi espacio",
+    "github_star": "Star en GitHub"
+  },
+  "auth": {
+    "login_title": "Iniciar sesión",
+    "login_subtitle": "Introduce tus credenciales para acceder a tu espacio.",
+    "login_link_text": "¿Aún no tienes cuenta?",
+    "login_link_label": "Crear una cuenta",
+    "github_login": "Continuar con GitHub",
+    "github_register": "Registrarse con GitHub",
+    "or_email": "O con email",
+    "email": "Email",
+    "email_placeholder": "name@example.com",
+    "password": "Contraseña",
+    "username": "Nombre de usuario",
+    "username_placeholder": "johndoe",
+    "login_with_email": "Iniciar sesión con Email",
+    "login_loading": "Iniciando sesión...",
+    "register_title": "Crear una cuenta",
+    "register_subtitle": "Únete a TaskFlow y empieza a gestionar tus proyectos.",
+    "register_link_text": "¿Ya tienes cuenta?",
+    "register_link_label": "Iniciar sesión",
+    "register_submit": "Crear mi cuenta"
+  },
   "home": {
     "hero": {
       "badge": "v1.0 Lanzamiento Beta Público",

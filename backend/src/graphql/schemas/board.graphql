@@ -2,6 +2,11 @@ type Subscription {
     boardEvent(board_id: ID!): BoardEventPayload!
 }
 
+enum BoardType {
+    KANBAN
+    WHITEBOARD
+}
+
 union BoardEventPayload =
     | ListCreatedEvent
     | ListDeletedEvent
@@ -15,6 +20,7 @@ union BoardEventPayload =
     | LabelRemovedFromCardEvent
     | AssigneeAddedToCardEvent
     | AssigneeRemovedFromCardEvent
+    | WhiteboardUpdatedEvent
 
 type ListCreatedEvent {
     board_id: ID!
@@ -97,6 +103,12 @@ type AssigneeRemovedFromCardEvent {
     user_id: ID!
 }
 
+type WhiteboardUpdatedEvent {
+    board_id: ID!
+    actor_user_id: ID!
+    whiteboard_data: String!
+}
+
 # --- TYPES ---
 type Board {
     board_id: ID!
@@ -104,6 +116,8 @@ type Board {
     description: String
     color: String!
     workspace_id: ID!
+    type: BoardType!
+    whiteboard_data: String
     created_by: User!
 
     lists: [List!]!
@@ -171,12 +185,15 @@ input CreateBoardInput {
     description: String
     color: String!
     workspace_id: ID!
+    type: BoardType!
+    whiteboard_data: String
 }
 
 input UpdateBoardInput {
     title: String
     description: String
     color: String
+    whiteboard_data: String
 }
 
 input CreateListInput {

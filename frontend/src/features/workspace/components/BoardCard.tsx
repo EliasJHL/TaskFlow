@@ -8,15 +8,20 @@
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
+import { BoardType } from "@/graphql/generated";
 
 interface BoardCardProps {
   board_id: string;
   title: string;
   color: string;
   description?: string | null;
+  type: BoardType;
 }
 
-export const BoardCard = ({ board_id, title, color, description }: BoardCardProps) => {
+const getBoardTypeLabel = (type: BoardType) =>
+  type === BoardType.Whiteboard ? "Whiteboard" : "Kanban";
+
+export const BoardCard = ({ board_id, title, color, description, type }: BoardCardProps) => {
   return (
     <Link to={`/app/board/${board_id}`} className="group block h-full">
       <div className={cn(
@@ -43,7 +48,7 @@ export const BoardCard = ({ board_id, title, color, description }: BoardCardProp
 
           <div className="flex items-center justify-between mt-auto">
              <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
-                Kanban
+                {getBoardTypeLabel(type)}
              </div>
              <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
           </div>

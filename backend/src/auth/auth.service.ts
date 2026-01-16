@@ -10,6 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterInput, LoginInput } from '../graphql/graphql';
+import { randomUUID } from 'crypto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -128,5 +129,75 @@ export class AuthService {
                 code: 'REGISTRATION_FAILED',
             };
         }
+    }
+
+    async loginWithGithub(params: {
+        githubId: string;
+        email: string;
+        username: string;
+        avatarUrl?: string | null;
+    }) {
+        const { githubId, email, username, avatarUrl } = params;
+
+        const existingByGithub = await this.prisma.user.findUnique({
+            where: { github_id: githubId },
+        });
+        if (existingByGithub) {
+            const token = this.jwtService.sign({
+                sub: existingByGithub.user_id,
+                email: existingByGithub.email,
+            });
+            return { user: existingByGithub, token };
+        }
+
+        const existingByEmail = await this.prisma.user.findUnique({
+            where: { email },
+        });
+
+        if (existingByEmail) {
+            const updated = await this.prisma.user.update({
+                where: { user_id: existingByEmail.user_id },
+                data: {
+                    github_id: githubId,
+                    github_username: username,
+                    picture: avatarUrl ?? undefined,
+                },
+            });
+            const token = this.jwtService.sign({
+                sub: updated.user_id,
+                email: updated.email,
+            });
+            return { user: updated, token };
+        }
+
+        let finalUsername = username;
+        let suffix = 0;
+        while (true) {
+            const exists = await this.prisma.user.findUnique({
+                where: { username: finalUsername },
+            });
+            if (!exists) break;
+            suffix += 1;
+            finalUsername = `${username}${suffix}`;
+        }
+
+        const hashedPassword = await bcrypt.hash(randomUUID(), 10);
+
+        const created = await this.prisma.user.create({
+            data: {
+                username: finalUsername,
+                email,
+                hashed_password: hashedPassword,
+                github_id: githubId,
+                github_username: username,
+                picture: avatarUrl ?? undefined,
+            },
+        });
+
+        const token = this.jwtService.sign({
+            sub: created.user_id,
+            email: created.email,
+        });
+        return { user: created, token };
     }
 }

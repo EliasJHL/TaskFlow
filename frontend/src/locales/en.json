@@ -5,6 +5,36 @@
     "create_account": "Create account",
     "join_discord": "Join Discord"
   },
+  "header": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "docs": "Docs",
+    "login": "Login",
+    "start": "Get started",
+    "my_space": "My space",
+    "github_star": "Star on GitHub"
+  },
+  "auth": {
+    "login_title": "Login",
+    "login_subtitle": "Enter your credentials to access your space.",
+    "login_link_text": "No account yet?",
+    "login_link_label": "Create an account",
+    "github_login": "Continue with GitHub",
+    "github_register": "Sign up with GitHub",
+    "or_email": "Or with email",
+    "email": "Email",
+    "email_placeholder": "name@example.com",
+    "password": "Password",
+    "username": "Username",
+    "username_placeholder": "johndoe",
+    "login_with_email": "Sign in with Email",
+    "login_loading": "Signing in...",
+    "register_title": "Create an account",
+    "register_subtitle": "Join TaskFlow and start managing your projects.",
+    "register_link_text": "Already have an account?",
+    "register_link_label": "Sign in",
+    "register_submit": "Create my account"
+  },
   "home": {
     "hero": {
       "badge": "v1.0 Public Beta Launch",

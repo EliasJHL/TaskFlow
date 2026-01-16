@@ -20,6 +20,11 @@ enum Role {
   Viewer
 }
 
+enum BoardType {
+  KANBAN
+  WHITEBOARD
+}
+
 model User {
   user_id    String   @id @default(uuid())
   username   String   @unique
@@ -28,6 +33,8 @@ model User {
   created_at DateTime @default(now())
 
   hashed_password String
+  github_id       String? @unique
+  github_username String?
 
   workspaces        WorkspaceMembers[]
   workspacesOwned   Workspace[]
@@ -80,6 +87,8 @@ model Board {
   description  String?
   color        String
   workspace_id String
+  type         BoardType @default(KANBAN)
+  whiteboard_data String? @db.Text
 
   workspace Workspace @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade)
   lists     List[]

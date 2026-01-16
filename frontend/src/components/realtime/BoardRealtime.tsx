@@ -245,6 +245,14 @@ export function BoardRealtime({ boardId }: { boardId: string }) {
             return { ...prev, board: { ...board, lists } };
           }
 
+          if (ev.__typename === 'WhiteboardUpdatedEvent') {
+            if (board.whiteboard_data === ev.whiteboard_data) return prev;
+            return {
+              ...prev,
+              board: { ...board, whiteboard_data: ev.whiteboard_data },
+            };
+          }
+
           return prev;
         },
       );

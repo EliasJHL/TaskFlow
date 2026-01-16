@@ -23,6 +23,7 @@ query GetWorkspaceDetails($workspace_id: ID!) {
       title
       color
       description
+      type
     }
   }
 }
@@ -33,6 +34,7 @@ mutation CreateBoard($input: CreateBoardInput!) {
     title
     description
     color
+    type
     created_by {
       username
     }

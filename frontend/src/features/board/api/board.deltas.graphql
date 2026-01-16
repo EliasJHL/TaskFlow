@@ -15,6 +15,7 @@ union BoardEventPayload =
   | LabelAddedToCardEvent
   | AssigneeAddedToCardEvent
   | AssigneeRemovedFromCardEvent
+  | WhiteboardUpdatedEvent
 
 type ListCreatedEvent {
   board_id: ID!
@@ -97,6 +98,12 @@ type AssigneeRemovedFromCardEvent {
   user_id: ID!
 }
 
+type WhiteboardUpdatedEvent {
+  board_id: ID!
+  actor_user_id: ID!
+  whiteboard_data: String!
+}
+
 subscription BoardEvent($board_id: ID!) {
   boardEvent(board_id: $board_id) {
     __typename
@@ -170,6 +177,11 @@ subscription BoardEvent($board_id: ID!) {
       actor_user_id
       card_id
       user_id
+    }
+    ... on WhiteboardUpdatedEvent {
+      board_id
+      actor_user_id
+      whiteboard_data
     }
   }
 }

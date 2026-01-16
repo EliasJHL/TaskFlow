@@ -14,6 +14,7 @@ import { AuthResultResolver } from './auth.resolver';
 import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { ConfigService } from '@nestjs/config/dist/config.service';
 import { WsAuthService } from 'src/ws-auth/ws-auth.service';
+import { GithubAuthController } from './github-auth.controller';
 
 @Module({
     imports: [
@@ -30,7 +31,14 @@ import { WsAuthService } from 'src/ws-auth/ws-auth.service';
             }),
         }),
     ],
-    providers: [AuthService, PrismaService, AuthResolver, AuthResultResolver, WsAuthService],
+    providers: [
+        AuthService,
+        PrismaService,
+        AuthResolver,
+        AuthResultResolver,
+        WsAuthService,
+    ],
+    controllers: [GithubAuthController],
     exports: [AuthService, WsAuthService],
 })
 export class AuthModule {}

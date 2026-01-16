@@ -13,10 +13,12 @@ import { cn } from '@/lib/utils';
 import { Avatar } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
 import { getAvatarUrl } from '@/components/shared/getAvatarUrl';
+import { useLogout } from '@/features/auth/hooks/useLogout';
 
 export const DashboardLayout = () => {
   const location = useLocation();
   const { user } = useAuth();
+  const { logout, isLoading: isLoggingOut } = useLogout();
 
   if (!user) return null;
 
@@ -72,6 +74,8 @@ export const DashboardLayout = () => {
             variant="outline"
             className="w-full justify-start text-muted-foreground"
             size="sm"
+            onClick={logout}
+            disabled={isLoggingOut}
           >
             <LogOut className="w-4 h-4 mr-2" /> Déconnexion
           </Button>

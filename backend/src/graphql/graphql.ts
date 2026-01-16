@@ -8,6 +8,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export enum BoardType {
+    KANBAN = "KANBAN",
+    WHITEBOARD = "WHITEBOARD"
+}
+
 export enum Role {
     Admin = "Admin",
     Member = "Member",
@@ -19,12 +24,15 @@ export class CreateBoardInput {
     description?: Nullable<string>;
     color: string;
     workspace_id: string;
+    type: BoardType;
+    whiteboard_data?: Nullable<string>;
 }
 
 export class UpdateBoardInput {
     title?: Nullable<string>;
     description?: Nullable<string>;
     color?: Nullable<string>;
+    whiteboard_data?: Nullable<string>;
 }
 
 export class CreateListInput {
@@ -196,12 +204,20 @@ export class AssigneeRemovedFromCardEvent {
     user_id: string;
 }
 
+export class WhiteboardUpdatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    whiteboard_data: string;
+}
+
 export class Board {
     board_id: string;
     title: string;
     description?: Nullable<string>;
     color: string;
     workspace_id: string;
+    type: BoardType;
+    whiteboard_data?: Nullable<string>;
     created_by: User;
     lists: List[];
     members: WorkspaceMembers[];
@@ -413,7 +429,7 @@ export class PinWorkspacePayload {
 
 export type DateTime = any;
 export type Upload = any;
-export type BoardEventPayload = ListCreatedEvent | ListDeletedEvent | ListMovedEvent | CardCreatedEvent | CardDeletedEvent | CardMovedEvent | LabelCreatedEvent | LabelDeletedEvent | LabelAddedToCardEvent | LabelRemovedFromCardEvent | AssigneeAddedToCardEvent | AssigneeRemovedFromCardEvent;
+export type BoardEventPayload = ListCreatedEvent | ListDeletedEvent | ListMovedEvent | CardCreatedEvent | CardDeletedEvent | CardMovedEvent | LabelCreatedEvent | LabelDeletedEvent | LabelAddedToCardEvent | LabelRemovedFromCardEvent | AssigneeAddedToCardEvent | AssigneeRemovedFromCardEvent | WhiteboardUpdatedEvent;
 export type Status = Success | Error;
 export type AuthResult = AuthSuccess | AuthError;
 type Nullable<T> = T | null;

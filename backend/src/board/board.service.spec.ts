@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BoardService } from './board.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { BoardType } from '../graphql/graphql';
 
 describe('BoardService', () => {
     let service: BoardService;
@@ -37,6 +38,7 @@ describe('BoardService', () => {
                 description: 'Desc',
                 color: '#fff',
                 workspace_id: 'ws-123',
+                type: BoardType.KANBAN,
             };
 
             mockPrismaService.board.create.mockResolvedValue({
@@ -51,6 +53,7 @@ describe('BoardService', () => {
             expect(prisma.board.create).toHaveBeenCalledWith({
                 data: {
                     ...input,
+                    whiteboard_data: undefined,
                     creator_id: userId,
                 },
             });

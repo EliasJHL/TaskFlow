@@ -183,6 +183,7 @@ export const WorkspacePage = () => {
                     title={board.title}
                     color={board.color}
                     description={board.description}
+                    type={board.type}
                   />
                 ))}
               </div>

@@ -67,8 +67,29 @@ export class BoardResolver {
     async updateBoard(
         @Args('board_id') id: string,
         @Args('input') input: UpdateBoardInput,
+        @Context() ctx: any,
+        @Context('pubsub') pubsub: any,
     ) {
-        return this.boardService.update(id, input);
+        const updated = await this.boardService.update(id, input);
+        if (typeof input.whiteboard_data === 'string') {
+            const actorUserId = ctx.req?.user?.user_id ?? ctx.userId;
+            try {
+                await pubsub.publish({
+                    topic: 'BOARD_EVENT',
+                    payload: {
+                        boardEvent: {
+                            __typename: 'WhiteboardUpdatedEvent',
+                            board_id: id,
+                            actor_user_id: actorUserId,
+                            whiteboard_data: input.whiteboard_data,
+                        },
+                    },
+                });
+            } catch (e) {
+                console.error('[PUBSUB] publish failed', e);
+            }
+        }
+        return updated;
     }
 
     @Mutation('deleteBoard')

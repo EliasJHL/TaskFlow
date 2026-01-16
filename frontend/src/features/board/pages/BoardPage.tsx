@@ -31,11 +31,12 @@ import { KanbanCard } from '../components//KanbanCard';
 import { CreateListForm } from '../components//CreateListForm';
 import { CreateLabelDialog } from '../components/CreateLabelDialog';
 import { CardDialog } from '../components/CardDialog';
-import { GetBoardFullDocument } from '@/graphql/generated';
+import { BoardType, GetBoardFullDocument } from '@/graphql/generated';
 import { useBoardDragAndDrop } from '../hooks/useBoardDragAndDrop';
 import { useState } from 'react';
 
 import { BoardRealtime } from '@/components/realtime/BoardRealtime';
+import { BoardWhiteboard } from '../components/BoardWhiteboard';
 
 export const BoardPage = () => {
   const { boardId } = useParams<{ boardId: string }>();
@@ -50,6 +51,7 @@ export const BoardPage = () => {
   const board = data?.board;
 
   const dnd = useBoardDragAndDrop(board?.lists || [], boardId!);
+  const isWhiteboard = board?.type === BoardType.Whiteboard;
 
   if (loading && !board)
     return (
@@ -63,12 +65,14 @@ export const BoardPage = () => {
   return (
     <div className="flex h-screen flex-col bg-background relative overflow-hidden">
       {boardId && <BoardRealtime boardId={board.board_id} />}
-      <DotPattern
-        className={cn(
-          '[mask-image:radial-gradient(white,transparent)]',
-          'opacity-30',
-        )}
-      />
+      {!isWhiteboard && (
+        <DotPattern
+          className={cn(
+            '[mask-image:radial-gradient(white,transparent)]',
+            'opacity-30',
+          )}
+        />
+      )}
 
       {/* HEADER */}
       <header className="z-10 flex h-14 shrink-0 items-center justify-between border-b border-border/60 bg-background/60 px-4 backdrop-blur-md">
@@ -111,60 +115,68 @@ export const BoardPage = () => {
         </div>
       </header>
 
-      {/* DRAG AND DROP CONTEXT */}
-      <DndContext
-        sensors={dnd.sensors}
-        collisionDetection={dnd.collisionDetection}
-        onDragStart={dnd.onDragStart}
-        onDragOver={dnd.onDragOver}
-        onDragEnd={dnd.onDragEnd}
-      >
-        <main className="relative z-0 flex-1 overflow-x-auto overflow-y-hidden">
-          <div className="flex h-full items-start gap-4 p-6">
-            <SortableContext
-              items={dnd.listIds}
-              strategy={horizontalListSortingStrategy}
-            >
-              {dnd.lists.map((list) => (
-                <BoardList
-                  key={list.list_id}
-                  list={list}
-                  boardId={board.board_id}
-                  onCardClick={setSelectedCardId}
-                />
-              ))}
-            </SortableContext>
-            <CreateListForm boardId={board.board_id} />
-          </div>
+      {isWhiteboard ? (
+        <main className="relative z-0 flex-1 overflow-hidden">
+          <BoardWhiteboard
+            boardId={board.board_id}
+            initialData={board.whiteboard_data}
+          />
         </main>
-
-        {/* GHOST OVERLAY */}
-        {createPortal(
-          <DragOverlay
-            dropAnimation={{
-              sideEffects: defaultDropAnimationSideEffects({
-                styles: { active: { opacity: '0.5' } },
-              }),
-            }}
+      ) : (
+        <>
+          <DndContext
+            sensors={dnd.sensors}
+            collisionDetection={dnd.collisionDetection}
+            onDragStart={dnd.onDragStart}
+            onDragOver={dnd.onDragOver}
+            onDragEnd={dnd.onDragEnd}
           >
-            {dnd.activeColumn && (
-              <BoardList list={dnd.activeColumn} boardId={board.board_id} />
-            )}
-            {dnd.activeCard && <KanbanCard {...dnd.activeCard} />}
-          </DragOverlay>,
-          document.body,
-        )}
-      </DndContext>
+            <main className="relative z-0 flex-1 overflow-x-auto overflow-y-hidden">
+              <div className="flex h-full items-start gap-4 p-6">
+                <SortableContext
+                  items={dnd.listIds}
+                  strategy={horizontalListSortingStrategy}
+                >
+                  {dnd.lists.map((list) => (
+                    <BoardList
+                      key={list.list_id}
+                      list={list}
+                      boardId={board.board_id}
+                      onCardClick={setSelectedCardId}
+                    />
+                  ))}
+                </SortableContext>
+                <CreateListForm boardId={board.board_id} />
+              </div>
+            </main>
 
-      {/* CARD MODAL */}
-      <CardDialog
-        isOpen={!!selectedCardId}
-        onClose={() => setSelectedCardId(null)}
-        cardId={selectedCardId}
-        boardLabels={board.labels}
-        boardMembers={board.members}
-        workspaceId={board.workspace_id}
-      />
+            {createPortal(
+              <DragOverlay
+                dropAnimation={{
+                  sideEffects: defaultDropAnimationSideEffects({
+                    styles: { active: { opacity: '0.5' } },
+                  }),
+                }}
+              >
+                {dnd.activeColumn && (
+                  <BoardList list={dnd.activeColumn} boardId={board.board_id} />
+                )}
+                {dnd.activeCard && <KanbanCard {...dnd.activeCard} />}
+              </DragOverlay>,
+              document.body,
+            )}
+          </DndContext>
+
+          <CardDialog
+            isOpen={!!selectedCardId}
+            onClose={() => setSelectedCardId(null)}
+            cardId={selectedCardId}
+            boardLabels={board.labels}
+            boardMembers={board.members}
+            workspaceId={board.workspace_id}
+          />
+        </>
+      )}
     </div>
   );
 };

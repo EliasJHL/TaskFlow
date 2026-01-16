@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { CreateBoardDocument, GetWorkspaceDetailsDocument } from "@/graphql/generated";
+import { BoardType, CreateBoardDocument, GetWorkspaceDetailsDocument } from "@/graphql/generated";
 import { 
   Dialog, 
   DialogContent, 
@@ -40,6 +40,7 @@ export const CreateBoardDialog = ({ workspaceId }: CreateBoardDialogProps) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedColor, setSelectedColor] = useState(BOARD_COLORS[0]);
+  const [boardType, setBoardType] = useState<BoardType>(BoardType.Kanban);
 
   const [createBoard, { loading }] = useMutation(CreateBoardDocument, {
     refetchQueries: [{ 
@@ -60,6 +61,7 @@ export const CreateBoardDialog = ({ workspaceId }: CreateBoardDialogProps) => {
     setTitle("");
     setDescription("");
     setSelectedColor(BOARD_COLORS[0]);
+    setBoardType(BoardType.Kanban);
   };
 
   const handleSubmit = () => {
@@ -70,29 +72,64 @@ export const CreateBoardDialog = ({ workspaceId }: CreateBoardDialogProps) => {
           title,
           description,
           color: selectedColor,
-          workspace_id: workspaceId
+          workspace_id: workspaceId,
+          type: boardType
         }
       }
     });
   };
 
+  const isWhiteboard = boardType === BoardType.Whiteboard;
+  const boardTypeLabel = isWhiteboard ? "whiteboard" : "tableau";
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-primary text-primary-foreground shadow-lg shadow-primary/20 gap-2">
-            <Plus className="w-4 h-4" /> Nouveau Board
+            <Plus className="w-4 h-4" /> Nouveau
         </Button>
       </DialogTrigger>
       
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Créer un nouveau tableau</DialogTitle>
+          <DialogTitle>Créer un nouveau {boardTypeLabel}</DialogTitle>
         </DialogHeader>
         
         <div className="grid gap-6 py-4">
+          <div className="grid gap-3">
+            <Label>Type</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setBoardType(BoardType.Kanban)}
+                className={cn(
+                  "rounded-lg border p-3 text-left transition-all",
+                  boardType === BoardType.Kanban
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-primary/50"
+                )}
+              >
+                <div className="text-sm font-semibold">Tableau Kanban</div>
+                <div className="text-xs text-muted-foreground">Listes et cartes</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setBoardType(BoardType.Whiteboard)}
+                className={cn(
+                  "rounded-lg border p-3 text-left transition-all",
+                  boardType === BoardType.Whiteboard
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-primary/50"
+                )}
+              >
+                <div className="text-sm font-semibold">Whiteboard</div>
+                <div className="text-xs text-muted-foreground">Canvas libre</div>
+              </button>
+            </div>
+          </div>
           
           <div className="grid gap-2">
-            <Label htmlFor="title">Titre du tableau</Label>
+            <Label htmlFor="title">Titre</Label>
             <Input
               id="title"
               placeholder="Ex: Roadmap 2025"
@@ -141,7 +178,7 @@ export const CreateBoardDialog = ({ workspaceId }: CreateBoardDialogProps) => {
             <Button variant="outline" onClick={() => setOpen(false)}>Annuler</Button>
             <Button onClick={handleSubmit} disabled={loading || !title} className="bg-primary">
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Créer le tableau
+                Créer le {boardTypeLabel}
             </Button>
         </DialogFooter>
       </DialogContent>

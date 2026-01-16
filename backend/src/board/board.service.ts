@@ -20,6 +20,8 @@ export class BoardService {
                 description: input.description,
                 color: input.color,
                 workspace_id: input.workspace_id,
+                type: input.type,
+                whiteboard_data: input.whiteboard_data ?? undefined,
                 creator_id: userId,
             },
         });
@@ -45,6 +47,7 @@ export class BoardService {
                 title: input.title ?? undefined,
                 description: input.description ?? undefined,
                 color: input.color ?? undefined,
+                whiteboard_data: input.whiteboard_data ?? undefined,
             },
         });
     }

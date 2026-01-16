@@ -6,6 +6,8 @@ query GetBoardFull($board_id: ID!) {
     color
     description
     workspace_id
+    type
+    whiteboard_data
 
     labels {
       label_id
@@ -45,6 +47,17 @@ query GetBoardFull($board_id: ID!) {
         picture
       }
     }
+  }
+}
+
+mutation UpdateBoard($board_id: ID!, $input: UpdateBoardInput!) {
+  updateBoard(board_id: $board_id, input: $input) {
+    board_id
+    whiteboard_data
+    title
+    description
+    color
+    type
   }
 }
 

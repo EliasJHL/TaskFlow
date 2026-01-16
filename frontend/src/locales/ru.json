@@ -5,6 +5,36 @@
     "create_account": "Создать аккаунт",
     "join_discord": "Присоединиться к Discord"
   },
+  "header": {
+    "features": "Функции",
+    "pricing": "Цены",
+    "docs": "Документация",
+    "login": "Войти",
+    "start": "Начать",
+    "my_space": "Моё пространство",
+    "github_star": "Star на GitHub"
+  },
+  "auth": {
+    "login_title": "Войти",
+    "login_subtitle": "Введите данные для доступа к вашему пространству.",
+    "login_link_text": "Ещё нет аккаунта?",
+    "login_link_label": "Создать аккаунт",
+    "github_login": "Продолжить с GitHub",
+    "github_register": "Зарегистрироваться через GitHub",
+    "or_email": "Или через email",
+    "email": "Email",
+    "email_placeholder": "name@example.com",
+    "password": "Пароль",
+    "username": "Имя пользователя",
+    "username_placeholder": "johndoe",
+    "login_with_email": "Войти через Email",
+    "login_loading": "Вход...",
+    "register_title": "Создать аккаунт",
+    "register_subtitle": "Присоединяйтесь к TaskFlow и начните управлять проектами.",
+    "register_link_text": "Уже есть аккаунт?",
+    "register_link_label": "Войти",
+    "register_submit": "Создать аккаунт"
+  },
   "home": {
     "hero": {
       "badge": "v1.0 Публичная бета",
