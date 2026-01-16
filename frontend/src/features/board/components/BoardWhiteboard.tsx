@@ -73,7 +73,7 @@ export const BoardWhiteboard = ({ boardId, initialData }: BoardWhiteboardProps) 
     try {
       const snapshot = JSON.parse(initialData);
       isApplyingRemoteRef.current = true;
-      editor.loadSnapshot(snapshot, { forceOverwrite: true });
+      editor.loadSnapshot(snapshot);
       lastSavedRef.current = initialData;
     } catch {
       return;
