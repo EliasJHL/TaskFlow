@@ -57,9 +57,11 @@ export class GithubAuthController {
             scope: 'read:user user:email',
         });
 
-        return reply.redirect(
-            `https://github.com/login/oauth/authorize?${params.toString()}`,
-        );
+        return reply
+            .status(302)
+            .redirect(
+                `https://github.com/login/oauth/authorize?${params.toString()}`,
+            );
     }
 
     @Get('github/callback')
@@ -86,7 +88,7 @@ export class GithubAuthController {
 
         const storedState = req.cookies?.github_oauth_state;
         if (!storedState || storedState !== state) {
-            return reply.redirect(`${frontendUrl}/login?error=oauth_state`);
+            return reply.status(302).redirect(`${frontendUrl}/login?error=oauth_state`);
         }
 
         try {
@@ -110,7 +112,7 @@ export class GithubAuthController {
             const accessToken = tokenData?.access_token;
 
             if (!accessToken) {
-                return reply.redirect(`${frontendUrl}/login?error=oauth_token`);
+                return reply.status(302).redirect(`${frontendUrl}/login?error=oauth_token`);
             }
 
             const userRes = await fetch('https://api.github.com/user', {
@@ -138,7 +140,7 @@ export class GithubAuthController {
                 githubUser.email;
 
             if (!primaryEmail || !githubUser?.login || !githubUser?.id) {
-                return reply.redirect(`${frontendUrl}/login?error=oauth_user`);
+                return reply.status(302).redirect(`${frontendUrl}/login?error=oauth_user`);
             }
 
             const { token } = await this.authService.loginWithGithub({
@@ -155,9 +157,9 @@ export class GithubAuthController {
                 path: '/',
             });
 
-            return reply.redirect(`${frontendUrl}/app`);
+            return reply.status(302).redirect(`${frontendUrl}/app`);
         } catch {
-            return reply.redirect(`${frontendUrl}/login?error=oauth_failed`);
+            return reply.status(302).redirect(`${frontendUrl}/login?error=oauth_failed`);
         }
     }
 }
