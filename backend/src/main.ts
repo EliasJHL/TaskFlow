@@ -7,9 +7,11 @@ import {
 import cookie from '@fastify/cookie';
 
 async function bootstrap() {
+    const bodyLimitMb = Number(process.env.BODY_LIMIT_MB ?? 50);
+    const bodyLimitBytes = bodyLimitMb * 1024 * 1024;
     const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
-        new FastifyAdapter(),
+        new FastifyAdapter({ bodyLimit: bodyLimitBytes }),
     );
     await app.register(cookie);
     app.enableCors({

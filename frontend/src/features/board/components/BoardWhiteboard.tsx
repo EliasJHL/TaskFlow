@@ -85,10 +85,24 @@ export const BoardWhiteboard = ({ boardId, initialData }: BoardWhiteboardProps) 
   }, [initialData]);
 
   const licenseKey = import.meta.env.VITE_TLDRAW_LICENSE_KEY;
+  const maxAssetSizeMb = Number(import.meta.env.VITE_TLDRAW_MAX_ASSET_MB ?? 50);
+  const maxAssetSize = maxAssetSizeMb * 1024 * 1024;
 
   return (
     <div className="absolute inset-0">
-      <Tldraw onMount={handleMount} licenseKey={licenseKey} />
+      <Tldraw
+        onMount={handleMount}
+        licenseKey={licenseKey}
+        maxAssetSize={maxAssetSize}
+        acceptedVideoMimeTypes={[
+          "video/mp4",
+          "video/webm",
+          "video/quicktime",
+          "video/ogg",
+          "video/mov",
+          "video/avi",
+        ]}
+      />
     </div>
   );
 };
