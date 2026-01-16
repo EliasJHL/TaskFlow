@@ -4,7 +4,6 @@
  ** File description:
  ** apollo
  */
-
 import {
   ApolloClient,
   InMemoryCache,
@@ -15,41 +14,39 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 
+const GRAPHQL_HTTP = import.meta.env.VITE_GRAPHQL_ENDPOINT
+
+if (!/^https?:\/\//.test(GRAPHQL_HTTP)) {
+  throw new Error('REACT_APP_GRAPHQL_ENDPOINT must start with http:// or https://');
+}
+
+const GRAPHQL_WS = GRAPHQL_HTTP.replace(/^http/, 'ws');
+
 const httpLink = createHttpLink({
-  uri: 'http://localhost:3000/graphql',
+  uri: GRAPHQL_HTTP,
   credentials: 'include',
 });
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://localhost:3000/graphql',
+    url: GRAPHQL_WS,
     connectionParams: () => ({
       Authorization: `Bearer ${localStorage.getItem('token') ?? ''}`,
     }),
     keepAlive: 12000,
-    on: {
-      connected: () => console.log('[WS client] connected'),
-      closed: () => console.log('[WS client] closed'),
-      error: () => console.log('[WS client] error'),
-    },
   }),
 );
 
 const link = split(
   ({ query }) => {
     const def = getMainDefinition(query);
-    return (
-      def.kind === 'OperationDefinition' && def.operation === 'subscription'
-    );
+    return def.kind === 'OperationDefinition' && def.operation === 'subscription';
   },
   wsLink,
   httpLink,
 );
 
 export const client = new ApolloClient({
-  link: link,
+  link,
   cache: new InMemoryCache(),
-  defaultOptions: {
-    watchQuery: { fetchPolicy: 'cache-and-network' },
-  },
 });
