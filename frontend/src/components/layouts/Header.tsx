@@ -39,7 +39,7 @@ export const Header = () => {
         
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/src/assets/TaskFlow.svg" alt="TaskFlow Logo" className="h-12 w-12" />
+            <img src="/TaskFlow.svg" alt="TaskFlow Logo" className="h-12 w-12" />
             <span className="font-bold text-xl hidden sm:inline-block tracking-tight">
               TaskFlow
             </span>

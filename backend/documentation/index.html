@@ -1,0 +1,357 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>new-backend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+	   <link rel="stylesheet" href="./styles/style.css">
+        <link rel="stylesheet" href="./styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="./" class="navbar-brand">new-backend documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content readme">
+                   <div class="content-data">
+
+
+<p align="center"> <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a> </p>
+
+<h1 align="center">TaskFlow API</h1>
+
+<p align="center"> The robust, high-performance backend powering the TaskFlow platform. <br /> Built with <strong>NestJS</strong>, <strong>Fastify</strong>, and <strong>GraphQL</strong>. </p>
+
+<p align="center"> <img src="https://img.shields.io/badge/NestJS-10.x-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" /> <img src="https://img.shields.io/badge/GraphQL-Mercurius-E10098?style=for-the-badge&logo=graphql&logoColor=white" alt="GraphQL" /> <img src="https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" /> <img src="https://img.shields.io/badge/Coverage-55%25-brightgreen?style=for-the-badge" alt="Coverage" /> </p>
+
+<p align="center"> <a href="#architecture">Architecture</a> • <a href="#getting-started">Getting Started</a> • <a href="#testing">Testing</a> • <a href="#documentation">Documentation</a> </p>
+
+<h3>Architecture</h3>
+<p>TaskFlow API follows a <strong>Modular Monolith architecture</strong> designed for scalability and maintainability.</p>
+<p>It leverages the &quot;Platform Agnostic&quot; capability of NestJS by using the <strong>Fastify Adapter</strong> for maximum performance (up to 2x faster than Express).</p>
+<h3>Request Lifecycle</h3>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-mermaid">graph TD
+    Client[(&quot;Client&quot;)]
+    
+    subgraph &quot;Backend Core - NestJS&quot;
+        Gateway[&quot;Fastify Adapter&quot;]
+        Guard[&quot;Auth &amp; Workspace Guards&quot;]
+        Interceptor[&quot;DTO Validation Pipe&quot;]
+        
+        subgraph &quot;GraphQL Layer&quot;
+            Resolver[&quot;Resolvers&quot;]
+            FieldResolver[&quot;Field Resolvers&quot;]
+        end
+        
+        Service[&quot;Services - Business Logic&quot;]
+        Prisma[&quot;Prisma Client&quot;]
+    end
+    
+    DB[(&quot;PostgresQL&quot;)]
+
+    Client --&gt; Gateway
+    Gateway --&gt; Guard
+    Guard --&gt; Interceptor
+    Interceptor --&gt; Resolver
+    
+    Resolver -- &quot;Main Data&quot; --&gt; Service
+    Resolver -. &quot;Nested Data&quot; .-&gt; FieldResolver
+    
+    Service --&gt; Prisma
+    FieldResolver --&gt; Prisma
+    Prisma --&gt; DB</code></pre></div><h3>Key Design Patterns</h3>
+<ul>
+<li><p><strong>Schema First GraphQL</strong>: Type definitions (.graphql files) are the single source of truth. TypeScript definitions are auto-generated.</p>
+</li>
+<li><p><strong>Hybrid Loading Strategy</strong>: We optimize performance by avoiding massive SQL joins. The Main Resolver fetches the core entity, while Field Resolvers (@ResolveField) lazily fetch related data (Boards, Lists, Cards) only when requested by the client.</p>
+</li>
+<li><p><strong>Errors as Data</strong>: Mutations do not throw generic exceptions. They return Union Types (e.g., RegisterSuccess | RegisterError) allowing the frontend to handle business errors (like &quot;Email taken&quot;) as strongly-typed data.</p>
+</li>
+<li><p><strong>Secure Authentication</strong>: Implementation of HttpOnly Cookies preventing XSS attacks on JWT tokens.</p>
+</li>
+</ul>
+<h2>🛠️ Tech Stack</h2>
+<table class="table table-bordered compodoc-table">
+<thead>
+<tr>
+<th align="left">Component</th>
+<th align="left">Technology</th>
+<th align="left">Benefit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>Framework</strong></td>
+<td align="left"><strong>NestJS</strong></td>
+<td align="left">Strict architecture, Dependency Injection, Decorators.</td>
+</tr>
+<tr>
+<td align="left"><strong>Engine</strong></td>
+<td align="left"><strong>Fastify</strong></td>
+<td align="left">High performance, low overhead (up to 2x faster than Express).</td>
+</tr>
+<tr>
+<td align="left"><strong>API</strong></td>
+<td align="left"><strong>GraphQL (Mercurius)</strong></td>
+<td align="left">Efficient Data Fetching, Type Safety, Playground.</td>
+</tr>
+<tr>
+<td align="left"><strong>Database</strong></td>
+<td align="left"><strong>PostgreSQL + Prisma</strong></td>
+<td align="left">Reliability, Type-safe queries, Migrations.</td>
+</tr>
+<tr>
+<td align="left"><strong>Testing</strong></td>
+<td align="left"><strong>Jest</strong></td>
+<td align="left">Unit and Integration testing with mocking.</td>
+</tr>
+<tr>
+<td align="left"><strong>Doc</strong></td>
+<td align="left"><strong>Compodoc</strong></td>
+<td align="left">Visual documentation of the modules graph.</td>
+</tr>
+</tbody>
+</table>
+<h3>Getting Started</h3>
+<h4>Prerequisites</h4>
+<ul>
+<li><p><strong>Node.js</strong> (v18 or later)</p>
+</li>
+<li><p><strong>Docker</strong> (for the local Database)</p>
+</li>
+<li><p><strong>npm or pnpm</strong></p>
+</li>
+</ul>
+<h3>Installation</h3>
+<h4>Clone the repository</h4>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">git clone git&#64;github.com:EliasJHL/TaskFlow.git
+cd taskflow/backend</code></pre></div><h4>Install dependencies</h4>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">npm install</code></pre></div><h4>Environment Setup</h4>
+<p>Create a .env file in the root directory: </p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-properties">DATABASE_URL=&quot;postgresql://user:password&#64;localhost:5432/taskflow_db?schema=public&quot; 
+JWT_SECRET=&quot;your_super_secret_key_change_me&quot; 
+COOKIE_SECRET=&quot;another_secret_for_cookies&quot;
+NODE_ENV=&quot;development&quot;
+PORT=3000</code></pre></div><h4>Database Setup</h4>
+<p>Start the database container and apply migrations:</p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash"># 1. Start Docker container
+docker-compose up -d db
+
+# 2. Push schema to DB (Dev mode)
+npx prisma db push
+
+# 3. Generate Prisma Client (Vital for TypeScript)
+npx prisma generate </code></pre></div><h4>Running the App</h4>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">npm run start:dev</code></pre></div><p>Once started, the GraphQL Playground is available at: 👉 <a href="http://localhost:3000/graphiql">http://localhost:3000/graphiql</a></p>
+<h3>Testing</h3>
+<p>We maintain a high standard of <strong>code quality</strong> with 100% coverage on critical paths (Services &amp; Resolvers).</p>
+<h4>Unit Tests</h4>
+<p>Tests are located next to the files they test (*.spec.ts).</p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash"># Run all unit tests
+npm run test
+
+# Run tests in watch mode (TDD)
+npm run test:watch</code></pre></div><h4>Coverage Report</h4>
+<p>To generate the coverage report and verify system integrity:</p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">npm run test:cov</code></pre></div><h3>Documentation</h3>
+<h4>Code Architecture (Compodoc)</h4>
+<p>Generate a static website exploring the modules, services, and dependency graph.</p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">npm run doc</code></pre></div><p>Then open <a href="http://localhost:8080">http://localhost:8080</a> in your browser.</p>
+<h4>API Documentation</h4>
+<p>The API is self-documented via the GraphQL Schema. You can inspect the schema and test queries directly in the <strong>Playground at /graphiql</strong>.</p>
+<p><strong>Example Query:</strong></p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-graphql">query GetMyDashboard {
+    workspaces {
+        name
+        is_pinned
+        boards {
+            title
+            color
+        }
+    }
+}</code></pre></div><h4>Project Structure</h4>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-text">src/ 
+├── auth/ # Authentication (Login, Register, Guards) 
+├── board/ # Board management (Kanban logic) 
+├── list/ # List management (Ordering, Creation) 
+├── card/ # Card management (Content, Moving) 
+├── label/ # Label management 
+├── workspace/ # Workspace logic (The root entity) 
+├── common/ # Shared Guards, Decorators, and Utilities 
+├── prisma/ # Prisma Module &amp; Service 
+└── graphql/ # Generated TypeScript definitions</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 0;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'readme';
+            var COMPODOC_CURRENT_PAGE_URL = 'index.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="./js/libs/custom-elements.min.js"></script>
+       <script src="./js/libs/lit-html.js"></script>
+
+       <script src="./js/menu-wc.js" defer></script>
+       <script nomodule src="./js/menu-wc_es5.js" defer></script>
+
+       <script src="./js/libs/bootstrap-native.js"></script>
+
+       <script src="./js/libs/es6-shim.min.js"></script>
+       <script src="./js/libs/EventDispatcher.js"></script>
+       <script src="./js/libs/promise.min.js"></script>
+
+       <script src="./js/compodoc.js"></script>
+
+       <script src="./js/tabs.js"></script>
+       <script src="./js/menu.js"></script>
+       <script src="./js/libs/clipboard.min.js"></script>
+       <script src="./js/libs/prism.js"></script>
+       <script src="./js/sourceCode.js"></script>
+          <script src="./js/search/search.js"></script>
+          <script src="./js/search/lunr.min.js"></script>
+          <script src="./js/search/search-lunr.js"></script>
+          <script src="./js/search/search_index.js"></script>
+       <script src="./js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

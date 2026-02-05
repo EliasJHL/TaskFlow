@@ -1,0 +1,1701 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>new-backend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">new-backend documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >GitHubSyncService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/github-sync/github-sync.service.ts</code>
+        </p>
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#connectProject" >connectProject</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#disconnectProject" >disconnectProject</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getProjectFields" >getProjectFields</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getProjectItems" >getProjectItems</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getProjectItemsWithFields" >getProjectItemsWithFields</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getSyncConfig" >getSyncConfig</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#githubGraphQL" >githubGraphQL</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#importFromGitHub" >importFromGitHub</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#listProjects" >listProjects</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#setupAutoMapping" >setupAutoMapping</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(prisma: <a href="../injectables/PrismaService.html" target="_self">PrismaService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/github-sync/github-sync.service.ts:8</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>prisma</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/PrismaService.html" target="_self" >PrismaService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="connectProject"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>connectProject</b></span>
+                        <a href="#connectProject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>connectProject(boardId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, owner: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, projectNumber: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, isOrg: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>, token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="188"
+                                    class="link-to-prism">src/github-sync/github-sync.service.ts:188</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>boardId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>owner</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>projectNumber</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>isOrg</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>token</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="disconnectProject"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>disconnectProject</b></span>
+                        <a href="#disconnectProject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>disconnectProject(boardId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="224"
+                                    class="link-to-prism">src/github-sync/github-sync.service.ts:224</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>boardId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getProjectFields"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>getProjectFields</b></span>
+                        <a href="#getProjectFields"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getProjectFields(owner: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, projectNumber: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, isOrg: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>, token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="47"
+                                    class="link-to-prism">src/github-sync/github-sync.service.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>owner</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>projectNumber</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>isOrg</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>token</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getProjectItems"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>getProjectItems</b></span>
+                        <a href="#getProjectItems"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getProjectItems(owner: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, projectNumber: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, isOrg: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>, token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, first: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="184"
+                                    class="link-to-prism">src/github-sync/github-sync.service.ts:184</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Default value</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>owner</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                                <td>projectNumber</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                                <td>isOrg</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                                <td>token</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                                <td>first</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                                    <code>50</code>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getProjectItemsWithFields"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>getProjectItemsWithFields</b></span>
+                        <a href="#getProjectItemsWithFields"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getProjectItemsWithFields(owner: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, projectNumber: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, isOrg: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>, token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, first: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="86"
+                                    class="link-to-prism">src/github-sync/github-sync.service.ts:86</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Default value</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>owner</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                                <td>projectNumber</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                                <td>isOrg</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                                <td>token</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                                <td>first</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                                    <code>100</code>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getSyncConfig"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>getSyncConfig</b></span>
+                        <a href="#getSyncConfig"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getSyncConfig(boardId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="217"
+                                    class="link-to-prism">src/github-sync/github-sync.service.ts:217</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>boardId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="githubGraphQL"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>githubGraphQL</b></span>
+                        <a href="#githubGraphQL"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>githubGraphQL(query: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, variables: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="11"
+                                    class="link-to-prism">src/github-sync/github-sync.service.ts:11</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>query</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>variables</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>token</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="importFromGitHub"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>importFromGitHub</b></span>
+                        <a href="#importFromGitHub"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>importFromGitHub(boardId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="274"
+                                    class="link-to-prism">src/github-sync/github-sync.service.ts:274</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>boardId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>token</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="listProjects"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>listProjects</b></span>
+                        <a href="#listProjects"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>listProjects(owner: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, isOrg: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>, token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="29"
+                                    class="link-to-prism">src/github-sync/github-sync.service.ts:29</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>owner</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>isOrg</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>token</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setupAutoMapping"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>setupAutoMapping</b></span>
+                        <a href="#setupAutoMapping"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>setupAutoMapping(boardId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="233"
+                                    class="link-to-prism">src/github-sync/github-sync.service.ts:233</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>boardId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>token</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, BadRequestException } from &#x27;@nestjs/common&#x27;;
+import { PrismaService } from &#x27;../prisma/prisma.service&#x27;;
+
+// Color palette for auto-generated labels/lists
+const COLORS &#x3D; [&#x27;#ef4444&#x27;, &#x27;#f97316&#x27;, &#x27;#eab308&#x27;, &#x27;#22c55e&#x27;, &#x27;#14b8a6&#x27;, &#x27;#3b82f6&#x27;, &#x27;#8b5cf6&#x27;, &#x27;#ec4899&#x27;];
+
+@Injectable()
+export class GitHubSyncService {
+    constructor(private prisma: PrismaService) {}
+
+    private async githubGraphQL(query: string, variables: any, token: string) {
+        if (!token) throw new BadRequestException(&#x27;Missing GitHub access token&#x27;);
+
+        const res &#x3D; await fetch(&#x27;https://api.github.com/graphql&#x27;, {
+            method: &#x27;POST&#x27;,
+            headers: {
+                Authorization: &#x60;Bearer ${token}&#x60;,
+                Accept: &#x27;application/vnd.github+json&#x27;,
+                &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+            },
+            body: JSON.stringify({ query, variables }),
+        });
+
+        const data &#x3D; await res.json();
+        if (data.errors) throw new Error(JSON.stringify(data.errors));
+        return data.data;
+    }
+
+    async listProjects(owner: string, isOrg: boolean, token: string) {
+        const query &#x3D; isOrg
+            ? &#x60;query ($login: String!) { organization(login: $login) { projectsV2(first:50) { nodes { id number title closed url } } } }&#x60;
+            : &#x60;query ($login: String!) { user(login: $login) { projectsV2(first:50) { nodes { id number title closed url } } } }&#x60;;
+
+        const data &#x3D; await this.githubGraphQL(query, { login: owner }, token);
+        const nodes &#x3D; isOrg ? data.organization?.projectsV2?.nodes : data.user?.projectsV2?.nodes;
+        return (nodes || []).map((n: any) &#x3D;&gt; ({
+            id: n.id,
+            number: n.number,
+            title: n.title,
+            url: n.url,
+            closed: n.closed,
+            owner,
+            ownerType: isOrg ? &#x27;organization&#x27; : &#x27;user&#x27;,
+        }));
+    }
+
+    async getProjectFields(owner: string, projectNumber: number, isOrg: boolean, token: string) {
+        const query &#x3D; isOrg
+            ? &#x60;query ($login: String!, $number: Int!) {
+                organization(login: $login) {
+                  projectV2(number: $number) {
+                    fields(first: 50) {
+                      nodes {
+                        ... on ProjectV2Field { id name dataType }
+                        ... on ProjectV2SingleSelectField { id name dataType options { id name color } }
+                        ... on ProjectV2IterationField { id name dataType }
+                      }
+                    }
+                  }
+                }
+              }&#x60;
+            : &#x60;query ($login: String!, $number: Int!) {
+                user(login: $login) {
+                  projectV2(number: $number) {
+                    fields(first: 50) {
+                      nodes {
+                        ... on ProjectV2Field { id name dataType }
+                        ... on ProjectV2SingleSelectField { id name dataType options { id name color } }
+                        ... on ProjectV2IterationField { id name dataType }
+                      }
+                    }
+                  }
+                }
+              }&#x60;;
+
+        const data &#x3D; await this.githubGraphQL(query, { login: owner, number: projectNumber }, token);
+        const nodes &#x3D; isOrg ? data.organization?.projectV2?.fields?.nodes : data.user?.projectV2?.fields?.nodes;
+        return (nodes || []).map((n: any) &#x3D;&gt; ({
+            id: n.id,
+            name: n.name,
+            dataType: n.dataType ?? &#x27;TEXT&#x27;,
+            options: n.options ?? [],
+        }));
+    }
+
+    async getProjectItemsWithFields(owner: string, projectNumber: number, isOrg: boolean, token: string, first &#x3D; 100) {
+        // Extended query: get items with field values, labels, assignees
+        const query &#x3D; isOrg
+            ? &#x60;query ($login: String!, $number: Int!, $first: Int!) {
+                organization(login: $login) {
+                  projectV2(number: $number) {
+                    items(first: $first) {
+                      nodes {
+                        id
+                        fieldValues(first: 20) {
+                          nodes {
+                            ... on ProjectV2ItemFieldTextValue { text field { ... on ProjectV2Field { name } } }
+                            ... on ProjectV2ItemFieldNumberValue { number field { ... on ProjectV2Field { name } } }
+                            ... on ProjectV2ItemFieldDateValue { date field { ... on ProjectV2Field { name } } }
+                            ... on ProjectV2ItemFieldSingleSelectValue { name field { ... on ProjectV2SingleSelectField { name } } }
+                            ... on ProjectV2ItemFieldIterationValue { title field { ... on ProjectV2IterationField { name } } }
+                          }
+                        }
+                        content {
+                          __typename
+                          ... on Issue {
+                            id title body url state
+                            labels(first: 20) { nodes { name color } }
+                            assignees(first: 10) { nodes { login } }
+                          }
+                          ... on PullRequest {
+                            id title body url state
+                            labels(first: 20) { nodes { name color } }
+                            assignees(first: 10) { nodes { login } }
+                          }
+                          ... on DraftIssue { id title body }
+                        }
+                      }
+                    }
+                  }
+                }
+              }&#x60;
+            : &#x60;query ($login: String!, $number: Int!, $first: Int!) {
+                user(login: $login) {
+                  projectV2(number: $number) {
+                    items(first: $first) {
+                      nodes {
+                        id
+                        fieldValues(first: 20) {
+                          nodes {
+                            ... on ProjectV2ItemFieldTextValue { text field { ... on ProjectV2Field { name } } }
+                            ... on ProjectV2ItemFieldNumberValue { number field { ... on ProjectV2Field { name } } }
+                            ... on ProjectV2ItemFieldDateValue { date field { ... on ProjectV2Field { name } } }
+                            ... on ProjectV2ItemFieldSingleSelectValue { name field { ... on ProjectV2SingleSelectField { name } } }
+                            ... on ProjectV2ItemFieldIterationValue { title field { ... on ProjectV2IterationField { name } } }
+                          }
+                        }
+                        content {
+                          __typename
+                          ... on Issue {
+                            id title body url state
+                            labels(first: 20) { nodes { name color } }
+                            assignees(first: 10) { nodes { login } }
+                          }
+                          ... on PullRequest {
+                            id title body url state
+                            labels(first: 20) { nodes { name color } }
+                            assignees(first: 10) { nodes { login } }
+                          }
+                          ... on DraftIssue { id title body }
+                        }
+                      }
+                    }
+                  }
+                }
+              }&#x60;;
+
+        const data &#x3D; await this.githubGraphQL(query, { login: owner, number: projectNumber, first }, token);
+        const nodes &#x3D; isOrg ? data.organization?.projectV2?.items?.nodes : data.user?.projectV2?.items?.nodes;
+
+        return (nodes || []).map((n: any) &#x3D;&gt; {
+            const fieldValues: Record&lt;string, string&gt; &#x3D; {};
+            for (const fv of n.fieldValues?.nodes || []) {
+                const fieldName &#x3D; fv.field?.name;
+                if (!fieldName) continue;
+                fieldValues[fieldName] &#x3D; fv.text ?? fv.number?.toString() ?? fv.date ?? fv.name ?? fv.title ?? &#x27;&#x27;;
+            }
+
+            return {
+                id: n.id,
+                title: n.content?.title ?? &#x27;Untitled&#x27;,
+                body: n.content?.body ?? null,
+                type: n.content?.__typename ?? &#x27;ITEM&#x27;,
+                url: n.content?.url ?? null,
+                state: n.content?.state ?? null,
+                labels: (n.content?.labels?.nodes || []).map((l: any) &#x3D;&gt; ({ name: l.name, color: l.color })),
+                assignees: (n.content?.assignees?.nodes || []).map((a: any) &#x3D;&gt; a.login),
+                fieldValues,
+            };
+        });
+    }
+
+    // backwards compatible simple version
+    async getProjectItems(owner: string, projectNumber: number, isOrg: boolean, token: string, first &#x3D; 50) {
+        return this.getProjectItemsWithFields(owner, projectNumber, isOrg, token, first);
+    }
+
+    async connectProject(boardId: string, owner: string, projectNumber: number, isOrg: boolean, token: string) {
+        const projects &#x3D; await this.listProjects(owner, isOrg, token);
+        const proj &#x3D; projects.find((p: any) &#x3D;&gt; p.number &#x3D;&#x3D;&#x3D; projectNumber);
+        if (!proj) throw new BadRequestException(&#x27;Project not found&#x27;);
+
+        // Check if already connected
+        const existing &#x3D; await this.prisma.gitHubProjectSync.findUnique({ where: { board_id: boardId } });
+        if (existing) {
+            return this.prisma.gitHubProjectSync.update({
+                where: { sync_id: existing.sync_id },
+                data: { access_token: token, github_project_id: proj.id, github_project_number: proj.number, github_owner: owner },
+            });
+        }
+
+        const created &#x3D; await this.prisma.gitHubProjectSync.create({
+            data: {
+                board_id: boardId,
+                github_project_id: proj.id,
+                github_project_number: proj.number,
+                github_owner: owner,
+                github_repo: isOrg ? null : undefined,
+                github_org: isOrg ? owner : null,
+                access_token: token,
+            },
+        });
+
+        return created;
+    }
+
+    async getSyncConfig(boardId: string) {
+        return this.prisma.gitHubProjectSync.findUnique({
+            where: { board_id: boardId },
+            include: { field_mappings: true },
+        });
+    }
+
+    async disconnectProject(boardId: string) {
+        await this.prisma.gitHubProjectSync.delete({ where: { board_id: boardId } });
+        return { __typename: &#x27;Success&#x27;, successMessage: &#x27;Disconnected&#x27; };
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // AUTO MAPPING: Status field → Lists, Labels → Labels, Assignees → Members
+    // ─────────────────────────────────────────────────────────────────────────
+
+    async setupAutoMapping(boardId: string, token: string) {
+        const sync &#x3D; await this.prisma.gitHubProjectSync.findUniqueOrThrow({ where: { board_id: boardId } });
+        const isOrg &#x3D; !!sync.github_org;
+
+        // 1. Fetch project fields
+        const fields &#x3D; await this.getProjectFields(sync.github_owner, sync.github_project_number, isOrg, token);
+
+        // 2. Find Status field (single select) – common in GitHub Projects
+        const statusField &#x3D; fields.find((f: any) &#x3D;&gt; f.name &#x3D;&#x3D;&#x3D; &#x27;Status&#x27; &amp;&amp; f.dataType &#x3D;&#x3D;&#x3D; &#x27;SINGLE_SELECT&#x27;);
+
+        if (statusField &amp;&amp; statusField.options?.length) {
+            // Create lists for each status option if they don&#x27;t exist
+            const existingLists &#x3D; await this.prisma.list.findMany({ where: { board_id: boardId } });
+            const existingTitles &#x3D; new Set(existingLists.map((l) &#x3D;&gt; l.title.toLowerCase()));
+
+            let pos &#x3D; existingLists.length;
+            const statusToList: Record&lt;string, string&gt; &#x3D; {};
+
+            for (const opt of statusField.options) {
+                if (!existingTitles.has(opt.name.toLowerCase())) {
+                    pos++;
+                    const color &#x3D; opt.color ? &#x60;#${opt.color}&#x60; : COLORS[pos % COLORS.length];
+                    const newList &#x3D; await this.prisma.list.create({ data: { title: opt.name, board_id: boardId, position: pos, color } });
+                    statusToList[opt.name] &#x3D; newList.list_id;
+                } else {
+                    const match &#x3D; existingLists.find((l) &#x3D;&gt; l.title.toLowerCase() &#x3D;&#x3D;&#x3D; opt.name.toLowerCase());
+                    if (match) statusToList[opt.name] &#x3D; match.list_id;
+                }
+            }
+
+            // Save field mapping
+            await this.prisma.gitHubFieldMapping.upsert({
+                where: { sync_id_github_field_id: { sync_id: sync.sync_id, github_field_id: statusField.id } },
+                update: { mapping_values: statusToList, taskflow_field: &#x27;list&#x27; },
+                create: { sync_id: sync.sync_id, github_field_id: statusField.id, github_field_name: &#x27;Status&#x27;, taskflow_field: &#x27;list&#x27;, mapping_values: statusToList },
+            });
+        }
+
+        return { success: true, message: &#x27;Auto mapping configured&#x27; };
+    }
+
+    async importFromGitHub(boardId: string, token: string) {
+        const sync &#x3D; await this.prisma.gitHubProjectSync.findUniqueOrThrow({
+            where: { board_id: boardId },
+            include: { field_mappings: true },
+        });
+        const owner &#x3D; sync.github_owner;
+        const number &#x3D; sync.github_project_number;
+        const isOrg &#x3D; !!sync.github_org;
+
+        // First run auto-mapping to ensure lists exist
+        await this.setupAutoMapping(boardId, token);
+
+        const items &#x3D; await this.getProjectItemsWithFields(owner, number, isOrg, token);
+
+        // Reload mappings after auto setup
+        const mappings &#x3D; await this.prisma.gitHubFieldMapping.findMany({ where: { sync_id: sync.sync_id } });
+        const statusMapping &#x3D; mappings.find((m) &#x3D;&gt; m.taskflow_field &#x3D;&#x3D;&#x3D; &#x27;list&#x27;);
+        const statusToListId: Record&lt;string, string&gt; &#x3D; (statusMapping?.mapping_values as any) ?? {};
+
+        // Default list if no status mapping
+        let defaultList &#x3D; await this.prisma.list.findFirst({ where: { board_id: boardId }, orderBy: { position: &#x27;asc&#x27; } });
+        if (!defaultList) {
+            defaultList &#x3D; await this.prisma.list.create({ data: { title: &#x27;To Do&#x27;, board_id: boardId, position: 1, color: &#x27;#6b7280&#x27; } });
+        }
+
+        // Fetch existing labels on the board
+        const existingLabels &#x3D; await this.prisma.label.findMany({ where: { board_id: boardId } });
+        const labelNameToId: Record&lt;string, string&gt; &#x3D; {};
+        for (const l of existingLabels) labelNameToId[l.name.toLowerCase()] &#x3D; l.label_id;
+
+        // Fetch workspace members for assignee mapping
+        const board &#x3D; await this.prisma.board.findUniqueOrThrow({ where: { board_id: boardId }, select: { workspace_id: true } });
+        const members &#x3D; await this.prisma.workspaceMembers.findMany({ where: { workspace_id: board.workspace_id }, include: { user: true } });
+        const usernameToUserId: Record&lt;string, string&gt; &#x3D; {};
+        for (const m of members) {
+            if (m.user.github_username) usernameToUserId[m.user.github_username.toLowerCase()] &#x3D; m.user.user_id;
+            usernameToUserId[m.user.username.toLowerCase()] &#x3D; m.user.user_id;
+        }
+
+        let count &#x3D; 0;
+        const errors: string[] &#x3D; [];
+
+        for (const it of items) {
+            try {
+                // Skip already synced items
+                const existingSynced &#x3D; await this.prisma.gitHubSyncedItem.findFirst({ where: { sync_id: sync.sync_id, github_item_id: it.id } });
+                if (existingSynced) continue;
+
+                // Determine target list from Status field
+                const statusValue &#x3D; it.fieldValues?.[&#x27;Status&#x27;];
+                const targetListId &#x3D; (statusValue &amp;&amp; statusToListId[statusValue]) ? statusToListId[statusValue] : defaultList!.list_id;
+
+                // Position
+                const lastCard &#x3D; await this.prisma.card.findFirst({ where: { list_id: targetListId }, orderBy: { position: &#x27;desc&#x27; } });
+                const cardPos &#x3D; lastCard ? lastCard.position + 1 : 1;
+
+                // Due date from field if exists
+                const dueDateRaw &#x3D; it.fieldValues?.[&#x27;Due date&#x27;] ?? it.fieldValues?.[&#x27;Date&#x27;] ?? null;
+                const dueDate &#x3D; dueDateRaw ? new Date(dueDateRaw) : null;
+
+                // Create card
+                const card &#x3D; await this.prisma.card.create({
+                    data: {
+                        title: it.title,
+                        description: it.body ?? undefined,
+                        position: cardPos,
+                        list_id: targetListId,
+                        due_date: dueDate &amp;&amp; !isNaN(dueDate.getTime()) ? dueDate : undefined,
+                    },
+                });
+
+                // Sync record
+                await this.prisma.gitHubSyncedItem.create({ data: { sync_id: sync.sync_id, github_item_id: it.id, github_content_id: it.id, taskflow_card_id: card.card_id } });
+
+                // Map labels
+                for (const ghLabel of it.labels || []) {
+                    let labelId &#x3D; labelNameToId[ghLabel.name.toLowerCase()];
+                    if (!labelId) {
+                        const color &#x3D; ghLabel.color ? &#x60;#${ghLabel.color}&#x60; : COLORS[Object.keys(labelNameToId).length % COLORS.length];
+                        const newLabel &#x3D; await this.prisma.label.create({ data: { name: ghLabel.name, color, board_id: boardId } });
+                        labelId &#x3D; newLabel.label_id;
+                        labelNameToId[ghLabel.name.toLowerCase()] &#x3D; labelId;
+                    }
+                    await this.prisma.cardLabel.create({ data: { card_id: card.card_id, label_id: labelId } }).catch(() &#x3D;&gt; {});
+                }
+
+                // Map assignees
+                for (const login of it.assignees || []) {
+                    const userId &#x3D; usernameToUserId[login.toLowerCase()];
+                    if (userId) {
+                        await this.prisma.cardMember.create({ data: { card_id: card.card_id, user_id: userId } }).catch(() &#x3D;&gt; {});
+                    }
+                }
+
+                count++;
+            } catch (e: any) {
+                errors.push(e.message ?? String(e));
+            }
+        }
+
+        await this.prisma.gitHubProjectSync.update({ where: { sync_id: sync.sync_id }, data: { last_sync_at: new Date(), sync_status: &#x27;SUCCESS&#x27; } });
+
+        return { success: errors.length &#x3D;&#x3D;&#x3D; 0, message: &#x60;Imported ${count} items&#x60;, itemsSynced: count, errors };
+    }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'GitHubSyncService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

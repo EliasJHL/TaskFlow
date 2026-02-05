@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
           <div className="col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <img
-                src="/src/assets/TaskFlow.svg"
+                src="/TaskFlow.svg"
                 alt="TaskFlow Logo"
                 className="h-12 w-12"
               />

@@ -1,0 +1,872 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>new-backend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">new-backend documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content class">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Classes</li>
+  <li class="breadcrumb-item" >PinWorkspacePayload</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/graphql/graphql.ts</code>
+        </p>
+
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#workspace" >workspace</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="workspace"></a>
+                    <span class="name">
+                        <span ><b>workspace</b></span>
+                        <a href="#workspace"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Workspace.html" target="_self" >Workspace</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="572" class="link-to-prism">src/graphql/graphql.ts:572</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+
+
+
+
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">export enum BoardType {
+    KANBAN &#x3D; &quot;KANBAN&quot;,
+    WHITEBOARD &#x3D; &quot;WHITEBOARD&quot;
+}
+
+export enum Role {
+    Admin &#x3D; &quot;Admin&quot;,
+    Member &#x3D; &quot;Member&quot;,
+    Viewer &#x3D; &quot;Viewer&quot;
+}
+
+export enum SyncStatus {
+    IDLE &#x3D; &quot;IDLE&quot;,
+    SYNCING &#x3D; &quot;SYNCING&quot;,
+    SUCCESS &#x3D; &quot;SUCCESS&quot;,
+    ERROR &#x3D; &quot;ERROR&quot;
+}
+
+export enum SyncDirection {
+    GITHUB_TO_TASKFLOW &#x3D; &quot;GITHUB_TO_TASKFLOW&quot;,
+    TASKFLOW_TO_GITHUB &#x3D; &quot;TASKFLOW_TO_GITHUB&quot;,
+    BIDIRECTIONAL &#x3D; &quot;BIDIRECTIONAL&quot;
+}
+
+export class CreateBoardInput {
+    title: string;
+    description?: Nullable&lt;string&gt;;
+    color: string;
+    workspace_id: string;
+    type: BoardType;
+    whiteboard_data?: Nullable&lt;string&gt;;
+}
+
+export class UpdateBoardInput {
+    title?: Nullable&lt;string&gt;;
+    description?: Nullable&lt;string&gt;;
+    color?: Nullable&lt;string&gt;;
+    whiteboard_data?: Nullable&lt;string&gt;;
+}
+
+export class CreateListInput {
+    title: string;
+    board_id: string;
+    color?: Nullable&lt;string&gt;;
+}
+
+export class CreateLabelInput {
+    name: string;
+    color: string;
+    board_id: string;
+}
+
+export class UpdateListInput {
+    title?: Nullable&lt;string&gt;;
+    color?: Nullable&lt;string&gt;;
+}
+
+export class CreateCardInput {
+    title: string;
+    list_id: string;
+    description?: Nullable&lt;string&gt;;
+    due_date?: Nullable&lt;DateTime&gt;;
+    color?: Nullable&lt;string&gt;;
+}
+
+export class UpdateCardInput {
+    title?: Nullable&lt;string&gt;;
+    description?: Nullable&lt;string&gt;;
+    due_date?: Nullable&lt;DateTime&gt;;
+}
+
+export class CreateChecklistInput {
+    content: string;
+    card_id: string;
+}
+
+export class ConnectGitHubProjectInput {
+    board_id: string;
+    github_project_number: number;
+    github_owner: string;
+    github_repo?: Nullable&lt;string&gt;;
+    github_org?: Nullable&lt;string&gt;;
+    sync_direction?: Nullable&lt;SyncDirection&gt;;
+    auto_sync?: Nullable&lt;boolean&gt;;
+}
+
+export class UpdateGitHubSyncInput {
+    sync_direction?: Nullable&lt;SyncDirection&gt;;
+    auto_sync?: Nullable&lt;boolean&gt;;
+}
+
+export class CreateFieldMappingInput {
+    sync_id: string;
+    github_field_id: string;
+    github_field_name: string;
+    taskflow_field: string;
+    mapping_values?: Nullable&lt;string&gt;;
+}
+
+export class UpdateFieldMappingInput {
+    taskflow_field?: Nullable&lt;string&gt;;
+    mapping_values?: Nullable&lt;string&gt;;
+}
+
+export class LoginInput {
+    email: string;
+    password: string;
+}
+
+export class RegisterInput {
+    username: string;
+    email: string;
+    password: string;
+}
+
+export class CreateUserInput {
+    username: string;
+    email: string;
+    password: string;
+}
+
+export class UpdateUserInput {
+    user_id: string;
+    username?: Nullable&lt;string&gt;;
+    email?: Nullable&lt;string&gt;;
+    password?: Nullable&lt;string&gt;;
+}
+
+export class CreateWorkspaceInput {
+    name: string;
+    description?: Nullable&lt;string&gt;;
+    color?: Nullable&lt;string&gt;;
+}
+
+export class UpdateWorkspaceInput {
+    name?: Nullable&lt;string&gt;;
+    description?: Nullable&lt;string&gt;;
+    color?: Nullable&lt;string&gt;;
+}
+
+export class AddWorkspaceMemberInput {
+    workspace_id: string;
+    user_email: string;
+    role?: Nullable&lt;Role&gt;;
+}
+
+export class UpdateMemberRoleInput {
+    workspace_id: string;
+    user_id: string;
+    role: Role;
+}
+
+export abstract class ISubscription {
+    abstract boardEvent(board_id: string): BoardEventPayload | Promise&lt;BoardEventPayload&gt;;
+}
+
+export class ListCreatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    list: List;
+}
+
+export class ListDeletedEvent {
+    board_id: string;
+    actor_user_id: string;
+    list_id: string;
+}
+
+export class ListMovedEvent {
+    board_id: string;
+    actor_user_id: string;
+    list_id: string;
+    position: number;
+}
+
+export class CardCreatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    card: Card;
+}
+
+export class CardDeletedEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    list_id: string;
+}
+
+export class CardMovedEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    from_list_id: string;
+    to_list_id: string;
+    position: number;
+}
+
+export class LabelCreatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    label: Label;
+}
+
+export class LabelDeletedEvent {
+    board_id: string;
+    actor_user_id: string;
+    label_id: string;
+}
+
+export class LabelAddedToCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    label_id: string;
+}
+
+export class LabelRemovedFromCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    label_id: string;
+}
+
+export class AssigneeAddedToCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    user_id: string;
+}
+
+export class AssigneeRemovedFromCardEvent {
+    board_id: string;
+    actor_user_id: string;
+    card_id: string;
+    user_id: string;
+}
+
+export class WhiteboardUpdatedEvent {
+    board_id: string;
+    actor_user_id: string;
+    whiteboard_data: string;
+}
+
+export class Board {
+    board_id: string;
+    title: string;
+    description?: Nullable&lt;string&gt;;
+    color: string;
+    workspace_id: string;
+    type: BoardType;
+    whiteboard_data?: Nullable&lt;string&gt;;
+    created_by: User;
+    lists: List[];
+    members: WorkspaceMembers[];
+    labels: Label[];
+}
+
+export class List {
+    list_id: string;
+    title: string;
+    position: number;
+    color?: Nullable&lt;string&gt;;
+    board_id: string;
+    cards: Card[];
+}
+
+export class Card {
+    card_id: string;
+    title: string;
+    description?: Nullable&lt;string&gt;;
+    position: number;
+    list_id: string;
+    due_date?: Nullable&lt;DateTime&gt;;
+    labels: Label[];
+    comments: Comment[];
+    attachments: Attachment[];
+    card_members: User[];
+    checklists: Checklist[];
+}
+
+export class Checklist {
+    checklist_id: string;
+    content: string;
+    is_completed: boolean;
+    card_id: string;
+}
+
+export class Comment {
+    comment_id: string;
+    content: string;
+    created_at: DateTime;
+    updated_at: DateTime;
+    card_id: string;
+    author: User;
+}
+
+export class Label {
+    label_id: string;
+    name: string;
+    color: string;
+    board_id: string;
+}
+
+export class Attachment {
+    attachment_id: string;
+    url: string;
+    filename: string;
+    mime_type?: Nullable&lt;string&gt;;
+}
+
+export abstract class IQuery {
+    abstract board(board_id: string): Nullable&lt;Board&gt; | Promise&lt;Nullable&lt;Board&gt;&gt;;
+
+    abstract boards(workspace_id: string): Board[] | Promise&lt;Board[]&gt;;
+
+    abstract card(card_id: string, workspace_id: string): Nullable&lt;Card&gt; | Promise&lt;Nullable&lt;Card&gt;&gt;;
+
+    abstract getGitHubSync(board_id: string): Nullable&lt;GitHubProjectSync&gt; | Promise&lt;Nullable&lt;GitHubProjectSync&gt;&gt;;
+
+    abstract githubAuthStatus(): GitHubAuthStatus | Promise&lt;GitHubAuthStatus&gt;;
+
+    abstract listGitHubProjects(owner: string, isOrg: boolean): GitHubProject[] | Promise&lt;GitHubProject[]&gt;;
+
+    abstract getGitHubProjectFields(owner: string, project_number: number, isOrg: boolean): GitHubProjectField[] | Promise&lt;GitHubProjectField[]&gt;;
+
+    abstract getGitHubProjectItems(owner: string, project_number: number, isOrg: boolean, first?: Nullable&lt;number&gt;): GitHubProjectItem[] | Promise&lt;GitHubProjectItem[]&gt;;
+
+    abstract users(): Nullable&lt;Nullable&lt;User&gt;[]&gt; | Promise&lt;Nullable&lt;Nullable&lt;User&gt;[]&gt;&gt;;
+
+    abstract user(user_id: string): Nullable&lt;User&gt; | Promise&lt;Nullable&lt;User&gt;&gt;;
+
+    abstract me(): Nullable&lt;User&gt; | Promise&lt;Nullable&lt;User&gt;&gt;;
+
+    abstract workspaces(): Nullable&lt;Nullable&lt;Workspace&gt;[]&gt; | Promise&lt;Nullable&lt;Nullable&lt;Workspace&gt;[]&gt;&gt;;
+
+    abstract workspace(workspace_id: string): Nullable&lt;Workspace&gt; | Promise&lt;Nullable&lt;Workspace&gt;&gt;;
+
+    abstract workspaceMembers(workspace_id: string): WorkspaceMembers[] | Promise&lt;WorkspaceMembers[]&gt;;
+}
+
+export abstract class IMutation {
+    abstract createBoard(input: CreateBoardInput): Board | Promise&lt;Board&gt;;
+
+    abstract updateBoard(board_id: string, input: UpdateBoardInput): Board | Promise&lt;Board&gt;;
+
+    abstract deleteBoard(board_id: string): Status | Promise&lt;Status&gt;;
+
+    abstract createList(input: CreateListInput): List | Promise&lt;List&gt;;
+
+    abstract updateList(list_id: string, input: UpdateListInput): List | Promise&lt;List&gt;;
+
+    abstract deleteList(list_id: string): Status | Promise&lt;Status&gt;;
+
+    abstract moveList(list_id: string, new_position: number): List | Promise&lt;List&gt;;
+
+    abstract createCard(input: CreateCardInput): Card | Promise&lt;Card&gt;;
+
+    abstract deleteCard(card_id: string): Status | Promise&lt;Status&gt;;
+
+    abstract updateCardContent(card_id: string, input: UpdateCardInput): Card | Promise&lt;Card&gt;;
+
+    abstract moveCard(card_id: string, list_id: string, new_position: number): Card | Promise&lt;Card&gt;;
+
+    abstract createChecklist(input: CreateChecklistInput): Checklist | Promise&lt;Checklist&gt;;
+
+    abstract deleteChecklist(checklist_id: string): Status | Promise&lt;Status&gt;;
+
+    abstract addLabelToCard(card_id: string, label_id: string): Card | Promise&lt;Card&gt;;
+
+    abstract removeLabelFromCard(card_id: string, label_id: string): Card | Promise&lt;Card&gt;;
+
+    abstract addAssigneeToCard(card_id: string, user_id: string): Card | Promise&lt;Card&gt;;
+
+    abstract removeAssigneeFromCard(card_id: string, user_id: string): Card | Promise&lt;Card&gt;;
+
+    abstract createLabel(input: CreateLabelInput): Label | Promise&lt;Label&gt;;
+
+    abstract deleteLabel(label_id: string): Status | Promise&lt;Status&gt;;
+
+    abstract uploadFile(file: Upload): FileResponse | Promise&lt;FileResponse&gt;;
+
+    abstract connectGitHubProject(input: ConnectGitHubProjectInput): GitHubProjectSync | Promise&lt;GitHubProjectSync&gt;;
+
+    abstract disconnectGitHubProject(board_id: string): Status | Promise&lt;Status&gt;;
+
+    abstract updateGitHubSync(sync_id: string, input: UpdateGitHubSyncInput): GitHubProjectSync | Promise&lt;GitHubProjectSync&gt;;
+
+    abstract createFieldMapping(input: CreateFieldMappingInput): GitHubFieldMapping | Promise&lt;GitHubFieldMapping&gt;;
+
+    abstract updateFieldMapping(mapping_id: string, input: UpdateFieldMappingInput): GitHubFieldMapping | Promise&lt;GitHubFieldMapping&gt;;
+
+    abstract deleteFieldMapping(mapping_id: string): Status | Promise&lt;Status&gt;;
+
+    abstract triggerSync(board_id: string): SyncResult | Promise&lt;SyncResult&gt;;
+
+    abstract importFromGitHub(board_id: string): SyncResult | Promise&lt;SyncResult&gt;;
+
+    abstract exportToGitHub(board_id: string): SyncResult | Promise&lt;SyncResult&gt;;
+
+    abstract initiateGitHubProjectsAuth(): string | Promise&lt;string&gt;;
+
+    abstract createUser(input: CreateUserInput): Nullable&lt;User&gt; | Promise&lt;Nullable&lt;User&gt;&gt;;
+
+    abstract updateUser(input: UpdateUserInput): Nullable&lt;User&gt; | Promise&lt;Nullable&lt;User&gt;&gt;;
+
+    abstract deleteUser(user_id: string): Nullable&lt;User&gt; | Promise&lt;Nullable&lt;User&gt;&gt;;
+
+    abstract login(input: LoginInput): Nullable&lt;AuthResult&gt; | Promise&lt;Nullable&lt;AuthResult&gt;&gt;;
+
+    abstract register(input: RegisterInput): Nullable&lt;AuthResult&gt; | Promise&lt;Nullable&lt;AuthResult&gt;&gt;;
+
+    abstract logout(): Status | Promise&lt;Status&gt;;
+
+    abstract createWorkspace(input: CreateWorkspaceInput): Workspace | Promise&lt;Workspace&gt;;
+
+    abstract updateWorkspace(workspace_id: string, input: UpdateWorkspaceInput): Workspace | Promise&lt;Workspace&gt;;
+
+    abstract deleteWorkspace(workspace_id: string): Status | Promise&lt;Status&gt;;
+
+    abstract pinWorkspace(workspace_id: string): Workspace | Promise&lt;Workspace&gt;;
+
+    abstract unpinWorkspace(workspace_id: string): Workspace | Promise&lt;Workspace&gt;;
+
+    abstract inviteMemberToWorkspace(workspace_id: string, email: string, role: Role): WorkspaceMembers | Promise&lt;WorkspaceMembers&gt;;
+
+    abstract removeWorkspaceMember(workspace_id: string, user_id: string): Status | Promise&lt;Status&gt;;
+
+    abstract updateMemberRole(input: UpdateMemberRoleInput): WorkspaceMembers | Promise&lt;WorkspaceMembers&gt;;
+}
+
+export class Success {
+    successMessage?: Nullable&lt;string&gt;;
+}
+
+export class Error {
+    errorMessage: string;
+    code?: Nullable&lt;string&gt;;
+}
+
+export class FileResponse {
+    success: boolean;
+    url?: Nullable&lt;string&gt;;
+    message?: Nullable&lt;string&gt;;
+}
+
+export class GitHubProjectSync {
+    sync_id: string;
+    board_id: string;
+    github_project_id: string;
+    github_project_number: number;
+    github_owner: string;
+    github_repo?: Nullable&lt;string&gt;;
+    github_org?: Nullable&lt;string&gt;;
+    sync_direction: SyncDirection;
+    sync_status: SyncStatus;
+    last_sync_at?: Nullable&lt;DateTime&gt;;
+    sync_error?: Nullable&lt;string&gt;;
+    auto_sync: boolean;
+    created_at: DateTime;
+    updated_at: DateTime;
+    field_mappings: GitHubFieldMapping[];
+}
+
+export class GitHubFieldMapping {
+    mapping_id: string;
+    github_field_id: string;
+    github_field_name: string;
+    taskflow_field: string;
+    mapping_values?: Nullable&lt;string&gt;;
+}
+
+export class GitHubProject {
+    id: string;
+    number: number;
+    title: string;
+    url: string;
+    closed: boolean;
+    owner: string;
+    ownerType: string;
+}
+
+export class GitHubProjectField {
+    id: string;
+    name: string;
+    dataType: string;
+    options?: Nullable&lt;GitHubFieldOption[]&gt;;
+}
+
+export class GitHubFieldOption {
+    id: string;
+    name: string;
+    color?: Nullable&lt;string&gt;;
+}
+
+export class GitHubProjectItem {
+    id: string;
+    title: string;
+    body?: Nullable&lt;string&gt;;
+    type: string;
+    status?: Nullable&lt;string&gt;;
+    url?: Nullable&lt;string&gt;;
+    labels?: Nullable&lt;string[]&gt;;
+    assignees?: Nullable&lt;string[]&gt;;
+}
+
+export class SyncResult {
+    success: boolean;
+    message?: Nullable&lt;string&gt;;
+    itemsSynced?: Nullable&lt;number&gt;;
+    errors?: Nullable&lt;string[]&gt;;
+}
+
+export class GitHubAuthStatus {
+    isConnected: boolean;
+    hasProjectsAccess: boolean;
+    username?: Nullable&lt;string&gt;;
+    scopes?: Nullable&lt;string[]&gt;;
+}
+
+export class User {
+    user_id: string;
+    username: string;
+    email: string;
+    picture?: Nullable&lt;string&gt;;
+    created_at: DateTime;
+}
+
+export class AuthSuccess {
+    token: string;
+    user: User;
+}
+
+export class AuthError {
+    message: string;
+    code?: Nullable&lt;string&gt;;
+    field?: Nullable&lt;string&gt;;
+}
+
+export class Workspace {
+    workspace_id: string;
+    name: string;
+    color: string;
+    description?: Nullable&lt;string&gt;;
+    owner_id: string;
+    owner: User;
+    members: WorkspaceMembers[];
+    boards: Board[];
+    labels: Label[];
+    is_pinned: boolean;
+    role?: Nullable&lt;Role&gt;;
+}
+
+export class WorkspaceMembers {
+    workspace_id: string;
+    user_id: string;
+    role: Role;
+    user: User;
+    workspace: Workspace;
+}
+
+export class PinWorkspacePayload {
+    workspace: Workspace;
+}
+
+export type DateTime &#x3D; any;
+export type Upload &#x3D; any;
+export type BoardEventPayload &#x3D; ListCreatedEvent | ListDeletedEvent | ListMovedEvent | CardCreatedEvent | CardDeletedEvent | CardMovedEvent | LabelCreatedEvent | LabelDeletedEvent | LabelAddedToCardEvent | LabelRemovedFromCardEvent | AssigneeAddedToCardEvent | AssigneeRemovedFromCardEvent | WhiteboardUpdatedEvent;
+export type Status &#x3D; Success | Error;
+export type AuthResult &#x3D; AuthSuccess | AuthError;
+type Nullable&lt;T&gt; &#x3D; T | null;
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
+            var COMPODOC_CURRENT_PAGE_URL = 'PinWorkspacePayload.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

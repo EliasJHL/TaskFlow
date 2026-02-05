@@ -87,7 +87,7 @@ export const GitHubSection = () => {
                 className="bg-primary/50 border-primary"
               >
                 <img
-                  src="/src/assets/TaskFlow.svg"
+                  src="/TaskFlow.svg"
                   alt="TaskFlow Logo"
                   className="h-12 w-12 dark:brightness-0 dark:invert brightness-0"
                 />
